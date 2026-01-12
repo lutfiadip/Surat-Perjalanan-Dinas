@@ -216,101 +216,104 @@
             </div>
         </div>
 
-        <div class="title-surat">SURAT TUGAS</div>
-        <div style="display: flex; margin-bottom: 15px; font-weight: bold;">
-            <div style="width: 40%; text-align: right; padding-right: 5px;">Nomor :</div>
-            <div style="flex: 1; text-align: left; padding-left: 5px;">{{ $data['nomor_surat'] }}</div>
-        </div>
+        <div style="padding-left: 30px;">
+            <div class="title-surat">SURAT TUGAS</div>
+            <div style="display: flex; margin-bottom: 15px; font-weight: bold;">
+                <div style="width: 40%; text-align: right; padding-right: 5px;">Nomor :</div>
+                <div style="flex: 1; text-align: left; padding-left: 5px;">{{ $data['nomor_surat'] }}</div>
+            </div>
 
-        <div style="text-align: center; font-weight: normal; margin-bottom: 5px;">Kepala Badan Keuangan Daerah</div>
+            <div style="text-align: center; font-weight: normal; margin-bottom: 5px;">Kepala Badan Keuangan Daerah</div>
 
-        <div class="section-row">
-            <div class="label-col">Berdasarkan</div>
-            <div class="colon-col">:</div>
-            <div class="value-col">{!! str_replace('Nomor:', '<br>Nomor:', $data['dasar_surat']) !!}</div>
-        </div>
+            <div class="section-row">
+                <div class="label-col">Berdasarkan</div>
+                <div class="colon-col">:</div>
+                <div class="value-col">{!! str_replace('Nomor:', '<br>Nomor:', $data['dasar_surat']) !!}</div>
+            </div>
 
-        <div style="text-align: center; margin: 10px 0;">memberikan perintah</div>
+            <div style="text-align: center; margin: 10px 0;">memberikan perintah</div>
 
-        <div class="section-row">
-            <div class="label-col">Kepada</div>
-            <div class="colon-col">:</div>
-            <div class="value-col">
-                @foreach($selectedPegawais as $index => $pegawai)
-                    <div class="kepada-list-item">
-                        <div class="kepada-num">{{ $index + 1 }}.</div>
+            <div class="section-row">
+                <div class="label-col">Kepada</div>
+                <div class="colon-col">:</div>
+                <div class="value-col">
+                    @foreach($selectedPegawais as $index => $pegawai)
+                        <div class="kepada-list-item">
+                            <div class="kepada-num">{{ $index + 1 }}.</div>
+                            <div class="kepada-content">
+                                <div class="kepada-row">
+                                    <div class="k-label">Nama</div>
+                                    <div class="k-colon">:</div>
+                                    <div class="k-val">{{ $pegawai->nama }}</div>
+                                </div>
+                                <div class="kepada-row">
+                                    <div class="k-label">Pangkat / Gol</div>
+                                    <div class="k-colon">:</div>
+                                    <div class="k-val">{{ $pegawai->pangkat_gol }}</div>
+                                </div>
+                                <div class="kepada-row">
+                                    <div class="k-label">NIP</div>
+                                    <div class="k-colon">:</div>
+                                    <div class="k-val">{{ $pegawai->nip }}</div>
+                                </div>
+                                <div class="kepada-row">
+                                    <div class="k-label">Jabatan</div>
+                                    <div class="k-colon">:</div>
+                                    <div class="k-val">{{ $pegawai->jabatan }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="section-row">
+                <div class="label-col">Untuk</div>
+                <div class="colon-col">:</div>
+                <div class="value-col">
+                    <div class="untuk-item">
+                        <div class="kepada-num">1.</div>
                         <div class="kepada-content">
-                            <div class="kepada-row">
-                                <div class="k-label">Nama</div>
+                            {{ $data['maksud'] }}, yang diselenggarakan pada:<br>
+                            <div class="disk-row" style="margin-top: 5px;">
+                                <div class="k-label">Hari</div>
                                 <div class="k-colon">:</div>
-                                <div class="k-val">{{ $pegawai->nama }}</div>
+                                <div class="k-val">{{ $data['hari'] }}</div>
                             </div>
-                            <div class="kepada-row">
-                                <div class="k-label">Pangkat / Gol</div>
+                            <div class="disk-row">
+                                <div class="k-label">Tanggal</div>
                                 <div class="k-colon">:</div>
-                                <div class="k-val">{{ $pegawai->pangkat_gol }}</div>
+                                <div class="k-val">{{ $data['tanggal_kegiatan'] }}</div>
                             </div>
-                            <div class="kepada-row">
-                                <div class="k-label">NIP</div>
+                            <div class="disk-row">
+                                <div class="k-label">Tempat</div>
                                 <div class="k-colon">:</div>
-                                <div class="k-val">{{ $pegawai->nip }}</div>
-                            </div>
-                            <div class="kepada-row">
-                                <div class="k-label">Jabatan</div>
-                                <div class="k-colon">:</div>
-                                <div class="k-val">{{ $pegawai->jabatan }}</div>
+                                <div class="k-val">{!! nl2br(e($data['tempat'])) !!}</div>
                             </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
-        </div>
-
-        <div class="section-row">
-            <div class="label-col">Untuk</div>
-            <div class="colon-col">:</div>
-            <div class="value-col">
-                <div class="untuk-item">
-                    <div class="kepada-num">1.</div>
-                    <div class="kepada-content">
-                        {{ $data['maksud'] }}, yang diselenggarakan pada:<br>
-                        <div class="disk-row" style="margin-top: 5px;">
-                            <div class="k-label">Hari</div>
-                            <div class="k-colon">:</div>
-                            <div class="k-val">{{ $data['hari'] }}</div>
-                        </div>
-                        <div class="disk-row">
-                            <div class="k-label">Tanggal</div>
-                            <div class="k-colon">:</div>
-                            <div class="k-val">{{ $data['tanggal_kegiatan'] }}</div>
-                        </div>
-                        <div class="disk-row">
-                            <div class="k-label">Tempat</div>
-                            <div class="k-colon">:</div>
-                            <div class="k-val">{!! nl2br(e($data['tempat'])) !!}</div>
-                        </div>
+                    <div class="untuk-item">
+                        <div class="kepada-num">2.</div>
+                        <div class="kepada-content">Melaporkan hasil tugas kepada pejabat yang bersangkutan.</div>
+                    </div>
+                    <div class="untuk-item">
+                        <div class="kepada-num">3.</div>
+                        <div class="kepada-content">Dengan diterbitkannya Surat Perintah Tugas ini, maka segala biaya
+                            yang
+                            timbul dibebankan pada APBD Kabupaten Karanganyar Tahun Anggaran {{ date('Y') }}.</div>
                     </div>
                 </div>
-                <div class="untuk-item">
-                    <div class="kepada-num">2.</div>
-                    <div class="kepada-content">Melaporkan hasil tugas kepada pejabat yang bersangkutan.</div>
-                </div>
-                <div class="untuk-item">
-                    <div class="kepada-num">3.</div>
-                    <div class="kepada-content">Dengan diterbitkannya Surat Perintah Tugas ini, maka segala biaya yang
-                        timbul dibebankan pada APBD Kabupaten Karanganyar Tahun Anggaran {{ date('Y') }}.</div>
-                </div>
             </div>
-        </div>
 
-        <div class="signature-container">
-            <div style="margin-bottom: 20mm;">
-                {{ $data['tanggal_surat'] }}<br>
-                Kepala Badan Keuangan Daerah
+            <div class="signature-container">
+                <div style="margin-bottom: 20mm;">
+                    {{ $data['tanggal_surat'] }}<br>
+                    Kepala Badan Keuangan Daerah
+                </div>
+                <div>{{ $signatory['nama'] }}</div>
+                <div>{{ $signatory['pangkat'] }}</div>
+                <div>NIP. {{ $signatory['nip'] }}</div>
             </div>
-            <div>{{ $signatory['nama'] }}</div>
-            <div>{{ $signatory['pangkat'] }}</div>
-            <div>NIP. {{ $signatory['nip'] }}</div>
         </div>
 
     </div>
@@ -329,139 +332,157 @@
             </div>
         </div>
 
-        <!-- LEMBAR INFO BLOCK (Centered) -->
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px; padding-right: 20px; margin-top: 20px;">
-            <table style="font-size: 10pt; border: none; text-align: left;">
-                <tr>
-                    <td style="border: none; padding: 1px 10px;">Lembar ke</td>
-                    <td style="border: none; padding: 1px;">:</td>
-                    <td style="border: none; padding: 1px;">............................................................</td>
-                </tr>
-                <tr>
-                    <td style="border: none; padding: 1px 10px;">Kode No</td>
-                    <td style="border: none; padding: 1px;">:</td>
-                    <td style="border: none; padding: 1px;">............................................................</td>
-                </tr>
-                <tr>
-                    <td style="border: none; padding: 1px 10px;">Nomor</td>
-                    <td style="border: none; padding: 1px;">:</td>
-                    <td style="border: none; padding: 1px;">............................................................</td>
-                </tr>
-            </table>
-        </div>
-
-        <div
-            style="text-align: center; font-weight: normal; text-decoration: underline; font-size: 11pt; margin-bottom: 8px;">
-            SURAT PERJALANAN DINAS (SPD)</div>
-
-        <table class="spd-table" style="table-layout: fixed; width: 100%;">
-            <colgroup>
-                <col style="width: 5%;">
-                <col style="width: 35%;">
-                <col style="width: 60%;">
-            </colgroup>
-            <tr>
-                <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px; width: 5%;">1</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px; width: 35%;">Pengguna Anggaran / Kuasa Pengguna Anggaran</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px; width: 60%;">{{ $signatory['nama'] }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">2</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Nama /NIP Pegawai yang Melaksanakan Perjalanan Dinas</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                    {{ $selectedPegawais->first()->nama }}<br>
-                    {{ $selectedPegawais->first()->nip }}
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">3</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                    a. Pangkat dan Golongan<br>
-                    b. Jabatan / Instansi<br>
-                    c. Tingkat Biaya Perjalanan Dinas
-                </td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                    a. {{ $selectedPegawais->first()->pangkat_gol }}<br>
-                    b. {{ $selectedPegawais->first()->jabatan }}<br>
-                    c.
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">4</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Maksud Perjalanan Dinas</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">{{ $data['maksud'] }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">5</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Alat Angkut yang Digunakan</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">{{ $data['alat_angkut'] }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">6</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                    a. Tempat Berangkat<br>
-                    b. Tempat Tujuan
-                </td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                    a. {{ $data['tempat_berangkat'] }}<br>
-                    b. {!! nl2br(e($data['tempat'])) !!}
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">7</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                    a. Lama Perjalanan Dinas<br>
-                    b. Tanggal Berangkat<br>
-                    c. Tanggal Harus Kembali
-                </td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                    a. {{ $data['lama_perjalanan'] }}<br>
-                    b. {{ $data['tgl_berangkat'] }}<br>
-                    c. {{ $data['tgl_kembali'] }}
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">8</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Pengikut</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                    @if($selectedPegawais->count() > 1)
-                        @foreach($selectedPegawais->slice(1) as $index => $pengikut)
-                            {{ $loop->iteration }}. {{ $pengikut->nama }}, {{ $pengikut->pangkat_gol }}<br>
-                        @endforeach
-                    @else
-
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">9</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                    Pembebanan Anggaran<br>
-                    a. SKPD<br>
-                    b. Kode Rekening
-                </td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                    <br>
-                    a. {{ $data['anggaran_skpd'] }}<br>
-                    b.
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">10</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Keterangan Lain - Lain</td>
-                <td style="vertical-align: top; border: 1px solid black; padding: 5px;"></td>
-            </tr>
-        </table>
-
-        <div class="signature-container" style="margin-top: 30px;">
-            <div>Di keluarkan di Karanganyar</div>
-            <div style="margin-bottom: 20mm;">
-                Tanggal {{ $data['tanggal_surat'] }}<br>
-                Pengguna Anggaran / Kuasa Pengguna Anggaran,
+        <div style="padding-left: 30px;">
+            <!-- LEMBAR INFO BLOCK (Centered) -->
+            <div
+                style="display: flex; justify-content: flex-end; margin-bottom: 10px; padding-right: 20px; margin-top: 20px;">
+                <table style="font-size: 10pt; border: none; text-align: left;">
+                    <tr>
+                        <td style="border: none; padding: 1px 10px;">Lembar ke</td>
+                        <td style="border: none; padding: 1px;">:</td>
+                        <td style="border: none; padding: 1px;">
+                            ............................................................
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border: none; padding: 1px 10px;">Kode No</td>
+                        <td style="border: none; padding: 1px;">:</td>
+                        <td style="border: none; padding: 1px;">
+                            ............................................................
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border: none; padding: 1px 10px;">Nomor</td>
+                        <td style="border: none; padding: 1px;">:</td>
+                        <td style="border: none; padding: 1px;">
+                            ............................................................
+                        </td>
+                    </tr>
+                </table>
             </div>
 
-            <div>({{ $signatory['nama'] }})</div>
-            <div>NIP. {{ $signatory['nip'] }}</div>
+            <div
+                style="text-align: center; font-weight: normal; text-decoration: underline; font-size: 11pt; margin-bottom: 8px;">
+                SURAT PERJALANAN DINAS (SPD)</div>
+
+            <table class="spd-table" style="table-layout: fixed; width: 100%;">
+                <colgroup>
+                    <col style="width: 5%;">
+                    <col style="width: 35%;">
+                    <col style="width: 60%;">
+                </colgroup>
+                <tr>
+                    <td
+                        style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px; width: 5%;">
+                        1
+                    </td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px; width: 35%;">Pengguna
+                        Anggaran /
+                        Kuasa Pengguna Anggaran</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px; width: 60%;">
+                        {{ $signatory['nama'] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">2</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Nama /NIP Pegawai yang
+                        Melaksanakan Perjalanan Dinas</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
+                        {{ $selectedPegawais->first()->nama }}<br>
+                        {{ $selectedPegawais->first()->nip }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">3</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
+                        a. Pangkat dan Golongan<br>
+                        b. Jabatan / Instansi<br>
+                        c. Tingkat Biaya Perjalanan Dinas
+                    </td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
+                        a. {{ $selectedPegawais->first()->pangkat_gol }}<br>
+                        b. {{ $selectedPegawais->first()->jabatan }}<br>
+                        c.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">4</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Maksud Perjalanan Dinas</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">{{ $data['maksud'] }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">5</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Alat Angkut yang Digunakan
+                    </td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">{{ $data['alat_angkut'] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">6</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
+                        a. Tempat Berangkat<br>
+                        b. Tempat Tujuan
+                    </td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
+                        a. {{ $data['tempat_berangkat'] }}<br>
+                        b. {!! nl2br(e($data['tempat'])) !!}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">7</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
+                        a. Lama Perjalanan Dinas<br>
+                        b. Tanggal Berangkat<br>
+                        c. Tanggal Harus Kembali
+                    </td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
+                        a. {{ $data['lama_perjalanan'] }}<br>
+                        b. {{ $data['tgl_berangkat'] }}<br>
+                        c. {{ $data['tgl_kembali'] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">8</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Pengikut</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
+                        @if($selectedPegawais->count() > 1)
+                            @foreach($selectedPegawais->slice(1) as $index => $pengikut)
+                                {{ $loop->iteration }}. {{ $pengikut->nama }}, {{ $pengikut->pangkat_gol }}<br>
+                            @endforeach
+                        @else
+
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">9</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
+                        Pembebanan Anggaran<br>
+                        a. SKPD<br>
+                        b. Kode Rekening
+                    </td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
+                        <br>
+                        a. {{ $data['anggaran_skpd'] }}<br>
+                        b.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">10</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Keterangan Lain - Lain</td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;"></td>
+                </tr>
+            </table>
+
+            <div class="signature-container" style="margin-top: 30px;">
+                <div>Di keluarkan di Karanganyar</div>
+                <div style="margin-bottom: 20mm;">
+                    Tanggal {{ $data['tanggal_surat'] }}<br>
+                    Pengguna Anggaran / Kuasa Pengguna Anggaran,
+                </div>
+                <div>({{ $signatory['nama'] }})</div>
+                <div>NIP. {{ $signatory['nip'] }}</div>
+            </div>
         </div>
     </div>
 
@@ -470,9 +491,9 @@
         <table
             style="width: 100%; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; border: 1px solid black;">
             <colgroup>
-                <col style="width: 30px; border: 1px solid black;">
-                <col style="width: 45%; border: 1px solid black;">
-                <col style="width: 50%; border: 1px solid black;">
+                <col style="width: 5%; border: 1px solid black;">
+                <col style="width: 37%; border: 1px solid black;">
+                <col style="width: 58%; border: 1px solid black;">
             </colgroup>
 
             <!-- ROW I -->
@@ -481,44 +502,56 @@
                 <td style="border: 1px solid black; vertical-align: top; padding: 5px;">
                     <table style="width: 100%; border: none; font-size: 9pt;">
                         <tr>
-                            <td style="width: 35%; vertical-align: top; white-space: nowrap;">I. Berangkat dari</td>
+                            <td style="width: 3%; vertical-align: top; white-space: nowrap; padding-left: 5px;">I.</td>
+                            <td style="width: 42%; vertical-align: top; white-space: nowrap; padding-left: 10px;">
+                                Berangkat dari</td>
                             <td style="width: 2%; vertical-align: top;">:</td>
-                            <td style="width: 63%; vertical-align: top; white-space: nowrap;">(tempat kedudukan)</td>
+                            <td style="width: 53%; vertical-align: top; white-space: nowrap;">
+                                {{ $data['tempat_berangkat'] }}</td>
                         </tr>
                         <tr>
-                            <td style="vertical-align: top; white-space: nowrap;">&nbsp;&nbsp;&nbsp;(tempat kedudukan)</td>
-                            <td style="vertical-align: top;">:</td>
-                            <td style="vertical-align: top;">{{ $data['tempat_berangkat'] }}</td>
+                            <td></td>
+                            <td style="vertical-align: top; white-space: nowrap; padding-left: 10px;">(tempat kedudukan)
+                            </td>
+                            <td style="vertical-align: top;"></td>
+                            <td style="vertical-align: top;"></td>
                         </tr>
                         <tr>
-                            <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp;Ke</td>
+                            <td></td>
+                            <td style="vertical-align: top; padding-left: 10px;">Ke</td>
                             <td style="vertical-align: top;">:</td>
                             <td style="vertical-align: top;">{!! nl2br(e($data['tempat'])) !!}</td>
                         </tr>
                         <tr>
-                            <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp;Pada Tanggal</td>
+                            <td></td>
+                            <td style="vertical-align: top; padding-left: 10px;">Pada Tanggal</td>
                             <td style="vertical-align: top;">:</td>
                             <td style="vertical-align: top;">{{ $data['tgl_berangkat'] }}</td>
                         </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="3" style="padding-left: 10px; vertical-align: top;">
+                                <div>Kepala Sub Bagian Umum,</div>
+                                <div>Selaku Pejabat Pelaksana Teknis Kegiatan</div>
+                                <div>Sekretariat</div>
+                                <br><br><br>
+                                <div>(NOVAN DEKA SETYA G, S.S.T.P., M.M)</div>
+                                <div>NIP. 19901113 201507 1 001</div>
+                            </td>
+                        </tr>
                     </table>
-                    <br>
-                    <div style="margin-left: 20px;">
-                        <div>Kepala Sub Bagian Umum,</div>
-                        <div>Selaku Pejabat Pelaksana Teknis Kegiatan</div>
-                        <div>Sekretariat</div>
-                        <br><br><br>
-                        <div>(NOVAN DEKA SETYA G, S.S.T.P., M.M)</div>
-                        <div>NIP. 19901113 201507 1 001</div>
-                    </div>
                 </td>
             </tr>
 
             <!-- ROW II, III, IV, V -->
             @foreach(['II', 'III', 'IV', 'V'] as $romawi)
                 <tr>
-                    <td rowspan="3" style="border: 1px solid black; vertical-align: top; padding: 1px; text-align: center;">{{ $romawi }}</td>
+                    <td rowspan="3" style="border: 1px solid black; vertical-align: top; padding: 1px; text-align: center;">
+                        {{ $romawi }}
+                    </td>
                     <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">Tiba :</td>
-                    <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">Berangkat dari :</td>
+                    <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">Berangkat dari :
+                    </td>
                 </tr>
                 <tr>
                     <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">Pada tanggal :</td>
@@ -540,22 +573,28 @@
 
             <!-- ROW VI -->
             <tr>
-                <td rowspan="3" style="border: 1px solid black; vertical-align: top; padding: 1px; text-align: center;">VI</td>
-                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">Tiba : di Karanganyar</td>
-                <td rowspan="2" style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; text-align: justify;">
+                <td rowspan="3" style="border: 1px solid black; vertical-align: top; padding-left: 5px;">
+                    VI</td>
+                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 10px;">Tiba : di
+                    Karanganyar</td>
+                <td rowspan="2"
+                    style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; text-align: justify;">
                     SPD telah diperiksa dengan keterangan bahwa perjalanan tersebut di atas benar dilakukan atas
                     perintah sesuai dengan kepentingan jabatan dan dilaksanakan dalam waktu yang sesingkat-singkatnya.
                 </td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">
+                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 10px;">
                     Pada tanggal : {{ $data['tgl_kembali'] }}
                 </td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">
+                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 10px;">
                     <div>Kepala Badan Keuangan Daerah</div>
-                    <div style="margin-top: 40px;">({{ $signatory['nama'] }})</div>
+                    <br><br><br><br>
+                    <div style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">
+                        ({{ $signatory['nama'] }})
+                    </div>
                     <div>NIP. {{ $signatory['nip'] }}</div>
                 </td>
                 <td style="border: 1px solid black; vertical-align: top; padding: 5px;"></td>

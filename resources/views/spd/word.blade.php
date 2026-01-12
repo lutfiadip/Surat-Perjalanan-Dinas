@@ -36,6 +36,21 @@
             page: Section1;
         }
 
+        /* Tighter margins for Page 3 (Back Page) */
+        @page Section2 {
+            size: 21.0cm 29.7cm;
+            /* A4 */
+            margin: 1.27cm 1.0cm 0.3cm 2.0cm;
+            /* Top relaxed, Bottom tight */
+            mso-header-margin: 0pt;
+            mso-footer-margin: 0pt;
+            mso-paper-source: 0;
+        }
+
+        div.Section2 {
+            page: Section2;
+        }
+
         /* Table Styles */
         table {
             width: 100%;
@@ -63,6 +78,17 @@
 
         .border {
             border: 1px solid black;
+        }
+
+        /* Specific override for Page 3 */
+        #page3table,
+        #page3table tr,
+        #page3table td,
+        #page3table th,
+        #page3table div,
+        #page3table p,
+        #page3table span {
+            font-size: 10pt !important;
         }
     </style>
 </head>
@@ -109,139 +135,157 @@ if (file_exists($path)) {
         <!-- TITLE -->
 
         <!-- Explicit inline bold for safety -->
-        <div class="center" style="font-size: 12pt; margin-bottom: 5px; margin-top: 10px; font-weight: bold;">SURAT TUGAS</div>
-        <table style="width: 100%; border: none; margin-bottom: 20px;">
+        <table style="width: 100%; border: none;">
             <tr>
-                <td style="width: 40%; text-align: right; border: none; padding-right: 5px; font-weight: bold;">Nomor :</td>
-                <td style="width: 60%; text-align: left; border: none; padding-left: 5px; font-weight: bold;">{{ $data['nomor_surat'] }}</td>
-            </tr>
-        </table>
-        <br>
+                <td style="padding-left: 30px;">
+                    <div class="center"
+                        style="font-size: 12pt; margin-bottom: 5px; margin-top: 10px; font-weight: bold;">
+                        SURAT
+                        TUGAS</div>
+                    <table style="width: 100%; border: none; margin-bottom: 20px;">
+                        <tr>
+                            <td
+                                style="width: 40%; text-align: right; border: none; padding-right: 5px; font-weight: bold;">
+                                Nomor :
+                            </td>
+                            <td
+                                style="width: 60%; text-align: left; border: none; padding-left: 5px; font-weight: bold;">
+                                {{ $data['nomor_surat'] }}
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
 
-        <div class="center" style="margin-bottom: 20px;">Kepala Badan Keuangan Daerah</div>
+                    <div class="center" style="margin-bottom: 20px;">Kepala Badan Keuangan Daerah</div>
 
-        <!-- BERDASARKAN -->
-        <table style="margin-bottom: 30px;">
-            <tr>
-                <td style="width: 100px; vertical-align: top;">Berdasarkan</td>
-                <td style="width: 20px; text-align: center; vertical-align: top;">:</td>
-                <td class="justify" style="vertical-align: top;">
-                    {!! str_replace('Nomor:', '<br>Nomor:', $data['dasar_surat']) !!}
-                </td>
-            </tr>
-        </table>
+                    <!-- BERDASARKAN -->
+                    <table style="margin-bottom: 30px;">
+                        <tr>
+                            <td style="width: 100px; vertical-align: top;">Berdasarkan</td>
+                            <td style="width: 20px; text-align: center; vertical-align: top;">:</td>
+                            <td class="justify" style="vertical-align: top;">
+                                {!! str_replace('Nomor:', '<br>Nomor:', $data['dasar_surat']) !!}
+                            </td>
+                        </tr>
+                    </table>
 
-        <div class="center" style="margin: 15px 0 25px 0;">memberikan perintah</div>
+                    <div class="center" style="margin: 15px 0 25px 0;">memberikan perintah</div>
 
-        <!-- KEPADA -->
-        <table style="margin-bottom: 0px;">
-            <tr>
-                <td style="width: 100px;">Kepada</td>
-                <td style="width: 20px; text-align: center;">:</td>
-                <td>
-                    @foreach($selectedPegawais as $index => $pegawai)
-                        <table style="margin-bottom: 10px;">
-                            <tr>
-                                <td style="width: 20px;">{{ $index + 1 }}.</td>
-                                <td>
-                                    <table>
-                                        <tr>
-                                            <td style="width: 100px;">Nama</td>
-                                            <td style="width: 10px;">:</td>
-                                            <td>{{ $pegawai->nama }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Pangkat / Gol</td>
-                                            <td>:</td>
-                                            <td>{{ $pegawai->pangkat_gol }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>NIP</td>
-                                            <td>:</td>
-                                            <td>{{ $pegawai->nip }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Jabatan</td>
-                                            <td>:</td>
-                                            <td>{{ $pegawai->jabatan }}</td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    @endforeach
-                </td>
-            </tr>
-        </table>
-        <div style="font-size: 8pt;">&nbsp;</div>
-
-        <!-- UNTUK -->
-        <table style="margin-bottom: 10px;">
-            <tr>
-                <td style="width: 100px;">Untuk</td>
-                <td style="width: 20px; text-align: center;">:</td>
-                <td>
-                    <!-- 1 -->
+                    <!-- KEPADA -->
                     <table style="margin-bottom: 0px;">
                         <tr>
-                            <td style="width: 20px;">1.</td>
+                            <td style="width: 100px;">Kepada</td>
+                            <td style="width: 20px; text-align: center;">:</td>
                             <td>
-                                {{ $data['maksud'] }}, yang diselenggarakan pada:<br>
-                                <table style="margin-top: 5px;">
-                                    <tr>
-                                        <td style="width: 80px;">Hari</td>
-                                        <td style="width: 10px;">:</td>
-                                        <td>{{ $data['hari'] }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tanggal</td>
-                                        <td>:</td>
-                                        <td>{{ $data['tanggal_kegiatan'] }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tempat</td>
-                                        <td>:</td>
-                                        <td>{!! nl2br(e($data['tempat'])) !!}</td>
-                                    </tr>
-                                </table>
+                                @foreach($selectedPegawais as $index => $pegawai)
+                                    <table style="margin-bottom: 10px;">
+                                        <tr>
+                                            <td style="width: 20px;">{{ $index + 1 }}.</td>
+                                            <td>
+                                                <table>
+                                                    <tr>
+                                                        <td style="width: 100px;">Nama</td>
+                                                        <td style="width: 10px;">:</td>
+                                                        <td>{{ $pegawai->nama }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Pangkat / Gol</td>
+                                                        <td>:</td>
+                                                        <td>{{ $pegawai->pangkat_gol }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>NIP</td>
+                                                        <td>:</td>
+                                                        <td>{{ $pegawai->nip }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jabatan</td>
+                                                        <td>:</td>
+                                                        <td>{{ $pegawai->jabatan }}</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                @endforeach
                             </td>
                         </tr>
                     </table>
                     <div style="font-size: 8pt;">&nbsp;</div>
 
-                    <!-- 2 -->
+                    <!-- UNTUK -->
                     <table style="margin-bottom: 10px;">
                         <tr>
-                            <td style="width: 20px;">2.</td>
-                            <td>Melaporkan hasil tugas kepada pejabat yang bersangkutan.</td>
-                        </tr>
-                    </table>
-                    <!-- 3 -->
-                    <table style="margin-bottom: 25px;">
-                        <tr>
-                            <td style="width: 20px;">3.</td>
-                            <td>Dengan diterbitkannya Surat Perintah Tugas ini, maka segala biaya yang timbul dibebankan
-                                pada APBD Kabupaten Karanganyar Tahun Anggaran {{ date('Y') }}.</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+                            <td style="width: 100px;">Untuk</td>
+                            <td style="width: 20px; text-align: center;">:</td>
+                            <td>
+                                <!-- 1 -->
+                                <table style="margin-bottom: 0px;">
+                                    <tr>
+                                        <td style="width: 20px;">1.</td>
+                                        <td>
+                                            {{ $data['maksud'] }}, yang diselenggarakan pada:<br>
+                                            <table style="margin-top: 5px;">
+                                                <tr>
+                                                    <td style="width: 80px;">Hari</td>
+                                                    <td style="width: 10px;">:</td>
+                                                    <td>{{ $data['hari'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Tanggal</td>
+                                                    <td>:</td>
+                                                    <td>{{ $data['tanggal_kegiatan'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Tempat</td>
+                                                    <td>:</td>
+                                                    <td>{!! nl2br(e($data['tempat'])) !!}</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div style="font-size: 8pt;">&nbsp;</div>
 
-        <!-- SIGNATURE -->
-        <table style="margin-top: 10px;">
-            <tr>
-                <td style="width: 50%;"></td>
-                <td style="width: 50%;">
-                    <br>
-                    {{ $data['tanggal_surat'] }}<br>
-                    Kepala Badan Keuangan Daerah
-                    <br><br><br><br><br>
-                    <div>{{ $signatory['nama'] }}</div>
-                    <div>{{ $signatory['pangkat'] }}</div>
-                    <div>NIP. {{ $signatory['nip'] }}</div>
-                </td>
-            </tr>
+                                <!-- 2 -->
+                                <table style="margin-bottom: 10px;">
+                                    <tr>
+                                        <td style="width: 20px;">2.</td>
+                                        <td>Melaporkan hasil tugas kepada pejabat yang bersangkutan.</td>
+                                    </tr>
+                                </table>
+                                <!-- 3 -->
+                                <table style="margin-bottom: 25px;">
+                                    <tr>
+                                        <td style="width: 20px;">3.</td>
+                                        <td>Dengan diterbitkannya Surat Perintah Tugas ini, maka segala biaya yang
+                                            timbul
+                                            dibebankan
+                                            pada APBD Kabupaten Karanganyar Tahun Anggaran {{ date('Y') }}.</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- SIGNATURE -->
+                    <table style="margin-top: 10px;">
+                        <tr>
+                            <td style="width: 50%;"></td>
+                            <td style="width: 50%;">
+                                <br>
+                                {{ $data['tanggal_surat'] }}<br>
+                                Kepala Badan Keuangan Daerah
+                                <br><br><br><br><br>
+                                <div>{{ $signatory['nama'] }}</div>
+                                <div>{{ $signatory['pangkat'] }}</div>
+                                <div>NIP. {{ $signatory['nip'] }}</div>
+                            </td>
+                        </tr>
+                    </table>
+        </table>
+        </td>
+        </tr>
         </table>
 
         <!-- ========================================== -->
@@ -272,145 +316,161 @@ if (file_exists($path)) {
         </table>
 
         <br>
-        <table style="width: 100%; margin-top: 15px; margin-bottom: 10px; border: none;">
+        <table style="width: 100%; border: none;">
             <tr>
-                <td style="width: 50%; border: none;"></td>
-                <td style="width: 50%; border: none;">
-                    <table style="width: 100%; border: none;">
+                <td style="padding-left: 30px;">
+                    <table style="width: 100%; margin-top: 15px; margin-bottom: 10px; border: none;">
                         <tr>
-                            <td style="padding: 1px; white-space: nowrap; width: 100px;">Lembar ke</td>
-                            <td style="width: 10px;">:</td>
-                            <td>............................................................</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 1px; white-space: nowrap;">Kode No</td>
-                            <td>:</td>
-                            <td>............................................................</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 1px; white-space: nowrap;">Nomor</td>
-                            <td>:</td>
-                            <td>............................................................</td>
+                            <td style="width: 50%; border: none;"></td>
+                            <td style="width: 50%; border: none;">
+                                <table style="width: 100%; border: none;">
+                                    <tr>
+                                        <td style="padding: 1px; white-space: nowrap; width: 100px;">Lembar ke</td>
+                                        <td style="width: 10px;">:</td>
+                                        <td>............................................................</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 1px; white-space: nowrap;">Kode No</td>
+                                        <td>:</td>
+                                        <td>............................................................</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 1px; white-space: nowrap;">Nomor</td>
+                                        <td>:</td>
+                                        <td>............................................................</td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                     </table>
-                </td>
-            </tr>
-        </table>
 
-        <div class="center bold"
-            style="text-decoration: underline; font-size: 12pt; margin-top: 15px; margin-bottom: 15px;">SURAT PERJALANAN
-            DINAS (SPD)</div>
+                    <div class="center bold"
+                        style="text-decoration: underline; font-size: 12pt; margin-top: 15px; margin-bottom: 15px;">
+                        SURAT
+                        PERJALANAN
+                        DINAS (SPD)</div>
 
-        <table class="border" style="font-size: 10pt; width: 100%; table-layout: fixed;">
-            <colgroup>
-                <col style="width: 5%;">
-                <col style="width: 40%;">
-                <col style="width: 55%;">
-            </colgroup>
-            <tr>
-                <td class="border center" style="padding: 5px; vertical-align: top; width: 5%;">1</td>
-                <td class="border" style="padding: 5px; vertical-align: top; width: 40%;">Pengguna Anggaran / Kuasa Pengguna Anggaran</td>
-                <td class="border" style="padding: 5px; vertical-align: top; width: 55%;">{{ $signatory['nama'] }}</td>
-            </tr>
-            <tr>
-                <td class="border center" style="padding: 5px; vertical-align: top;">2</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">Nama /NIP Pegawai yang Melaksanakan Perjalanan Dinas</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">
-                    {{ $selectedPegawais->first()->nama }}<br>
-                    {{ $selectedPegawais->first()->nip }}
-                </td>
-            </tr>
-            <tr>
-                <td class="border center" style="padding: 5px; vertical-align: top;">3</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">
-                    a. Pangkat dan Golongan<br>
-                    b. Jabatan / Instansi<br>
-                    c. Tingkat Biaya Perjalanan Dinas
-                </td>
-                <td class="border" style="padding: 5px; vertical-align: top;">
-                    a. {{ $selectedPegawais->first()->pangkat_gol }}<br>
-                    b. {{ $selectedPegawais->first()->jabatan }}<br>
-                    c.
-                </td>
-            </tr>
-            <tr>
-                <td class="border center" style="padding: 5px; vertical-align: top;">4</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">Maksud Perjalanan Dinas</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">{{ $data['maksud'] }}</td>
-            </tr>
-            <tr>
-                <td class="border center" style="padding: 5px; vertical-align: top;">5</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">Alat Angkut yang Digunakan</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">{{ $data['alat_angkut'] }}</td>
-            </tr>
-            <tr>
-                <td class="border center" style="padding: 5px; vertical-align: top;">6</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">
-                    a. Tempat Berangkat<br>
-                    b. Tempat Tujuan
-                </td>
-                <td class="border" style="padding: 5px; vertical-align: top;">
-                    a. {{ $data['tempat_berangkat'] }}<br>
-                    b. {!! nl2br(e($data['tempat'])) !!}
-                </td>
-            </tr>
-            <tr>
-                <td class="border center" style="padding: 5px; vertical-align: top;">7</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">
-                    a. Lama Perjalanan Dinas<br>
-                    b. Tanggal Berangkat<br>
-                    c. Tanggal Harus Kembali
-                </td>
-                <td class="border" style="padding: 5px; vertical-align: top;">
-                    a. {{ $data['lama_perjalanan'] }}<br>
-                    b. {{ $data['tgl_berangkat'] }}<br>
-                    c. {{ $data['tgl_kembali'] }}
-                </td>
-            </tr>
-            <tr>
-                <td class="border center" style="padding: 5px; vertical-align: top;">8</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">Pengikut</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">
-                    @if($selectedPegawais->count() > 1)
-                        @foreach($selectedPegawais->slice(1) as $index => $pengikut)
-                            {{ $loop->iteration }}. {{ $pengikut->nama }}, {{ $pengikut->pangkat_gol }}<br>
-                        @endforeach
-                    @else
-                        -
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <td class="border center" style="padding: 5px; vertical-align: top;">9</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">
-                    Pembebanan Anggaran<br>
-                    a. SKPD<br>
-                    b. Kode Rekening
-                </td>
-                <td class="border" style="padding: 5px; vertical-align: top;">
-                    <br>
-                    a. {{ $data['anggaran_skpd'] }}<br>
-                    b.
-                </td>
-            </tr>
-            <tr>
-                <td class="border center" style="padding: 5px; vertical-align: top;">10</td>
-                <td class="border" style="padding: 5px; vertical-align: top;">Keterangan Lain - Lain</td>
-                <td class="border" style="padding: 5px; vertical-align: top;"></td>
-            </tr>
-        </table>
+                    <table class="border" style="font-size: 10pt; width: 100%; table-layout: fixed;">
+                        <colgroup>
+                            <col style="width: 5%;">
+                            <col style="width: 40%;">
+                            <col style="width: 55%;">
+                        </colgroup>
+                        <tr>
+                            <td class="border center" style="padding: 5px; vertical-align: top; width: 5%;">1</td>
+                            <td class="border" style="padding: 5px; vertical-align: top; width: 40%;">Pengguna Anggaran
+                                / Kuasa
+                                Pengguna Anggaran</td>
+                            <td class="border" style="padding: 5px; vertical-align: top; width: 55%;">
+                                {{ $signatory['nama'] }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border center" style="padding: 5px; vertical-align: top;">2</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">Nama /NIP Pegawai yang
+                                Melaksanakan
+                                Perjalanan Dinas</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">
+                                {{ $selectedPegawais->first()->nama }}<br>
+                                {{ $selectedPegawais->first()->nip }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border center" style="padding: 5px; vertical-align: top;">3</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">
+                                a. Pangkat dan Golongan<br>
+                                b. Jabatan / Instansi<br>
+                                c. Tingkat Biaya Perjalanan Dinas
+                            </td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">
+                                a. {{ $selectedPegawais->first()->pangkat_gol }}<br>
+                                b. {{ $selectedPegawais->first()->jabatan }}<br>
+                                c.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border center" style="padding: 5px; vertical-align: top;">4</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">Maksud Perjalanan Dinas</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">{{ $data['maksud'] }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border center" style="padding: 5px; vertical-align: top;">5</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">Alat Angkut yang Digunakan
+                            </td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">{{ $data['alat_angkut'] }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border center" style="padding: 5px; vertical-align: top;">6</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">
+                                a. Tempat Berangkat<br>
+                                b. Tempat Tujuan
+                            </td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">
+                                a. {{ $data['tempat_berangkat'] }}<br>
+                                b. {!! nl2br(e($data['tempat'])) !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border center" style="padding: 5px; vertical-align: top;">7</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">
+                                a. Lama Perjalanan Dinas<br>
+                                b. Tanggal Berangkat<br>
+                                c. Tanggal Harus Kembali
+                            </td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">
+                                a. {{ $data['lama_perjalanan'] }}<br>
+                                b. {{ $data['tgl_berangkat'] }}<br>
+                                c. {{ $data['tgl_kembali'] }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border center" style="padding: 5px; vertical-align: top;">8</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">Pengikut</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">
+                                @if ($selectedPegawais->count() > 1)
+                                    @foreach ($selectedPegawais->slice(1) as $index => $pengikut)
+                                        {{ $loop->iteration }}. {{ $pengikut->nama }}, {{ $pengikut->pangkat_gol }}<br>
+                                    @endforeach
+                                @else
+                                    -
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border center" style="padding: 5px; vertical-align: top;">9</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">
+                                Pembebanan Anggaran<br>
+                                a. SKPD<br>
+                                b. Kode Rekening
+                            </td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">
+                                <br>
+                                a. {{ $data['anggaran_skpd'] }}<br>
+                                b.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border center" style="padding: 5px; vertical-align: top;">10</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;">Keterangan Lain - Lain</td>
+                            <td class="border" style="padding: 5px; vertical-align: top;"></td>
+                        </tr>
+                    </table>
 
-        <table style="margin-top: 20px; font-size: 10pt;">
-            <tr>
-                <td style="width: 50%;"></td>
-                <td style="width: 50%;">
-                    <br>
-                    <div>Di keluarkan di Karanganyar</div>
-                    <div>Tanggal {{ $data['tanggal_surat'] }}</div>
-                    <div>Pengguna Anggaran / Kuasa Pengguna Anggaran,</div>
-                    <br><br><br><br>
-                    <div>({{ $signatory['nama'] }})</div>
-                    <div>NIP. {{ $signatory['nip'] }}</div>
+                    <table style="margin-top: 20px; font-size: 10pt;">
+                        <tr>
+                            <td style="width: 50%;"></td>
+                            <td style="width: 50%;">
+                                <br>
+                                <div>Di keluarkan di Karanganyar</div>
+                                <div>Tanggal {{ $data['tanggal_surat'] }}</div>
+                                <div>Pengguna Anggaran / Kuasa Pengguna Anggaran,</div>
+                                <br><br><br><br>
+                                <div>({{ $signatory['nama'] }})</div>
+                                <div>NIP. {{ $signatory['nip'] }}</div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
         </table>
@@ -418,125 +478,146 @@ if (file_exists($path)) {
         <!-- ========================================== -->
         <!-- HALAMAN 3: SPD BELAKANG (VISAS) -->
         <!-- ========================================== -->
-        <br clear=all style='mso-special-character:line-break;page-break-before:always'>
+        <br clear=all style='page-break-before:always; mso-break-type:section-break'>
+        <div class="Section2">
 
-        <table class="border" style="font-size: 9pt;">
-            <colgroup>
-                <col style="width: 30px;">
-                <col style="width: 45%;">
-                <col style="width: 50%;">
-            </colgroup>
+            <table id="page3table" class="border" style="font-size: 10pt; width: 100%; table-layout: fixed;">
+                <colgroup>
+                    <col style="width: 5%;">
+                    <col style="width: 37%;">
+                    <col style="width: 58%;">
+                </colgroup>
 
-            <!-- I -->
-            <tr>
-                <td colspan="2" class="border"></td>
-                <td class="border" style="padding: 1px 1px 1px 5px; vertical-align: top;">
-                    <table style="width: 100%; border: none;">
-                        <tr>
-                            <td style="width: 35%; white-space: nowrap;">I. Berangkat dari</td>
-                            <td style="width: 2%;">:</td>
-                            <td style="width: 63%; white-space: nowrap;">(tempat kedudukan)</td>
-                        </tr>
-                        <tr>
-                            <td style="white-space: nowrap;">&nbsp;&nbsp;&nbsp;(tempat kedudukan)</td>
-                            <td>:</td>
-                            <td>{{ $data['tempat_berangkat'] }}</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;&nbsp;&nbsp;Ke</td>
-                            <td>:</td>
-                            <td>{!! nl2br(e($data['tempat'])) !!}</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;&nbsp;&nbsp;Pada Tanggal</td>
-                            <td>:</td>
-                            <td>{{ $data['tgl_berangkat'] }}</td>
-                        </tr>
-                    </table>
-                    <br>
-                    <div style="margin-left: 20px;">
-                        <div>Kepala Sub Bagian Umum,</div>
-                        <div>Selaku Pejabat Pelaksana Teknis Kegiatan</div>
-                        <div>Sekretariat</div>
-                        <br><br>
-                        <div>(NOVAN DEKA SETYA G, S.S.T.P., M.M)</div>
-                        <div>NIP. 19901113 201507 1 001</div>
-                    </div>
-                </td>
-            </tr>
-
-            <!-- II, III, IV, V -->
-            @foreach(['II', 'III', 'IV', 'V'] as $romawi)
+                <!-- I -->
                 <tr>
-                    <td rowspan="3" class="border center" style="vertical-align: top;">{{ $romawi }}</td>
-                    <td class="border" style="padding: 1px 1px 1px 5px; vertical-align: top;">Tiba :</td>
-                    <td class="border" style="padding: 1px 1px 1px 5px; vertical-align: top;">Berangkat dari :</td>
-                </tr>
-                <tr>
-                    <td class="border" style="padding: 1px 1px 1px 5px; vertical-align: top;">Pada tanggal :</td>
-                    <td class="border" style="padding: 1px 1px 1px 5px; vertical-align: top;">Pada tanggal :</td>
-                </tr>
-                <tr>
-                    <td class="border" style="padding: 1px 1px 1px 5px; vertical-align: top; height: 50px;">
-                        <div>Kepala .......................................</div>
-                        <br><br>
-                        <div>(...................................................)</div>
-                        <div>NIP.</div>
-                    </td>
-                    <td class="border" style="padding: 1px 1px 1px 5px; vertical-align: top; height: 50px;">
-                        <div>Kepala .......................................</div>
-                        <br><br>
-                        <div>(...................................................)</div>
-                        <div>NIP.</div>
+                    <td class="border center" style="vertical-align: top; width: 5%;"></td>
+                    <td class="border" style="width: 37%;"></td>
+                    <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top; width: 58%;">
+                        <table style="width: 100%; border: none; font-size: 10pt; border-collapse: collapse;"
+                            cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td
+                                    style="width: 3%; white-space: nowrap; padding: 0px 0px 0px 5px; margin: 0px; mso-padding-alt: 0pt 0pt 0pt 5pt; vertical-align: top;">
+                                    I.</td>
+                                <td
+                                    style="width: 42%; white-space: nowrap; padding: 0px 0px 0px 10px; margin: 0px; mso-padding-alt: 0pt 0pt 0pt 10pt; vertical-align: top;">
+                                    Berangkat dari</td>
+                                <td style="width: 2%; vertical-align: top;">:</td>
+                                <td style="width: 53%; vertical-align: top;">{{ $data['tempat_berangkat'] }}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td
+                                    style="white-space: nowrap; padding: 0px 0px 0px 10px; mso-padding-alt: 0pt 0pt 0pt 10pt; vertical-align: top;">
+                                    (tempat kedudukan)</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td
+                                    style="padding: 0px 0px 0px 10px; mso-padding-alt: 0pt 0pt 0pt 10pt; vertical-align: top;">
+                                    Ke</td>
+                                <td>:</td>
+                                <td>{!! nl2br(e($data['tempat'])) !!}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td
+                                    style="padding: 0px 0px 0px 10px; mso-padding-alt: 0pt 0pt 0pt 10pt; vertical-align: top;">
+                                    Pada Tanggal</td>
+                                <td>:</td>
+                                <td>{{ $data['tgl_berangkat'] }}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="3"
+                                    style="padding: 0px 0px 0px 10px; margin: 0px; text-align: left; vertical-align: top; mso-padding-alt: 0pt 0pt 0pt 10pt; text-indent: 0px;">
+                                    Kepala Sub Bagian Umum,<br>Selaku Pejabat Pelaksana Teknis
+                                    Kegiatan<br>Sekretariat<br><br><br><span
+                                        style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">(NOVAN DEKA
+                                        SETYA G, S.S.T.P., M.M)</span><br>NIP. 19901113 201507 1 001</td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
-            @endforeach
 
-            <!-- VI -->
-            <tr>
-                <td rowspan="3" class="border center" style="vertical-align: top;">VI</td>
-                <td class="border" style="padding: 1px 1px 1px 5px; vertical-align: top;">Tiba : di Karanganyar</td>
-                <td rowspan="2" class="border justify" style="padding: 1px 1px 1px 5px; vertical-align: top;">
-                    SPD telah diperiksa dengan keterangan bahwa perjalanan tersebut di atas benar dilakukan atas
-                    perintah sesuai dengan kepentingan jabatan dan dilaksanakan dalam waktu yang sesingkat-singkatnya.
-                </td>
-            </tr>
-            <tr>
-                <td class="border" style="padding: 1px 1px 1px 5px; vertical-align: top;">
-                    Pada tanggal : {{ $data['tgl_kembali'] }}
-                </td>
-            </tr>
-            <tr>
-                <td class="border" style="padding: 1px 1px 1px 5px; vertical-align: top;">
-                    <div>Kepala Badan Keuangan Daerah</div>
-                    <br><br>
-                    <div>({{ $signatory['nama'] }})</div>
-                    <div>NIP. {{ $signatory['nip'] }}</div>
-                </td>
-                <td class="border" style="padding: 5px;"></td>
-            </tr>
+                <!-- II, III, IV, V -->
+                @foreach(['II', 'III', 'IV', 'V'] as $romawi)
+                    <tr>
+                        <td rowspan="3" class="border" style="vertical-align: top; padding-left: 5px;">{{ $romawi }}</td>
+                        <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">Tiba :</td>
+                        <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">Berangkat dari :</td>
+                    </tr>
+                    <tr>
+                        <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">Pada tanggal :</td>
+                        <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">Pada tanggal :</td>
+                    </tr>
+                    <tr>
+                        <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top; height: 35px;">
+                            <div>Kepala .......................................</div>
+                            <br><br>
+                            <div>(...................................................)</div>
+                            <div>NIP.</div>
+                        </td>
+                        <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top; height: 35px;">
+                            <div>Kepala .......................................</div>
+                            <br><br>
+                            <div>(...................................................)</div>
+                            <div>NIP.</div>
+                        </td>
+                    </tr>
+                @endforeach
 
-            <!-- VII -->
-            <tr>
-                <td class="border center">VII</td>
-                <td colspan="2" class="border" style="padding: 2px 2px 2px 5px;">
-                    Catatan Lain Lain
-                </td>
-            </tr>
+                <!-- VI -->
+                <tr>
+                    <td rowspan="3" class="border center" style="vertical-align: top;">VI</td>
+                    <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top; height: 1px;">Tiba : di
+                        Karanganyar</td>
+                    <td rowspan="3" class="border justify" style="padding: 2px 2px 2px 5px; vertical-align: top;">
+                        SPD telah diperiksa dengan keterangan bahwa perjalanan tersebut di atas benar dilakukan atas
+                        perintah sesuai dengan kepentingan jabatan dan dilaksanakan dalam waktu yang
+                        sesingkat-singkatnya.
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top; height: 1px;">
+                        Pada tanggal : {{ $data['tgl_kembali'] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">
+                        <div>Kepala Badan Keuangan Daerah</div>
+                        <br><br><br><br>
+                        <div style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">
+                            ({{ $signatory['nama'] }})
+                        </div>
+                        <div>NIP. {{ $signatory['nip'] }}</div>
+                    </td>
+                </tr>
 
-            <!-- VIII -->
-            <tr>
-                <td class="border center">VIII</td>
-                <td colspan="2" class="border justify" style="padding: 2px 2px 2px 5px;">
-                    <div class="bold">PERHATIAN :</div>
-                    Pengguna anggaran/kuasa pengguna anggaran yang menerbitkan SPD, pejabat/pegawai/pihak lain yang
-                    melakukan perjalanan dinas, pejabat yang mengesahkan tanggal berangkat/tiba, serta bendahara
-                    pengeluaran bertanggung jawab berdasarkan peraturan-peraturan keuangan daerah apabila negara
-                    menderita rugi akibat kesalahan, kelalaian, dan kealpaannya.
-                </td>
-            </tr>
-        </table>
+                <!-- VII -->
+                <tr>
+                    <td class="border center">VII</td>
+                    <td colspan="2" class="border" style="padding: 2px 2px 2px 5px;">
+                        Catatan Lain Lain
+                    </td>
+                </tr>
 
+                <!-- VIII -->
+                <tr>
+                    <td class="border center">VIII</td>
+                    <td colspan="2" class="border justify" style="padding: 2px 2px 2px 5px;">
+                        <div class="bold">PERHATIAN :</div>
+                        Pengguna anggaran/kuasa pengguna anggaran yang menerbitkan SPD, pejabat/pegawai/pihak lain yang
+                        melakukan perjalanan dinas, pejabat yang mengesahkan tanggal berangkat/tiba, serta bendahara
+                        pengeluaran bertanggung jawab berdasarkan peraturan-peraturan keuangan daerah apabila negara
+                        menderita rugi akibat kesalahan, kelalaian, dan kealpaannya.
+                    </td>
+                </tr>
+
+            </table>
+        </div>
     </div>
 </body>
 
