@@ -424,8 +424,20 @@
                         b. Tempat Tujuan
                     </td>
                     <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                        a. {{ $data['tempat_berangkat'] }}<br>
-                        b. {!! nl2br(e($data['tempat'])) !!}
+                        <table style="width: 100%; border: none; border-collapse: collapse; margin: 0; padding: 0;">
+                            <tr>
+                                <td style="width: 20px; border: none; padding: 0 0 0 5px; vertical-align: top;">a.</td>
+                                <td style="border: none; padding: 0; vertical-align: top;">
+                                    {{ $data['tempat_berangkat'] }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px; border: none; padding: 0 0 0 5px; vertical-align: top;">b.</td>
+                                <td style="border: none; padding: 0; vertical-align: top;">
+                                    {!! nl2br(e($data['tempat'])) !!}
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
                 <tr>
@@ -447,7 +459,7 @@
                     <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
                         @if($selectedPegawais->count() > 1)
                             @foreach($selectedPegawais->slice(1) as $index => $pengikut)
-                                {{ $loop->iteration }}. {{ $pengikut->nama }}, {{ $pengikut->pangkat_gol }}<br>
+                                {{ $loop->iteration }}. {{ $pengikut->nama }}<br>
                             @endforeach
                         @else
 
@@ -487,9 +499,10 @@
     </div>
 
     <!-- HALAMAN 3: VISAS -->
-    <div class="page" style="page-break-before: always; font-family: Arial, Helvetica, sans-serif;">
+    <div class="page"
+        style="page-break-before: always; font-family: Arial, Helvetica, sans-serif; padding: 1.27cm 1.0cm 0.3cm 2.0cm;">
         <table
-            style="width: 100%; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; border: 1px solid black;">
+            style="width: 100%; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; border: 1px solid black; table-layout: fixed;">
             <colgroup>
                 <col style="width: 5%; border: 1px solid black;">
                 <col style="width: 37%; border: 1px solid black;">
@@ -500,14 +513,15 @@
             <tr style="height: 140px;">
                 <td colspan="2" style="border: 1px solid black;"></td>
                 <td style="border: 1px solid black; vertical-align: top; padding: 5px;">
-                    <table style="width: 100%; border: none; font-size: 9pt;">
+                    <table style="width: 100%; border: none; font-size: 10pt;">
                         <tr>
                             <td style="width: 3%; vertical-align: top; white-space: nowrap; padding-left: 5px;">I.</td>
                             <td style="width: 42%; vertical-align: top; white-space: nowrap; padding-left: 10px;">
                                 Berangkat dari</td>
                             <td style="width: 2%; vertical-align: top;">:</td>
                             <td style="width: 53%; vertical-align: top; white-space: nowrap;">
-                                {{ $data['tempat_berangkat'] }}</td>
+                                {{ $data['tempat_berangkat'] }}
+                            </td>
                         </tr>
                         <tr>
                             <td></td>
@@ -558,16 +572,24 @@
                     <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">Pada tanggal :</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 80px;">
+                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
+                    <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>Kepala .......................................</div>
-                        <div style="margin-top: 35px;">(...................................................)</div>
-                        <div>NIP.</div>
-                    </td>
-                    <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 80px;">
+                        <div>
+                            <div>(...................................................)</div>
+                            <div>NIP.</div>
+                        </div>
+                    </div>
+                </td>
+                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
+                    <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>Kepala .......................................</div>
-                        <div style="margin-top: 35px;">(...................................................)</div>
-                        <div>NIP.</div>
-                    </td>
+                        <div>
+                            <div>(...................................................)</div>
+                            <div>NIP.</div>
+                        </div>
+                    </div>
+                </td>
                 </tr>
             @endforeach
 
@@ -575,34 +597,37 @@
             <tr>
                 <td rowspan="3" style="border: 1px solid black; vertical-align: top; padding-left: 5px;">
                     VI</td>
-                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 10px;">Tiba : di
+                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 1px;">Tiba :
+                    di
                     Karanganyar</td>
-                <td rowspan="2"
+                <td rowspan="3"
                     style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; text-align: justify;">
                     SPD telah diperiksa dengan keterangan bahwa perjalanan tersebut di atas benar dilakukan atas
                     perintah sesuai dengan kepentingan jabatan dan dilaksanakan dalam waktu yang sesingkat-singkatnya.
                 </td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 10px;">
+                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 1px;">
                     Pada tanggal : {{ $data['tgl_kembali'] }}
                 </td>
             </tr>
             <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 10px;">
-                    <div>Kepala Badan Keuangan Daerah</div>
-                    <br><br><br><br>
-                    <div style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">
-                        ({{ $signatory['nama'] }})
+                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
+                    <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>Kepala Badan Keuangan Daerah</div>
+                        <div>
+                            <div style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">
+                                ({{ $signatory['nama'] }})
+                            </div>
+                            <div>NIP. {{ $signatory['nip'] }}</div>
+                        </div>
                     </div>
-                    <div>NIP. {{ $signatory['nip'] }}</div>
                 </td>
-                <td style="border: 1px solid black; vertical-align: top; padding: 5px;"></td>
             </tr>
 
             <!-- ROW VII -->
             <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding: 1px; text-align: center;">VII</td>
+                <td style="border: 1px solid black; vertical-align: top; padding-left: 5px;">VII</td>
                 <td colspan="2" style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">
                     Catatan Lain Lain
                 </td>
@@ -610,7 +635,7 @@
 
             <!-- ROW VIII -->
             <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding: 1px; text-align: center;">VIII</td>
+                <td style="border: 1px solid black; vertical-align: top; padding-left: 5px;">VIII</td>
                 <td colspan="2"
                     style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; text-align: justify;">
                     <div style="font-weight: bold;">PERHATIAN :</div>

@@ -406,9 +406,16 @@ if (file_exists($path)) {
                                 a. Tempat Berangkat<br>
                                 b. Tempat Tujuan
                             </td>
-                            <td class="border" style="padding: 5px; vertical-align: top;">
-                                a. {{ $data['tempat_berangkat'] }}<br>
-                                b. {!! nl2br(e($data['tempat'])) !!}
+                                <table style="width: 100%; border: none; border-collapse: collapse; margin: 0; padding: 0;">
+                                    <tr>
+                                        <td style="width: 20px; border: none; padding: 0 0 0 5px; vertical-align: top;">a.</td>
+                                        <td style="border: none; padding: 0; vertical-align: top;">{{ $data['tempat_berangkat'] }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 20px; border: none; padding: 0 0 0 5px; vertical-align: top;">b.</td>
+                                        <td style="border: none; padding: 0; vertical-align: top;">{!! nl2br(e($data['tempat'])) !!}</td>
+                                    </tr>
+                                </table>
                             </td>
                         </tr>
                         <tr>
@@ -430,7 +437,7 @@ if (file_exists($path)) {
                             <td class="border" style="padding: 5px; vertical-align: top;">
                                 @if ($selectedPegawais->count() > 1)
                                     @foreach ($selectedPegawais->slice(1) as $index => $pengikut)
-                                        {{ $loop->iteration }}. {{ $pengikut->nama }}, {{ $pengikut->pangkat_gol }}<br>
+                                        {{ $loop->iteration }}. {{ $pengikut->nama }}<br>
                                     @endforeach
                                 @else
                                     -
@@ -478,8 +485,9 @@ if (file_exists($path)) {
         <!-- ========================================== -->
         <!-- HALAMAN 3: SPD BELAKANG (VISAS) -->
         <!-- ========================================== -->
-        <br clear=all style='page-break-before:always; mso-break-type:section-break'>
-        <div class="Section2">
+    </div>
+    <br clear=all style='page-break-before:always; mso-break-type:section-break'>
+    <div class="Section2">
 
             <table id="page3table" class="border" style="font-size: 10pt; width: 100%; table-layout: fixed;">
                 <colgroup>
@@ -554,15 +562,15 @@ if (file_exists($path)) {
                         <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">Pada tanggal :</td>
                     </tr>
                     <tr>
-                        <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top; height: 35px;">
+                        <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">
                             <div>Kepala .......................................</div>
-                            <br><br>
+                            <br><br><br>
                             <div>(...................................................)</div>
                             <div>NIP.</div>
                         </td>
-                        <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top; height: 35px;">
+                        <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">
                             <div>Kepala .......................................</div>
-                            <br><br>
+                            <br><br><br>
                             <div>(...................................................)</div>
                             <div>NIP.</div>
                         </td>
@@ -571,7 +579,7 @@ if (file_exists($path)) {
 
                 <!-- VI -->
                 <tr>
-                    <td rowspan="3" class="border center" style="vertical-align: top;">VI</td>
+                    <td rowspan="3" class="border" style="vertical-align: top; padding-left: 5px;">VI</td>
                     <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top; height: 1px;">Tiba : di
                         Karanganyar</td>
                     <td rowspan="3" class="border justify" style="padding: 2px 2px 2px 5px; vertical-align: top;">
@@ -598,7 +606,7 @@ if (file_exists($path)) {
 
                 <!-- VII -->
                 <tr>
-                    <td class="border center">VII</td>
+                    <td class="border" style="padding-left: 5px; vertical-align: top;">VII</td>
                     <td colspan="2" class="border" style="padding: 2px 2px 2px 5px;">
                         Catatan Lain Lain
                     </td>
@@ -606,7 +614,7 @@ if (file_exists($path)) {
 
                 <!-- VIII -->
                 <tr>
-                    <td class="border center">VIII</td>
+                    <td class="border" style="padding-left: 5px; vertical-align: top;">VIII</td>
                     <td colspan="2" class="border justify" style="padding: 2px 2px 2px 5px;">
                         <div class="bold">PERHATIAN :</div>
                         Pengguna anggaran/kuasa pengguna anggaran yang menerbitkan SPD, pejabat/pegawai/pihak lain yang
@@ -618,7 +626,7 @@ if (file_exists($path)) {
 
             </table>
         </div>
-    </div>
+
 </body>
 
 </html>
