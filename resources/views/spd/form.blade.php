@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input SPD & SPT</title>
+    <title>Input SPD</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -137,7 +137,7 @@
                 </div>
                 <div class="form-group">
                     <label>Tanggal Surat</label>
-                    <input type="text" name="tanggal_surat" value="{{ now()->locale('id')->isoFormat('D MMMM Y') }}"
+                    <input type="date" name="tanggal_surat" value="{{ now()->format('Y-m-d') }}"
                         required>
                 </div>
             </div>
@@ -160,12 +160,12 @@
             <div class="grid">
                 <div class="form-group">
                     <label>Hari</label>
-                    <input type="text" name="hari" value="Senin" required>
+                    <input type="text" id="hari" name="hari" value="{{ now()->locale('id')->isoFormat('dddd') }}" required readonly style="background-color: var(--gray-200);">
                 </div>
                 <div class="form-group">
                     <label>Tanggal Kegiatan</label>
-                    <input type="text" name="tanggal_kegiatan" value="{{ now()->locale('id')->isoFormat('D MMMM Y') }}"
-                        required>
+                    <input type="date" id="tanggal_kegiatan" name="tanggal_kegiatan" value="{{ now()->format('Y-m-d') }}"
+                        required oninput="updateDay()">
                 </div>
             </div>
 
@@ -198,14 +198,14 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             <div class="grid">
                 <div class="form-group">
                     <label>Tanggal Berangkat</label>
-                    <input type="text" id="tgl_berangkat" name="tgl_berangkat"
-                        value="{{ now()->locale('id')->isoFormat('D MMMM Y') }}" required
+                    <input type="date" id="tgl_berangkat" name="tgl_berangkat"
+                        value="{{ now()->format('Y-m-d') }}" required
                         oninput="calculateReturnDate()">
                 </div>
                 <div class="form-group">
                     <label>Tanggal Harus Kembali</label>
-                    <input type="text" id="tgl_kembali" name="tgl_kembali"
-                        value="{{ now()->locale('id')->isoFormat('D MMMM Y') }}" required readonly
+                    <input type="date" id="tgl_kembali" name="tgl_kembali"
+                        value="{{ now()->format('Y-m-d') }}" required readonly
                         style="background-color: var(--gray-200); cursor: not-allowed;">
                 </div>
             </div>
@@ -213,6 +213,14 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             <div class="form-group">
                 <label>Pembebanan Anggaran (SKPD)</label>
                 <input type="text" name="anggaran_skpd" value="Badan Keuangan Daerah" required>
+            </div>
+
+            <div class="form-group">
+                <label>Penandatangan Surat</label>
+                <select name="penandatangan" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-200); border-radius: 0.375rem;">
+                    <option value="kepala">Kepala Badan Keuangan Daerah</option>
+                    <option value="sekretaris">Sekretaris (a.n. Kepala Badan)</option>
+                </select>
             </div>
 
             <div style="display: flex; gap: 1rem;">
@@ -251,50 +259,60 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             wrapper.appendChild(newRow);
         }
 
-        const months = [
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        ];
-
         function calculateReturnDate() {
             const durationInput = document.getElementById('lama_perjalanan').value;
             const startDateInput = document.getElementById('tgl_berangkat').value;
             const returnDateInput = document.getElementById('tgl_kembali');
 
-            // 1. Parse Duration (direct number)
+            // 1. Parse Duration
             const duration = parseInt(durationInput);
 
             if (isNaN(duration) || duration < 1) {
                 return;
             }
 
-            // 2. Parse Start Date (Format: "D MMMM Y") e.g. "8 Januari 2026"
-            const parts = startDateInput.split(' ');
-            if (parts.length < 3) return; // invalid format
-
-            const day = parseInt(parts[0]);
-            const monthName = parts[1];
-            const year = parseInt(parts[2]);
-            const monthIndex = months.indexOf(monthName);
-
-            if (isNaN(day) || monthIndex === -1 || isNaN(year)) return;
-
-            // Create Date Object
-            const startDate = new Date(year, monthIndex, day);
+            // 2. Parse Start Date (YYYY-MM-DD)
+            if (!startDateInput) return;
+            
+            const startDate = new Date(startDateInput);
 
             // 3. Calculate Return Date
-            // Logic: Duration 1 day means return same day. Duration 2 days means return next day.
-            // So add (duration - 1) days.
             const returnDate = new Date(startDate);
             returnDate.setDate(startDate.getDate() + (duration - 1));
 
-            // 4. Format back to Indonesian
-            const rDay = returnDate.getDate();
-            const rMonth = months[returnDate.getMonth()];
+            // 4. Format Output to YYYY-MM-DD
+            // toISOString() returns "YYYY-MM-DDTHH:mm:ss.sssZ"
+            // We splits at T to get the date part.
+            // CAUTION: toISOString uses UTC. If local time is significantly different, this might be off.
+            // Better to manually construct YYYY-MM-DD string to avoid timezone issues.
+            
             const rYear = returnDate.getFullYear();
-
-            returnDateInput.value = `${rDay} ${rMonth} ${rYear}`;
+            const rMonth = String(returnDate.getMonth() + 1).padStart(2, '0');
+            const rDay = String(returnDate.getDate()).padStart(2, '0');
+            
+            returnDateInput.value = `${rYear}-${rMonth}-${rDay}`;
         }
+
+        function updateDay() {
+            const dateInput = document.getElementById('tanggal_kegiatan');
+            const dayInput = document.getElementById('hari');
+            
+            if (!dateInput.value) return;
+
+            const date = new Date(dateInput.value);
+            if (isNaN(date.getTime())) return;
+
+            // Get Day Name in Indonesian
+            const options = { weekday: 'long' };
+            const dayName = date.toLocaleDateString('id-ID', options);
+            
+            dayInput.value = dayName;
+        }
+
+        // Initialize Day on Load
+        window.addEventListener('DOMContentLoaded', (event) => {
+            updateDay();
+        });
     </script>
 </body>
 

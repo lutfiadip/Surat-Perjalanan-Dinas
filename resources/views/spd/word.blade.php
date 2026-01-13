@@ -273,13 +273,7 @@ if (file_exists($path)) {
                         <tr>
                             <td style="width: 50%;"></td>
                             <td style="width: 50%;">
-                                <br>
-                                {{ $data['tanggal_surat'] }}<br>
-                                Kepala Badan Keuangan Daerah
-                                <br><br><br><br><br>
-                                <div>{{ $signatory['nama'] }}</div>
-                                <div>{{ $signatory['pangkat'] }}</div>
-                                <div>NIP. {{ $signatory['nip'] }}</div>
+                                {!! $signatory['full_signature_page1'] !!}
                             </td>
                         </tr>
                     </table>
@@ -542,7 +536,7 @@ if (file_exists($path)) {
                                 <td colspan="3"
                                     style="padding: 0px 0px 0px 10px; margin: 0px; text-align: left; vertical-align: top; mso-padding-alt: 0pt 0pt 0pt 10pt; text-indent: 0px;">
                                     Kepala Sub Bagian Umum,<br>Selaku Pejabat Pelaksana Teknis
-                                    Kegiatan<br>Sekretariat<br><br><br><span
+                                    Kegiatan<br>Sekretariat<br><br><br><br><span
                                         style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">(NOVAN DEKA
                                         SETYA G, S.S.T.P., M.M)</span><br>NIP. 19901113 201507 1 001</td>
                             </tr>
@@ -595,8 +589,8 @@ if (file_exists($path)) {
                 </tr>
                 <tr>
                     <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">
-                        <div>Kepala Badan Keuangan Daerah</div>
-                        <br><br><br><br>
+                        <div>{!! $signatory['jabatan_head_page3'] !!}</div>
+                        <br><br><br>
                         <div style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">
                             ({{ $signatory['nama'] }})
                         </div>

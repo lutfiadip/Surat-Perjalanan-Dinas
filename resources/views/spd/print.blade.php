@@ -307,12 +307,8 @@
 
             <div class="signature-container">
                 <div style="margin-bottom: 20mm;">
-                    {{ $data['tanggal_surat'] }}<br>
-                    Kepala Badan Keuangan Daerah
+                    {!! $signatory['full_signature_page1'] !!}
                 </div>
-                <div>{{ $signatory['nama'] }}</div>
-                <div>{{ $signatory['pangkat'] }}</div>
-                <div>NIP. {{ $signatory['nip'] }}</div>
             </div>
         </div>
 
@@ -614,7 +610,7 @@
             <tr>
                 <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
                     <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>Kepala Badan Keuangan Daerah</div>
+                        <div>{!! $signatory['jabatan_head_page3'] !!}</div>
                         <div>
                             <div style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">
                                 ({{ $signatory['nama'] }})
