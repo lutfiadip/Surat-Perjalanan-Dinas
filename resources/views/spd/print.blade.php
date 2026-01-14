@@ -186,7 +186,7 @@
                 height: auto;
                 min-height: 0;
                 margin: 0;
-                padding: 10mm 15mm;
+                padding: 15mm 20mm;
                 box-shadow: none;
                 border: none;
                 overflow: hidden;
@@ -223,18 +223,22 @@
                 <div style="flex: 1; text-align: left; padding-left: 5px;">{{ $data['nomor_surat'] }}</div>
             </div>
 
-            <div style="text-align: center; font-weight: normal; margin-bottom: 5px;">Kepala Badan Keuangan Daerah</div>
+            <div style="text-align: center; font-weight: normal; margin-bottom: 0px;">Kepala Badan Keuangan Daerah</div>
 
             <div class="section-row">
-                <div class="label-col">Berdasarkan</div>
+                <div class="label-col" style="width: 100px;">Berdasarkan</div>
                 <div class="colon-col">:</div>
-                <div class="value-col">{!! str_replace('Nomor:', '<br>Nomor:', $data['dasar_surat']) !!}</div>
+                <div class="value-col">
+                    <div style="text-align: justify; text-align-last: justify;">
+                        {!! str_replace('Nomor:', '</div><div style="text-align: justify; text-align-last: left;">Nomor:', $data['dasar_surat']) !!}
+                    </div>
+                </div>
             </div>
 
             <div style="text-align: center; margin: 10px 0;">memberikan perintah</div>
 
             <div class="section-row">
-                <div class="label-col">Kepada</div>
+                <div class="label-col" style="width: 60px;">Kepada</div>
                 <div class="colon-col">:</div>
                 <div class="value-col">
                     @foreach($selectedPegawais as $index => $pegawai)
@@ -268,7 +272,7 @@
             </div>
 
             <div class="section-row">
-                <div class="label-col">Untuk</div>
+                <div class="label-col" style="width: 60px;">Untuk</div>
                 <div class="colon-col">:</div>
                 <div class="value-col">
                     <div class="untuk-item">
@@ -388,17 +392,62 @@
                         {{ $selectedPegawais->first()->nip }}
                     </td>
                 </tr>
+                <!-- Row 3a: Pangkat -->
                 <tr>
-                    <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">3</td>
-                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                        a. Pangkat dan Golongan<br>
-                        b. Jabatan / Instansi<br>
-                        c. Tingkat Biaya Perjalanan Dinas
+                    <td rowspan="3" style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">3</td>
+                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: none; padding: 5px 5px 0 5px;">
+                        <table style="width: 100%; border: none; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20px; border: none; vertical-align: top; padding: 0;">a.</td>
+                                <td style="border: none; vertical-align: top; padding: 0;">Pangkat dan Golongan</td>
+                            </tr>
+                        </table>
                     </td>
-                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                        a. {{ $selectedPegawais->first()->pangkat_gol }}<br>
-                        b. {{ $selectedPegawais->first()->jabatan }}<br>
-                        c.
+                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: none; padding: 5px 5px 0 5px;">
+                        <table style="width: 100%; border: none; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20px; border: none; vertical-align: top; padding: 0;">a.</td>
+                                <td style="border: none; vertical-align: top; padding: 0;">{{ $selectedPegawais->first()->pangkat_gol }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <!-- Row 3b: Jabatan (Syncs height if wrapped) -->
+                <tr>
+                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: none; padding: 0 5px 0 5px;">
+                        <table style="width: 100%; border: none; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20px; border: none; vertical-align: top; padding: 0;">b.</td>
+                                <td style="border: none; vertical-align: top; padding: 0;">Jabatan / Instansi</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: none; padding: 0 5px 0 5px;">
+                        <table style="width: 100%; border: none; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20px; border: none; vertical-align: top; padding: 0;">b.</td>
+                                <td style="border: none; vertical-align: top; padding: 0;">{{ $selectedPegawais->first()->jabatan }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <!-- Row 3c: Tingkat Biaya -->
+                <tr>
+                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: 1px solid black; padding: 0 5px 5px 5px;">
+                        <table style="width: 100%; border: none; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20px; border: none; vertical-align: top; padding: 0;">c.</td>
+                                <td style="border: none; vertical-align: top; padding: 0;">Tingkat Biaya Perjalanan Dinas</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: 1px solid black; padding: 0 5px 5px 5px;">
+                        <table style="width: 100%; border: none; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 20px; border: none; vertical-align: top; padding: 0;">c.</td>
+                                <td style="border: none; vertical-align: top; padding: 0;"></td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
                 <tr>
@@ -568,24 +617,24 @@
                     <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">Pada tanggal :</td>
                 </tr>
                 <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
-                    <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>Kepala .......................................</div>
-                        <div>
-                            <div>(...................................................)</div>
-                            <div>NIP.</div>
+                    <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
+                        <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>Kepala .......................................</div>
+                            <div>
+                                <div>(...................................................)</div>
+                                <div>NIP.</div>
+                            </div>
                         </div>
-                    </div>
-                </td>
-                <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
-                    <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>Kepala .......................................</div>
-                        <div>
-                            <div>(...................................................)</div>
-                            <div>NIP.</div>
+                    </td>
+                    <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
+                        <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>Kepala .......................................</div>
+                            <div>
+                                <div>(...................................................)</div>
+                                <div>NIP.</div>
+                            </div>
                         </div>
-                    </div>
-                </td>
+                    </td>
                 </tr>
             @endforeach
 
