@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Input SPD</title>
+    <!-- jQuery & Select2 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -95,6 +99,29 @@
             color: #6b7280;
             margin-top: 0.25rem;
         }
+
+        /* Select2 Customization */
+        .select2-container .select2-selection--single {
+            height: 45px !important;
+            padding: 8px 10px;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 43px !important;
+            right: 10px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 28px !important;
+            padding-left: 0;
+            color: var(--gray-900);
+        }
+
+        .select2-container {
+            flex: 1;
+        }
     </style>
 </head>
 
@@ -106,12 +133,11 @@
         <form id="spdForm" action="{{ route('spd.print') }}" method="POST">
             @csrf
 
-            <!-- PEGAWAI SELECTION -->
             <div class="form-group">
                 <label>Pilih Pegawai</label>
                 <div id="pegawai-wrapper">
                     <div class="pegawai-row" style="margin-bottom: 10px; display: flex; gap: 10px;">
-                        <select name="pegawai_ids[]" required style="flex: 1;">
+                        <select name="pegawai_ids[]" required style="flex: 1;" class="select2-pegawai">
                             <option value="">-- Pilih Pegawai Utama --</option>
                             @foreach($pegawais as $pegawai)
                                 <option value="{{ $pegawai->id }}">
@@ -125,47 +151,47 @@
                     style="background-color: #10b981; width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">
                     + Tambah Pengikut
                 </button>
-                <p class="multi-select-note" style="margin-top: 10px;">Pegawai pertama adalah Pegawai Utama/Ketua,
+                <p class="multi-select-note" style="margin-top: 10px;">Pegawai pertama adalah Pegawai Utama,
                     selanjutnya adalah Pengikut.</p>
             </div>
 
-            <!-- NOMOR SURAT -->
-            <div class="grid">
+            <div class="grid" style="grid-template-columns: 1fr 1fr 1fr;">
                 <div class="form-group">
                     <label>Nomor Surat</label>
                     <input type="text" name="nomor_surat" placeholder="contoh: 094 / 123 / XII / 2025" required>
                 </div>
                 <div class="form-group">
                     <label>Tanggal Surat</label>
-                    <input type="date" name="tanggal_surat" value="{{ now()->format('Y-m-d') }}"
-                        required>
+                    <input type="date" name="tanggal_surat" value="{{ now()->format('Y-m-d') }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Tahun Anggaran</label>
+                    <input type="number" name="tahun_anggaran" value="{{ date('Y') }}" required>
                 </div>
             </div>
 
-            <!-- DASAR SURAT -->
             <div class="form-group">
                 <label>Dasar Surat (Untuk Konsiderans "Berdasarkan")</label>
                 <textarea name="dasar_surat" rows="2"
                     placeholder="Contoh: Surat dari Badan Pengelola... Nomor: ... perihal ...">Surat dari Badan Pengelola Pendapatan Daerah Provinsi Jawa Tengah Nomor: 100.2.2.3/599/BAPENDA/2025 perihal Rekonsiliasi Opsen Pajak Daerah.</textarea>
             </div>
 
-            <!-- UNTUK / MAKSUD -->
             <div class="form-group">
                 <label>Untuk (Maksud Perjalanan Dinas)</label>
                 <textarea name="maksud" rows="2" required
                     placeholder="Contoh: Menghadiri Rekonsiliasi Opsen Pajak Daerah">Menghadiri Rekonsiliasi Opsen Pajak Daerah</textarea>
             </div>
 
-            <!-- JADWAL DAN LOKASI -->
             <div class="grid">
                 <div class="form-group">
                     <label>Hari</label>
-                    <input type="text" id="hari" name="hari" value="{{ now()->locale('id')->isoFormat('dddd') }}" required readonly style="background-color: var(--gray-200);">
+                    <input type="text" id="hari" name="hari" value="{{ now()->locale('id')->isoFormat('dddd') }}"
+                        required readonly style="background-color: var(--gray-200);">
                 </div>
                 <div class="form-group">
                     <label>Tanggal Kegiatan</label>
-                    <input type="date" id="tanggal_kegiatan" name="tanggal_kegiatan" value="{{ now()->format('Y-m-d') }}"
-                        required oninput="updateDay()">
+                    <input type="date" id="tanggal_kegiatan" name="tanggal_kegiatan"
+                        value="{{ now()->format('Y-m-d') }}" required oninput="updateDay()">
                 </div>
             </div>
 
@@ -177,6 +203,11 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
 
             <hr style="margin: 2rem 0; border: 0; border-top: 2px solid var(--gray-200);">
             <h3>Detail SPD</h3>
+
+            <div class="form-group">
+                <label>Tingkat Biaya Perjalanan Dinas</label>
+                <input type="text" name="tingkat_biaya" placeholder="Kosongkan jika tidak ada">
+            </div>
 
             <div class="grid">
                 <div class="form-group">
@@ -198,28 +229,38 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             <div class="grid">
                 <div class="form-group">
                     <label>Tanggal Berangkat</label>
-                    <input type="date" id="tgl_berangkat" name="tgl_berangkat"
-                        value="{{ now()->format('Y-m-d') }}" required
-                        oninput="calculateReturnDate()">
+                    <input type="date" id="tgl_berangkat" name="tgl_berangkat" value="{{ now()->format('Y-m-d') }}"
+                        required oninput="calculateReturnDate()">
                 </div>
                 <div class="form-group">
                     <label>Tanggal Harus Kembali</label>
-                    <input type="date" id="tgl_kembali" name="tgl_kembali"
-                        value="{{ now()->format('Y-m-d') }}" required readonly
-                        style="background-color: var(--gray-200); cursor: not-allowed;">
+                    <input type="date" id="tgl_kembali" name="tgl_kembali" value="{{ now()->format('Y-m-d') }}" required
+                        readonly style="background-color: var(--gray-200); cursor: not-allowed;">
+                </div>
+            </div>
+
+            <div class="grid">
+                <div class="form-group">
+                    <label>Pembebanan Anggaran (SKPD)</label>
+                    <input type="text" name="anggaran_skpd" value="Badan Keuangan Daerah" required>
+                </div>
+                <div class="form-group">
+                    <label>Kode Rekening</label>
+                    <input type="text" name="kode_rekening" placeholder="Kosongkan jika tidak ada">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Pembebanan Anggaran (SKPD)</label>
-                <input type="text" name="anggaran_skpd" value="Badan Keuangan Daerah" required>
+                <label>Keterangan Lain-Lain</label>
+                <textarea name="keterangan_lain" rows="2" placeholder="Kosongkan jika tidak ada"></textarea>
             </div>
 
             <div class="form-group">
                 <label>Penandatangan Surat</label>
-                <select name="penandatangan" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-200); border-radius: 0.375rem;">
+                <select name="penandatangan" class="form-control"
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-200); border-radius: 0.375rem;">
                     <option value="kepala">Kepala Badan Keuangan Daerah</option>
-                    <option value="sekretaris">Sekretaris (a.n. Kepala Badan)</option>
+                    <option value="sekretaris">Sekretaris (a.n. Kepala Badan Keuangan Daerah)</option>
                 </select>
             </div>
 
@@ -232,31 +273,73 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
     </div>
 
     <script>
+        $(document).ready(function () {
+            // Initialize Select2 on existing selects
+            $('.select2-pegawai').select2({
+                placeholder: "-- Pilih Pegawai Utama --",
+                width: '100%'
+            });
+        });
+
         function addPegawai() {
-            const wrapper = document.getElementById('pegawai-wrapper');
-            const firstRow = wrapper.querySelector('.pegawai-row');
-            const newRow = firstRow.cloneNode(true);
+            const wrapper = $('#pegawai-wrapper');
 
-            // Reset selection
-            const select = newRow.querySelector('select');
-            select.value = "";
-            select.required = false;
-            select.options[0].text = "-- Pilih Pengikut --";
-            select.style.flex = "1"; // Ensure select takes available space
+            // 1. Get the original select HTML from the first row as a string/template
+            const firstRowSelect = wrapper.find('.pegawai-row').first().find('select');
 
-            // Add remove button if not exists
-            if (!newRow.querySelector('.btn-remove')) {
-                const removeBtn = document.createElement('button');
-                removeBtn.type = 'button';
-                removeBtn.className = 'btn btn-remove';
-                removeBtn.innerHTML = 'X';
-                // Override width and padding for compact look
-                removeBtn.style.cssText = 'background-color: #ef4444; width: 50px; padding: 0; margin-left: 0; flex-shrink: 0; display: flex; align-items: center; justify-content: center;';
-                removeBtn.onclick = function () { this.parentElement.remove(); };
-                newRow.appendChild(removeBtn);
-            }
+            // 2. Create a clean variable of that select's outerHTML
+            const tempSelect = firstRowSelect.clone();
 
-            wrapper.appendChild(newRow);
+            // Clean specific Select2 attributes and classes
+            tempSelect.removeClass('select2-hidden-accessible');
+            tempSelect.removeAttr('data-select2-id tabindex aria-hidden');
+            tempSelect.find('option').removeAttr('data-select2-id');
+            tempSelect.val(''); // clear value
+
+            // 3. Create the new Row container
+            const newRow = $('<div class="pegawai-row" style="margin-bottom: 10px; display: flex; gap: 10px;"></div>');
+
+            // 4. Create new Select element from cleaned HTML
+            const cleanSelectHTML = tempSelect.prop('outerHTML');
+            const newSelect = $(cleanSelectHTML);
+
+            // Ensure style flex 1 and display block
+            newSelect.css({
+                'display': 'block',
+                'flex': '1'
+            });
+            newSelect.prop('required', false);
+            newSelect.find('option:first').text('-- Pilih Pengikut --');
+
+            newRow.append(newSelect);
+
+            // 5. Create and Append Remove Button
+            const removeBtn = $('<button type="button" class="btn btn-remove">X</button>');
+            removeBtn.css({
+                'background-color': '#ef4444',
+                'width': '50px',
+                'padding': '0',
+                'margin-left': '0',
+                'flex-shrink': '0',
+                'display': 'flex',
+                'align-items': 'center',
+                'justify-content': 'center'
+            });
+
+            removeBtn.on('click', function () {
+                $(this).closest('.pegawai-row').remove();
+            });
+
+            newRow.append(removeBtn);
+
+            // 6. Append to Wrapper
+            wrapper.append(newRow);
+
+            // 7. Initialize Select2 on the NEW element
+            newSelect.select2({
+                placeholder: "-- Pilih Pengikut --",
+                width: '100%'
+            });
         }
 
         function calculateReturnDate() {
@@ -273,7 +356,7 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
 
             // 2. Parse Start Date (YYYY-MM-DD)
             if (!startDateInput) return;
-            
+
             const startDate = new Date(startDateInput);
 
             // 3. Calculate Return Date
@@ -281,22 +364,17 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             returnDate.setDate(startDate.getDate() + (duration - 1));
 
             // 4. Format Output to YYYY-MM-DD
-            // toISOString() returns "YYYY-MM-DDTHH:mm:ss.sssZ"
-            // We splits at T to get the date part.
-            // CAUTION: toISOString uses UTC. If local time is significantly different, this might be off.
-            // Better to manually construct YYYY-MM-DD string to avoid timezone issues.
-            
             const rYear = returnDate.getFullYear();
             const rMonth = String(returnDate.getMonth() + 1).padStart(2, '0');
             const rDay = String(returnDate.getDate()).padStart(2, '0');
-            
+
             returnDateInput.value = `${rYear}-${rMonth}-${rDay}`;
         }
 
         function updateDay() {
             const dateInput = document.getElementById('tanggal_kegiatan');
             const dayInput = document.getElementById('hari');
-            
+
             if (!dateInput.value) return;
 
             const date = new Date(dateInput.value);
@@ -305,7 +383,7 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             // Get Day Name in Indonesian
             const options = { weekday: 'long' };
             const dayName = date.toLocaleDateString('id-ID', options);
-            
+
             dayInput.value = dayName;
         }
 

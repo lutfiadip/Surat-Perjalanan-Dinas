@@ -394,8 +394,10 @@
                 </tr>
                 <!-- Row 3a: Pangkat -->
                 <tr>
-                    <td rowspan="3" style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">3</td>
-                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: none; padding: 5px 5px 0 5px;">
+                    <td rowspan="3"
+                        style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">3</td>
+                    <td
+                        style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: none; padding: 5px 5px 0 5px;">
                         <table style="width: 100%; border: none; border-collapse: collapse;">
                             <tr>
                                 <td style="width: 20px; border: none; vertical-align: top; padding: 0;">a.</td>
@@ -403,18 +405,22 @@
                             </tr>
                         </table>
                     </td>
-                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: none; padding: 5px 5px 0 5px;">
+                    <td
+                        style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: none; padding: 5px 5px 0 5px;">
                         <table style="width: 100%; border: none; border-collapse: collapse;">
                             <tr>
                                 <td style="width: 20px; border: none; vertical-align: top; padding: 0;">a.</td>
-                                <td style="border: none; vertical-align: top; padding: 0;">{{ $selectedPegawais->first()->pangkat_gol }}</td>
+                                <td style="border: none; vertical-align: top; padding: 0;">
+                                    {{ $selectedPegawais->first()->pangkat_gol }}
+                                </td>
                             </tr>
                         </table>
                     </td>
                 </tr>
                 <!-- Row 3b: Jabatan (Syncs height if wrapped) -->
                 <tr>
-                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: none; padding: 0 5px 0 5px;">
+                    <td
+                        style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: none; padding: 0 5px 0 5px;">
                         <table style="width: 100%; border: none; border-collapse: collapse;">
                             <tr>
                                 <td style="width: 20px; border: none; vertical-align: top; padding: 0;">b.</td>
@@ -422,30 +428,38 @@
                             </tr>
                         </table>
                     </td>
-                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: none; padding: 0 5px 0 5px;">
+                    <td
+                        style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: none; padding: 0 5px 0 5px;">
                         <table style="width: 100%; border: none; border-collapse: collapse;">
                             <tr>
                                 <td style="width: 20px; border: none; vertical-align: top; padding: 0;">b.</td>
-                                <td style="border: none; vertical-align: top; padding: 0;">{{ $selectedPegawais->first()->jabatan }}</td>
+                                <td style="border: none; vertical-align: top; padding: 0;">
+                                    {{ $selectedPegawais->first()->jabatan }}
+                                </td>
                             </tr>
                         </table>
                     </td>
                 </tr>
                 <!-- Row 3c: Tingkat Biaya -->
                 <tr>
-                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: 1px solid black; padding: 0 5px 5px 5px;">
+                    <td
+                        style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: 1px solid black; padding: 0 5px 5px 5px;">
                         <table style="width: 100%; border: none; border-collapse: collapse;">
                             <tr>
                                 <td style="width: 20px; border: none; vertical-align: top; padding: 0;">c.</td>
-                                <td style="border: none; vertical-align: top; padding: 0;">Tingkat Biaya Perjalanan Dinas</td>
+                                <td style="border: none; vertical-align: top; padding: 0;">Tingkat Biaya Perjalanan
+                                    Dinas</td>
                             </tr>
                         </table>
                     </td>
-                    <td style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: 1px solid black; padding: 0 5px 5px 5px;">
+                    <td
+                        style="vertical-align: top; border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: 1px solid black; padding: 0 5px 5px 5px;">
                         <table style="width: 100%; border: none; border-collapse: collapse;">
                             <tr>
                                 <td style="width: 20px; border: none; vertical-align: top; padding: 0;">c.</td>
-                                <td style="border: none; vertical-align: top; padding: 0;"></td>
+                                <td style="border: none; vertical-align: top; padding: 0;">
+                                    {{ $data['tingkat_biaya'] ?? '' }}
+                                </td>
                             </tr>
                         </table>
                     </td>
@@ -471,13 +485,13 @@
                     <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
                         <table style="width: 100%; border: none; border-collapse: collapse; margin: 0; padding: 0;">
                             <tr>
-                                <td style="width: 20px; border: none; padding: 0 0 0 5px; vertical-align: top;">a.</td>
+                                <td style="width: 20px; border: none; padding: 0; vertical-align: top;">a.</td>
                                 <td style="border: none; padding: 0; vertical-align: top;">
                                     {{ $data['tempat_berangkat'] }}
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width: 20px; border: none; padding: 0 0 0 5px; vertical-align: top;">b.</td>
+                                <td style="width: 20px; border: none; padding: 0; vertical-align: top;">b.</td>
                                 <td style="border: none; padding: 0; vertical-align: top;">
                                     {!! nl2br(e($data['tempat'])) !!}
                                 </td>
@@ -493,9 +507,24 @@
                         c. Tanggal Harus Kembali
                     </td>
                     <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
-                        a. {{ $data['lama_perjalanan'] }}<br>
-                        b. {{ $data['tgl_berangkat'] }}<br>
-                        c. {{ $data['tgl_kembali'] }}
+                        <table style="width: 100%; border: none; border-collapse: collapse; margin: 0; padding: 0;">
+                            <tr>
+                                <td style="width: 20px; border: none; padding: 0; vertical-align: top;">a.</td>
+                                <td style="border: none; padding: 0; vertical-align: top;">
+                                    {{ $data['lama_perjalanan'] }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px; border: none; padding: 0; vertical-align: top;">b.</td>
+                                <td style="border: none; padding: 0; vertical-align: top;">{{ $data['tgl_berangkat'] }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px; border: none; padding: 0; vertical-align: top;">c.</td>
+                                <td style="border: none; padding: 0; vertical-align: top;">{{ $data['tgl_kembali'] }}
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
                 <tr>
@@ -503,9 +532,16 @@
                     <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Pengikut</td>
                     <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
                         @if($selectedPegawais->count() > 1)
-                            @foreach($selectedPegawais->slice(1) as $index => $pengikut)
-                                {{ $loop->iteration }}. {{ $pengikut->nama }}<br>
-                            @endforeach
+                            <table style="width: 100%; border: none; border-collapse: collapse; margin: 0; padding: 0;">
+                                @foreach($selectedPegawais->slice(1) as $index => $pengikut)
+                                    <tr>
+                                        <td style="width: 20px; border: none; padding: 0; vertical-align: top;">
+                                            {{ $loop->iteration }}.
+                                        </td>
+                                        <td style="border: none; padding: 0; vertical-align: top;">{{ $pengikut->nama }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
                         @else
 
                         @endif
@@ -520,14 +556,29 @@
                     </td>
                     <td style="vertical-align: top; border: 1px solid black; padding: 5px;">
                         <br>
-                        a. {{ $data['anggaran_skpd'] }}<br>
-                        b.
+                        <table style="width: 100%; border: none; border-collapse: collapse; margin: 0; padding: 0;">
+                            <tr>
+                                <td style="width: 20px; border: none; padding: 0; vertical-align: top;">a.</td>
+                                <td style="border: none; padding: 0; vertical-align: top;">{{ $data['anggaran_skpd'] }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20px; border: none; padding: 0; vertical-align: top;">b.</td>
+                                <td style="border: none; padding: 0; vertical-align: top;">
+                                    {{ $data['kode_rekening'] ?? '' }}
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align: center; vertical-align: top; border: 1px solid black; padding: 5px;">10</td>
-                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Keterangan Lain - Lain</td>
-                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;"></td>
+                    <td style="vertical-align: top; border: 1px solid black; padding: 5px;">Keterangan Lain - Lain
+                    </td>
+                    <td
+                        style="vertical-align: top; border: 1px solid black; padding: 5px; word-wrap: break-word; word-break: break-all;">
+                        {!! nl2br(e($data['keterangan_lain'] ?? '')) !!}
+                    </td>
                 </tr>
             </table>
 
