@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SpdController;
 
 Route::get('/', function () {
-    return redirect('/spd');
+    return view('landing');
 });
 
 Route::get('/spd', [SpdController::class, 'create'])->name('spd.form');
