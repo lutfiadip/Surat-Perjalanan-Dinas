@@ -52,8 +52,7 @@
                     <div class="mb-8 flex">
                         <div
                             class="relative rounded-full px-3 py-1 text-sm leading-6 text-slate-500 ring-1 ring-slate-900/10 hover:ring-slate-900/20 bg-white/50 backdrop-blur-sm">
-                            Sistem Pengelolaan BKD Karanganyar <a href="#" class="font-semibold text-blue-600"><span
-                                    class="absolute inset-0" aria-hidden="true"></span>versi 2.0</a>
+                            Sistem Pengelolaan BKD Karanganyar
                         </div>
                     </div>
                     <h1 class="mt-2 max-w-lg text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
@@ -62,7 +61,7 @@
                     </h1>
                     <p class="mt-6 text-lg leading-8 text-slate-600">
                         Platform terintegrasi untuk pembuatan, pengelolaan, dan pelaporan Surat Perjalanan Dinas (SPD)
-                        di lingkungan Badan Keuangan Daerah. Cepat, Tepat, dan Akuntabel.
+                        di lingkungan Badan Keuangan Daerah.
                     </p>
                     <div class="mt-10 flex items-center gap-x-6">
                         <a href="{{ route('spd.form') }}"
@@ -83,86 +82,9 @@
                 <div class="mt-16 sm:mt-24 lg:mt-0 lg:flex-shrink-0 lg:flex-grow">
                     <div class="relative mx-auto w-full max-w-lg lg:max-w-none">
                         <!-- Abstract Cards UI -->
-                        <div
-                            class="relative z-10 w-full rounded-2xl bg-white/60 p-2 shadow-2xl shadow-blue-500/20 backdrop-blur-xl ring-1 ring-white/50 lg:w-[480px] hover:scale-[1.01] transition duration-500">
-                            <!-- Dashboard UI Container -->
-                            <div
-                                class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-900/5 min-h-[320px] flex flex-col relative overflow-hidden">
-                                <!-- Decorative Header -->
-                                <div class="flex items-center justify-between mb-6">
-                                    <div>
-                                        <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                                            Aktivitas Terkini</div>
-                                        <div class="text-lg font-bold text-slate-900">Monitoring SPD</div>
-                                    </div>
-                                    <div
-                                        class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600 animate-pulse">
-                                        <div class="h-2 w-2 rounded-full bg-blue-600"></div>
-                                    </div>
-                                </div>
-
-                                <!-- List Items -->
-                                <div class="space-y-4">
-                                    <!-- Item 1 -->
-                                    <div
-                                        class="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100">
-                                        <div
-                                            class="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs">
-                                            BS</div>
-                                        <div class="flex-1 min-w-0">
-                                            <div class="text-sm font-semibold text-slate-900 truncate">Budi Santoso
-                                            </div>
-                                            <div class="text-xs text-slate-500 truncate">Ke Semarang (2 Hari)</div>
-                                        </div>
-                                        <div
-                                            class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-[10px] font-bold">
-                                            DISETUJUI</div>
-                                    </div>
-
-                                    <!-- Item 2 -->
-                                    <div
-                                        class="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100">
-                                        <div
-                                            class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xs">
-                                            AD</div>
-                                        <div class="flex-1 min-w-0">
-                                            <div class="text-sm font-semibold text-slate-900 truncate">Ayu Diah</div>
-                                            <div class="text-xs text-slate-500 truncate">Ke Yogyakarta (3 Hari)</div>
-                                        </div>
-                                        <div
-                                            class="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold">
-                                            MENUNGGU</div>
-                                    </div>
-
-                                    <!-- Item 3 -->
-                                    <div
-                                        class="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100 opacity-60">
-                                        <div
-                                            class="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-xs">
-                                            RT</div>
-                                        <div class="flex-1 min-w-0">
-                                            <div class="text-sm font-semibold text-slate-900 truncate">Rudi Tri</div>
-                                            <div class="text-xs text-slate-500 truncate">Ke Jakarta (1 Hari)</div>
-                                        </div>
-                                        <div
-                                            class="px-2 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold">
-                                            SELESAI</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Floating Stats Card -->
-                            <div class="absolute -bottom-6 -left-6 z-20 w-48 rounded-xl bg-white p-4 shadow-xl ring-1 ring-slate-900/5 animate-bounce"
-                                style="animation-duration: 4s;">
-                                <div class="text-xs font-medium text-slate-500 mb-1">Total SPD Bulan Ini</div>
-                                <div class="flex items-end gap-2">
-                                    <div class="text-3xl font-bold text-blue-600">128</div>
-                                    <div class="text-xs font-semibold text-green-600 mb-1">▲ 12%</div>
-                                </div>
-                                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
-                                    <div class="bg-blue-600 h-1.5 rounded-full" style="width: 70%"></div>
-                                </div>
-                            </div>
+                        <div class="relative z-10 flex justify-center items-center w-full lg:w-auto p-10">
+                            <img src="{{ asset('img/logo.png') }}" alt="Logo Kabupaten Karanganyar"
+                                class="w-64 sm:w-80 lg:w-[400px] h-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500">
                         </div>
                     </div>
 
@@ -184,10 +106,10 @@
                                 </dd>
                             </div>
                             <div class="mx-auto flex max-w-xs flex-col gap-y-4">
-                                <dt class="text-base leading-7 text-slate-600">Akses Sistem</dt>
+                                <dt class="text-base leading-7 text-slate-600">Akses Terbatas</dt>
                                 <dd
                                     class="order-first text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-                                    24/7
+                                    Internal
                                 </dd>
                             </div>
                         </dl>

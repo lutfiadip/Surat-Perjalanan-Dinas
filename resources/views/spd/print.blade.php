@@ -263,7 +263,7 @@
                                 <div class="kepada-row">
                                     <div class="k-label">Jabatan</div>
                                     <div class="k-colon">:</div>
-                                    <div class="k-val">{{ $pegawai->jabatan }}</div>
+                                    <div class="k-val" style="text-align: left;">{{ $pegawai->jabatan }}</div>
                                 </div>
                             </div>
                         </div>
@@ -279,7 +279,7 @@
                         <div class="kepada-num">1.</div>
                         <div class="kepada-content">
                             {{ $data['maksud'] }}, yang diselenggarakan pada:<br>
-                            <div class="disk-row" style="margin-top: 5px;">
+                            <div class="disk-row">
                                 <div class="k-label">Hari</div>
                                 <div class="k-colon">:</div>
                                 <div class="k-val">{{ $data['hari'] }}</div>
@@ -296,6 +296,7 @@
                             </div>
                         </div>
                     </div>
+                    <div style="height: 15px;"></div>
                     <div class="untuk-item">
                         <div class="kepada-num">2.</div>
                         <div class="kepada-content">Melaporkan hasil tugas kepada pejabat yang bersangkutan.</div>
