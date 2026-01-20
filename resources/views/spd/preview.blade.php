@@ -18,8 +18,8 @@
         margin: 0 auto 20px auto;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 10pt;
-        line-height: normal;
+        font-size: 11pt;
+        line-height: 1.15;
         color: #000;
         box-sizing: border-box;
         display: block;
@@ -102,8 +102,8 @@
             <div style="display: flex; margin-bottom: 8px;">
                 <div style="width: 100px; flex-shrink: 0;">Berdasarkan</div>
                 <div style="width: 20px; text-align: center; font-weight: bold;">:</div>
-                <div style="flex: 1; text-align: justify; text-align-last: justify;">
-                    <span id="preview-dasar">...</span>
+                <div style="flex: 1;" id="preview-dasar-container">
+                    ...
                 </div>
             </div>
 
@@ -161,14 +161,9 @@
             </div>
 
             <!-- SIGNATURE -->
-            <div style="float: right; width: 300px; margin-top: 15px; text-align: left;">
-                <div style="margin-bottom: 20mm;">
-                    Di keluarkan di Karanganyar<br>
-                    Tanggal <span id="preview-tgl-surat">...</span><br>
-                    <span id="preview-sign-role">Pengguna Anggaran / Kuasa Pengguna Anggaran,</span>
-                </div>
-                <div>(<span id="preview-sign-nama">...</span>)</div>
-                <div>NIP. <span id="preview-sign-nip">...</span></div>
+            <!-- SIGNATURE -->
+            <div id="preview-signature-container"
+                style="float: right; width: 310px; margin-top: 15px; text-align: left;">
             </div>
 
         </div>
@@ -215,8 +210,7 @@
         </div>
         <div style="clear: both;"></div>
 
-        <div
-            style="text-align: center; font-weight: bold; text-decoration: underline; font-size: 11pt; margin-bottom: 8px;">
+        <div style="text-align: center; text-decoration: underline; font-size: 11pt; margin-bottom: 8px;">
             SURAT PERJALANAN DINAS (SPD)</div>
 
         <table class="spd-table"
@@ -423,7 +417,7 @@
     <h3 style="color: white; margin-top: 20px; margin-bottom: 20px; text-align: center;">Live Preview (Halaman 3
         - VISUM)</h3>
 
-    <div class="paper" style="padding-bottom: 5mm;">
+    <div class="paper" style="padding-bottom: 5mm; font-size: 10pt;">
         <table class="spd-table"
             style="table-layout: fixed; width: 100%; border-collapse: collapse; border: 1px solid black; font-size: 10pt;">
             <colgroup>

@@ -306,7 +306,11 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
 
             // --- PAGE 1: SURAT TUGAS ---
             $('#preview-nomor').text(nomor);
-            $('#preview-dasar').html(dasar);
+            // Process Dasar Surat with special justification for "Nomor:" splitting
+            let dasarHtml = '<div style="text-align: justify; text-align-last: justify;">' + 
+                            dasar.replace('Nomor:', '</div><div style="text-align: justify; text-align-last: left;">Nomor:') + 
+                            '</div>';
+            $('#preview-dasar-container').html(dasarHtml);
             $('#preview-maksud').html(maksud);
             $('#preview-hari').text(hari);
             $('#preview-tempat').html(tempat);
@@ -316,15 +320,78 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             $('#preview-tgl-surat').text(tglSurat);
 
             // Signatory Page 1
+            // Signatory Page 1 Logic
+            const signContainer = $('#preview-signature-container');
+            let signHtml = '';
+
             if (signRoleVal === 'sekretaris') {
-                $('#preview-sign-role').html('a.n. KEPALA BADAN KEUANGAN DAERAH<br>Sekretaris');
-                $('#preview-sign-nama').text(signer.nama);
-                $('#preview-sign-nip').text(signer.nip);
+                // Table layout for hanging "a.n." and indented details, matching User Image
+                // Note: User image shows Name in Title Case, Pangkat included.
+                // Structure:
+                // Row 1: Date (Indented/Col 2)
+                // Row 2: a.n. (Col 1) | Kepala... Sekretaris (Col 2)
+                // Row 3: Name, Pangkat, NIP (Col 2)
+                
+                signHtml = `
+                <table style="width: 100%; border: none; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
+                     <tr>
+                        <td colspan="2" style="height: 10px; border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30px; border: none; padding: 0;"></td>
+                        <td style="border: none; padding: 0;">${tglSurat}</td>
+                    </tr>
+                     <tr>
+                        <td style="vertical-align: top; border: none; padding: 0;">a.n.</td>
+                        <td style="vertical-align: top; border: none; padding: 0;">
+                            Kepala Badan Keuangan Daerah<br>
+                            Sekretaris
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="height: 60px; border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td style="border: none; padding: 0;"></td>
+                        <td style="vertical-align: top; border: none; padding: 0;">
+                            ${signer.nama_title}<br>
+                            ${signer.pangkat}<br>
+                            NIP. ${signer.nip}
+                        </td>
+                    </tr>
+                </table>`;
             } else {
-                $('#preview-sign-role').html('Kepala Badan Keuangan Daerah<br><br>');
-                $('#preview-sign-nama').text(signer.nama);
-                $('#preview-sign-nip').text(signer.nip);
+                // Standard Kepala Layout - Using Table for Alignment Consistency with Sekretaris
+                signHtml = `
+                <table style="width: 100%; border: none; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
+                     <tr>
+                        <td colspan="2" style="height: 10px; border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30px; border: none; padding: 0;"></td>
+                        <td style="border: none; padding: 0;">${tglSurat}</td>
+                    </tr>
+                     <tr>
+                        <td style="vertical-align: top; border: none; padding: 0;"></td>
+                        <td style="vertical-align: top; border: none; padding: 0;">
+                            Kepala Badan Keuangan Daerah
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="height: 60px; border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td style="border: none; padding: 0;"></td>
+                        <td style="vertical-align: top; border: none; padding: 0;">
+                            ${signer.nama_title}<br>
+                            ${signer.pangkat}<br>
+                            NIP. ${signer.nip}
+                        </td>
+                    </tr>
+                </table>`;
             }
+            
+            signContainer.html(signHtml);
 
             // --- PAGE 2: SPD ---
             $('#preview-spd-maksud').html(maksud);

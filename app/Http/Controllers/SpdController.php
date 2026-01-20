@@ -13,12 +13,14 @@ class SpdController extends Controller
         $signatories = [
             'kepala' => [
                 'nama' => 'KURNIADI MAULATO, S.Sos., M.Si',
+                'nama_title' => 'Kurniadi Maulato, S.Sos., M.Si',
                 'nip' => '19700510 199003 1 006',
                 'pangkat' => 'Pembina Utama Muda (IV/c)',
                 'jabatan' => 'Kepala Badan Keuangan Daerah',
             ],
             'sekretaris' => [
                 'nama' => 'PUJIYANTO, S.Sos, M.Si.',
+                'nama_title' => 'Pujiyanto, S.Sos, M.Si.',
                 'nip' => '19710515 199003 1 002',
                 'pangkat' => 'Pembina Tk.I (IV/b)',
                 'jabatan' => 'Sekretaris',
