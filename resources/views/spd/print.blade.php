@@ -544,7 +544,6 @@
                                 @endforeach
                             </table>
                         @else
-
                         @endif
                     </td>
                 </tr>
@@ -698,7 +697,7 @@
                     di
                     Karanganyar</td>
                 <td rowspan="3"
-                    style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; text-align: justify;">
+                    style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; text-align: left;">
                     SPD telah diperiksa dengan keterangan bahwa perjalanan tersebut di atas benar dilakukan atas
                     perintah sesuai dengan kepentingan jabatan dan dilaksanakan dalam waktu yang sesingkat-singkatnya.
                 </td>
@@ -734,8 +733,8 @@
             <tr>
                 <td style="border: 1px solid black; vertical-align: top; padding-left: 5px;">VIII</td>
                 <td colspan="2"
-                    style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; text-align: justify;">
-                    <div style="font-weight: bold;">PERHATIAN :</div>
+                    style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; text-align: left;">
+                    <div>PERHATIAN :</div>
                     Pengguna anggaran/kuasa pengguna anggaran yang menerbitkan SPD, pejabat/pegawai/pihak lain yang
                     melakukan perjalanan dinas, pejabat yang mengesahkan tanggal berangkat/tiba, serta bendahara
                     pengeluaran bertanggung jawab berdasarkan peraturan-peraturan keuangan daerah apabila negara

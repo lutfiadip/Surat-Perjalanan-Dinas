@@ -10,7 +10,21 @@ class SpdController extends Controller
     public function create()
     {
         $pegawais = PegawaiBkdSpd::all();
-        return view('spd.form', compact('pegawais'));
+        $signatories = [
+            'kepala' => [
+                'nama' => 'KURNIADI MAULATO, S.Sos., M.Si',
+                'nip' => '19700510 199003 1 006',
+                'pangkat' => 'Pembina Utama Muda (IV/c)',
+                'jabatan' => 'Kepala Badan Keuangan Daerah',
+            ],
+            'sekretaris' => [
+                'nama' => 'PUJIYANTO, S.Sos, M.Si.',
+                'nip' => '19710515 199003 1 002',
+                'pangkat' => 'Pembina Tk.I (IV/b)',
+                'jabatan' => 'Sekretaris',
+            ]
+        ];
+        return view('spd.form', compact('pegawais', 'signatories'));
     }
 
     public function print(Request $request)
