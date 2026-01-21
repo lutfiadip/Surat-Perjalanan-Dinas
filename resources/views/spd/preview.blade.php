@@ -169,8 +169,9 @@
         </div>
     </div> <!-- End Page 1 Paper -->
 
-    <h3 style="color: white; margin-top: 20px; margin-bottom: 20px; text-align: center;">Live Preview (Halaman 2
-        - SPD)</h3>
+    <h3 style="color: white; margin-top: 20px; margin-bottom: 20px; text-align: center;">Live Preview (Halaman 2)
+
+    </h3>
 
     <div class="paper">
         <div
@@ -414,8 +415,9 @@
         </div>
     </div> <!-- End Page 2 SPD Paper -->
 
-    <h3 style="color: white; margin-top: 20px; margin-bottom: 20px; text-align: center;">Live Preview (Halaman 3
-        - VISUM)</h3>
+    <h3 style="color: white; margin-top: 20px; margin-bottom: 20px; text-align: center;">Live Preview (Halaman 3)
+
+    </h3>
 
     <div class="paper" style="padding-bottom: 5mm; font-size: 10pt;">
         <table class="spd-table"

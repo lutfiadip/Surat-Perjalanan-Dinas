@@ -33,9 +33,18 @@
             padding: 2rem;
             border-radius: 0.5rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: block;
+            /* Default to block (single column) */
+            max-width: 800px;
+            /* Restrict width for better single-form readability */
+        }
+
+        /* When preview is active */
+        .container.with-preview {
             display: grid;
             grid-template-columns: 1fr 550px;
-            /* Force 550px */
+            max-width: 100%;
+            /* Expand to full width */
             gap: 2rem;
         }
 
@@ -64,6 +73,20 @@
             font-size: 1rem;
             box-sizing: border-box;
             /* Important for padding */
+        }
+
+        /* Hide preview by default */
+        .preview-section {
+            display: none;
+        }
+
+        /* Show preview when active */
+        .container.with-preview .preview-section {
+            display: block;
+        }
+
+        .form-group textarea {
+            resize: vertical;
         }
 
         .form-group input:focus,
@@ -105,7 +128,12 @@
     <div class="container">
         <!-- LEFT COLUMN: INPUT FORM -->
         <div class="form-section">
-            <h1>Buat Surat Tugas & SPD</h1>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h1 style="margin: 0;">Buat SPD</h1>
+                <button type="button" id="btn-toggle-preview" class="btn" style="background-color: #6366f1;">
+                    Lihat Preview
+                </button>
+            </div>
 
             <form id="spdForm" action="{{ route('spd.print') }}" method="POST">
                 @csrf
@@ -262,7 +290,25 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
     <script>
         const signatories = @json($signatories);
 
+
+
         $(document).ready(function () {
+            // Toggle Preview Handler
+            $('#btn-toggle-preview').on('click', function () {
+                const container = $('.container');
+                const btn = $(this);
+
+                container.toggleClass('with-preview');
+
+                if (container.hasClass('with-preview')) {
+                    btn.html('Tutup Preview');
+                    btn.css('background-color', '#ef4444');
+                } else {
+                    btn.html('Lihat Preview');
+                    btn.css('background-color', '#6366f1');
+                }
+            });
+
             // Initialize Select2 on existing selects
             $('.select2-pegawai').select2({
                 placeholder: "-- Pilih Pegawai Utama --",
@@ -307,9 +353,9 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             // --- PAGE 1: SURAT TUGAS ---
             $('#preview-nomor').text(nomor);
             // Process Dasar Surat with special justification for "Nomor:" splitting
-            let dasarHtml = '<div style="text-align: justify; text-align-last: justify;">' + 
-                            dasar.replace('Nomor:', '</div><div style="text-align: justify; text-align-last: left;">Nomor:') + 
-                            '</div>';
+            let dasarHtml = '<div style="text-align: justify; text-align-last: justify;">' +
+                dasar.replace('Nomor:', '</div><div style="text-align: justify; text-align-last: left;">Nomor:') +
+                '</div>';
             $('#preview-dasar-container').html(dasarHtml);
             $('#preview-maksud').html(maksud);
             $('#preview-hari').text(hari);
@@ -331,7 +377,7 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
                 // Row 1: Date (Indented/Col 2)
                 // Row 2: a.n. (Col 1) | Kepala... Sekretaris (Col 2)
                 // Row 3: Name, Pangkat, NIP (Col 2)
-                
+
                 signHtml = `
                 <table style="width: 100%; border: none; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
                      <tr>
@@ -390,7 +436,7 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
                     </tr>
                 </table>`;
             }
-            
+
             signContainer.html(signHtml);
 
             // --- PAGE 2: SPD ---
@@ -398,7 +444,8 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             $('#preview-spd-alat').text(alat);
             $('#preview-spd-berangkat').text(berangkat);
             $('#preview-spd-tujuan').html(tempat);
-            $('#preview-spd-lama').text(lama);
+            const textLama = lama ? `${lama} (${terbilang(parseInt(lama)).trim()})` : '...';
+            $('#preview-spd-lama').text(textLama);
             $('#preview-spd-tgl-berangkat').text(tglBerangkat);
             $('#preview-spd-tgl-kembali').text(tglKembali);
             $('#preview-spd-skpd').text(skpd);
@@ -652,6 +699,23 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
 
             dayInput.value = dayName;
             updatePreview();
+        }
+
+        function terbilang(angka) {
+            const bil = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+            let res = "";
+            if (angka < 12) {
+                res = " " + bil[angka];
+            } else if (angka < 20) {
+                res = terbilang(angka - 10) + " belas";
+            } else if (angka < 100) {
+                res = terbilang(Math.floor(angka / 10)) + " puluh" + terbilang(angka % 10);
+            } else if (angka < 200) {
+                res = " seratus" + terbilang(angka - 100);
+            } else if (angka < 1000) {
+                res = terbilang(Math.floor(angka / 100)) + " ratus" + terbilang(angka % 100);
+            }
+            return res;
         }
 
         // Initialize Day on Load
