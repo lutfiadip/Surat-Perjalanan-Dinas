@@ -36,7 +36,7 @@
         .kop-container {
             display: flex;
             align-items: center;
-            border-bottom: 4px double #000;
+            border-bottom: 1px solid #000;
             padding-bottom: 5px;
             margin-bottom: 10px;
         }
@@ -45,6 +45,7 @@
             width: 70px;
             height: auto;
             margin-right: 15px;
+            margin-left: 20px;
         }
 
         .kop-text {
@@ -219,7 +220,7 @@
         <div style="padding-left: 30px;">
             <div class="title-surat">SURAT TUGAS</div>
             <div style="display: flex; margin-bottom: 15px; font-weight: bold;">
-                <div style="width: 40%; text-align: right; padding-right: 5px;">Nomor :</div>
+                <div style="width: 35%; text-align: right; padding-right: 5px;">Nomor :</div>
                 <div style="flex: 1; text-align: left; padding-left: 5px;">{{ $data['nomor_surat'] }}</div>
             </div>
 
@@ -656,7 +657,7 @@
             <!-- ROW II, III, IV, V -->
             @foreach(['II', 'III', 'IV', 'V'] as $romawi)
                 <tr>
-                    <td rowspan="3" style="border: 1px solid black; vertical-align: top; padding: 1px; text-align: center;">
+                    <td style="border: 1px solid black; vertical-align: top; padding: 1px; text-align: center;">
                         {{ $romawi }}
                     </td>
                     <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">Tiba :</td>
@@ -664,10 +665,12 @@
                     </td>
                 </tr>
                 <tr>
+                    <td style="border: 1px solid black; vertical-align: top;"></td>
                     <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">Pada tanggal :</td>
                     <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">Pada tanggal :</td>
                 </tr>
                 <tr>
+                    <td style="border: 1px solid black; vertical-align: top;"></td>
                     <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
                         <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>Kepala .......................................</div>
@@ -691,7 +694,7 @@
 
             <!-- ROW VI -->
             <tr>
-                <td rowspan="3" style="border: 1px solid black; vertical-align: top; padding-left: 5px;">
+                <td style="border: 1px solid black; vertical-align: top; text-align: center;">
                     VI</td>
                 <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 1px;">Tiba :
                     di
@@ -703,11 +706,13 @@
                 </td>
             </tr>
             <tr>
+                <td style="border: 1px solid black; vertical-align: top;"></td>
                 <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 1px;">
                     Pada tanggal : {{ $data['tgl_kembali'] }}
                 </td>
             </tr>
             <tr>
+                <td style="border: 1px solid black; vertical-align: top;"></td>
                 <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
                     <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>{!! $signatory['jabatan_head_page3'] !!}</div>
@@ -723,7 +728,7 @@
 
             <!-- ROW VII -->
             <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding-left: 5px;">VII</td>
+                <td style="border: 1px solid black; vertical-align: top; text-align: center;">VII</td>
                 <td colspan="2" style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">
                     Catatan Lain Lain
                 </td>
@@ -731,7 +736,7 @@
 
             <!-- ROW VIII -->
             <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding-left: 5px;">VIII</td>
+                <td style="border: 1px solid black; vertical-align: top; text-align: center;">VIII</td>
                 <td colspan="2"
                     style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; text-align: left;">
                     <div>PERHATIAN :</div>

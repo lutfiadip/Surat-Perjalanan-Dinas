@@ -36,8 +36,22 @@
             page: Section1;
         }
 
-        /* Tighter margins for Page 3 (Back Page) */
+        /* Page 2 (New Section) */
         @page Section2 {
+            size: 21.0cm 29.7cm;
+            /* A4 */
+            margin: 1.5cm 1.0cm 1.5cm 2.0cm;
+            mso-header-margin: 35.4pt;
+            mso-footer-margin: 35.4pt;
+            mso-paper-source: 0;
+        }
+
+        div.Section2 {
+            page: Section2;
+        }
+
+        /* Tighter margins for Page 3 (Back Page) */
+        @page Section3 {
             size: 21.0cm 29.7cm;
             /* A4 */
             margin: 1.27cm 1.0cm 0.3cm 2.0cm;
@@ -47,8 +61,8 @@
             mso-paper-source: 0;
         }
 
-        div.Section2 {
-            page: Section2;
+        div.Section3 {
+            page: Section3;
         }
 
         /* Table Styles */
@@ -101,9 +115,9 @@
         <!-- ========================================== -->
 
         <!-- KOP SURAT -->
-        <table style="border-bottom: 3px double #000; margin-bottom: 20px;">
+        <table style="border-bottom: 1px solid #000; margin-bottom: 20px;">
             <tr>
-                <td style="width: 80px; text-align: center; vertical-align: middle;">
+                <td style="width: 80px; text-align: center; vertical-align: middle; padding-left: 20px;">
                     <?php 
                     $path = public_path('img/logo.png');
 $base64 = '';
@@ -145,7 +159,7 @@ if (file_exists($path)) {
                     <table style="width: 100%; border: none; margin-bottom: 20px;">
                         <tr>
                             <td
-                                style="width: 40%; text-align: right; border: none; padding-right: 5px; font-weight: bold;">
+                                style="width: 35%; text-align: right; border: none; padding-right: 5px; font-weight: bold;">
                                 Nomor :
                             </td>
                             <td
@@ -288,12 +302,14 @@ if (file_exists($path)) {
         <!-- ========================================== -->
         <!-- HALAMAN 2: SPD DEPAN -->
         <!-- ========================================== -->
-        <br clear=all style='mso-special-character:line-break;page-break-before:always'>
+        </div>
+        <br clear=all style='page-break-before:always; mso-break-type:section-break'>
+        <div class="Section2">
 
         <!-- KOP SURAT (Repeat) -->
-        <table style="border-bottom: 3px double #000; margin-bottom: 10px;">
+        <table style="border-bottom: 1px solid #000; margin-bottom: 10px;">
             <tr>
-                <td style="width: 80px; text-align: center; vertical-align: middle;">
+                <td style="width: 80px; text-align: center; vertical-align: middle; padding-left: 20px;">
                     @if($base64)
                         <img src="{{ $base64 }}" width="70" height="auto" alt="Logo">
                     @else
@@ -692,7 +708,7 @@ if (file_exists($path)) {
         <!-- ========================================== -->
     </div>
     <br clear=all style='page-break-before:always; mso-break-type:section-break'>
-    <div class="Section2">
+    <div class="Section3">
 
         <table id="page3table" class="border" style="font-size: 10pt; width: 100%; table-layout: fixed;">
             <colgroup>
@@ -758,15 +774,17 @@ if (file_exists($path)) {
             <!-- II, III, IV, V -->
             @foreach(['II', 'III', 'IV', 'V'] as $romawi)
                 <tr>
-                    <td rowspan="3" class="border" style="vertical-align: top; padding-left: 5px;">{{ $romawi }}</td>
+                    <td class="border center" style="vertical-align: top; text-align: center;">{{ $romawi }}</td>
                     <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">Tiba :</td>
                     <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">Berangkat dari :</td>
                 </tr>
                 <tr>
+                    <td class="border" style="vertical-align: top;"></td>
                     <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">Pada tanggal :</td>
                     <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">Pada tanggal :</td>
                 </tr>
                 <tr>
+                    <td class="border" style="vertical-align: top;"></td>
                     <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">
                         <div>Kepala .......................................</div>
                         <br><br><br>
@@ -784,7 +802,7 @@ if (file_exists($path)) {
 
             <!-- VI -->
             <tr>
-                <td rowspan="3" class="border" style="vertical-align: top; padding-left: 5px;">VI</td>
+                <td class="border center" style="vertical-align: top; text-align: center;">VI</td>
                 <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top; height: 1px;">Tiba : di
                     Karanganyar</td>
                 <td rowspan="3" class="border justify" style="padding: 2px 2px 2px 5px; vertical-align: top;">
@@ -794,11 +812,13 @@ if (file_exists($path)) {
                 </td>
             </tr>
             <tr>
+                <td class="border" style="vertical-align: top;"></td>
                 <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top; height: 1px;">
                     Pada tanggal : {{ $data['tgl_kembali'] }}
                 </td>
             </tr>
             <tr>
+                <td class="border" style="vertical-align: top;"></td>
                 <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">
                     <div>{!! $signatory['jabatan_head_page3'] !!}</div>
                     <br><br><br>
@@ -811,7 +831,7 @@ if (file_exists($path)) {
 
             <!-- VII -->
             <tr>
-                <td class="border" style="padding-left: 5px; vertical-align: top;">VII</td>
+                <td class="border center" style="text-align: center; vertical-align: top;">VII</td>
                 <td colspan="2" class="border" style="padding: 2px 2px 2px 5px;">
                     Catatan Lain Lain
                 </td>
@@ -819,7 +839,7 @@ if (file_exists($path)) {
 
             <!-- VIII -->
             <tr>
-                <td class="border" style="padding-left: 5px; vertical-align: top;">VIII</td>
+                <td class="border center" style="text-align: center; vertical-align: top;">VIII</td>
                 <td colspan="2" class="border justify" style="padding: 2px 2px 2px 5px;">
                     <div>PERHATIAN :</div>
                     Pengguna anggaran/kuasa pengguna anggaran yang menerbitkan SPD, pejabat/pegawai/pihak lain yang

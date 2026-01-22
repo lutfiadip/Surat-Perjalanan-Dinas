@@ -70,8 +70,9 @@
     <div class="paper">
         <!-- KOP SURAT PREVIEW -->
         <div
-            style="display: flex; align-items: center; border-bottom: 4px double #000; padding-bottom: 5px; margin-bottom: 10px;">
-            <img src="{{ asset('img/logo.png') }}" style="width: 70px; height: auto; margin-right: 15px;">
+            style="display: flex; align-items: center; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 10px;">
+            <img src="{{ asset('img/logo.png') }}"
+                style="width: 70px; height: auto; margin-right: 15px; margin-left: 20px;">
             <div style="text-align: center; flex: 1;">
                 <h3 style="font-size: 12pt; margin: 0; font-weight: normal;">PEMERINTAH KABUPATEN KARANGANYAR
                 </h3>
@@ -90,7 +91,7 @@
                 style="text-align: center; font-weight: bold; font-size: 12pt; margin-bottom: 5px; letter-spacing: 1px;">
                 SURAT TUGAS</div>
             <div style="display: flex; margin-bottom: 15px; font-weight: bold;">
-                <div style="width: 40%; text-align: right; padding-right: 5px;">Nomor :</div>
+                <div style="width: 35%; text-align: right; padding-right: 5px;">Nomor :</div>
                 <div style="flex: 1; text-align: left; padding-left: 5px;"><span id="preview-nomor">...</span>
                 </div>
             </div>
@@ -175,8 +176,9 @@
 
     <div class="paper">
         <div
-            style="display: flex; align-items: center; border-bottom: 4px double #000; padding-bottom: 5px; margin-bottom: 10px;">
-            <img src="{{ asset('img/logo.png') }}" style="width: 70px; height: auto; margin-right: 15px;">
+            style="display: flex; align-items: center; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 10px;">
+            <img src="{{ asset('img/logo.png') }}"
+                style="width: 70px; height: auto; margin-right: 15px; margin-left: 20px;">
             <div style="text-align: center; flex: 1;">
                 <h3 style="font-size: 12pt; margin: 0; font-weight: normal;">PEMERINTAH KABUPATEN KARANGANYAR
                 </h3>
@@ -436,31 +438,27 @@
                     <table style="width: 100%; border: none;">
                         <tr>
                             <td style="width: 20px; vertical-align: top;">I.</td>
-                            <td style="width: 100px; vertical-align: top;">Berangkat dari</td>
-                            <td style="width: 15px; text-align: center; vertical-align: top;">:</td>
+                            <td style="width: 115px; vertical-align: top;">Berangkat dari:</td>
                             <td style="vertical-align: top;" id="preview-visum-berangkat">...</td>
                         </tr>
                         <tr>
                             <td></td>
                             <td style="vertical-align: top;">(tempat kedudukan)</td>
                             <td></td>
-                            <td></td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td style="vertical-align: top;">Ke</td>
-                            <td style="text-align: center; vertical-align: top;">:</td>
+                            <td style="vertical-align: top;">Ke:</td>
                             <td style="vertical-align: top;" id="preview-visum-tujuan">...</td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td style="vertical-align: top;">Pada Tanggal</td>
-                            <td style="text-align: center; vertical-align: top;">:</td>
+                            <td style="vertical-align: top;">Pada Tanggal:</td>
                             <td style="vertical-align: top;" id="preview-visum-tgl-berangkat">...</td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td colspan="3" style="padding-top: 10px; vertical-align: top;">
+                            <td colspan="2" style="padding-top: 10px; vertical-align: top;">
                                 <div>Kepala Sub Bagian Umum,</div>
                                 <div>Selaku Pejabat Pelaksana Teknis Kegiatan</div>
                                 <div>Sekretariat</div>
@@ -476,17 +474,19 @@
             <!-- ROW II - V (Dynamic Loop) -->
             @foreach(['II', 'III', 'IV', 'V'] as $romawi)
                 <tr>
-                    <td rowspan="3" style="text-align: center; border: 1px solid black; vertical-align: top; padding: 5px;">
+                    <td style="text-align: center; border: 1px solid black; vertical-align: top; padding: 2px;">
                         {{ $romawi }}
                     </td>
-                    <td style="border: 1px solid black; vertical-align: top; padding: 2px;">Tiba :</td>
-                    <td style="border: 1px solid black; vertical-align: top; padding: 2px;">Berangkat dari :</td>
+                    <td style="border: 1px solid black; vertical-align: top; padding: 2px;">Tiba:</td>
+                    <td style="border: 1px solid black; vertical-align: top; padding: 2px;">Berangkat dari:</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid black; vertical-align: top; padding: 2px;">Pada tanggal :</td>
-                    <td style="border: 1px solid black; vertical-align: top; padding: 2px;">Pada tanggal :</td>
+                    <td style="border: 1px solid black; vertical-align: top;"></td>
+                    <td style="border: 1px solid black; vertical-align: top; padding: 2px;">Pada tanggal:</td>
+                    <td style="border: 1px solid black; vertical-align: top; padding: 2px;">Pada tanggal:</td>
                 </tr>
                 <tr>
+                    <td style="border: 1px solid black; vertical-align: top;"></td>
                     <td style="border: 1px solid black; vertical-align: top; padding: 2px; height: 135px;">
                         <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>Kepala ......................</div>
@@ -520,9 +520,10 @@
 
             <!-- ROW VI -->
             <tr>
-                <td rowspan="3" style="border: 1px solid black; vertical-align: top; padding-left: 5px;">VI</td>
-                <td style="border: 1px solid black; vertical-align: top; padding: 2px;">Tiba : di Karanganyar
-                </td>
+                <td
+                    style="border: 1px solid black; vertical-align: top; padding-left: 5px; text-align: center; padding: 2px;">
+                    VI</td>
+                <td style="border: 1px solid black; vertical-align: top; padding: 2px;">Tiba: di Karanganyar</td>
                 <td rowspan="3" style="border: 1px solid black; vertical-align: top; padding: 5px; text-align: left;">
                     SPD telah diperiksa dengan keterangan bahwa perjalanan tersebut di atas benar dilakukan atas
                     perintah sesuai dengan kepentingan jabatan dan dilaksanakan dalam waktu yang
@@ -530,11 +531,13 @@
                 </td>
             </tr>
             <tr>
+                <td style="border: 1px solid black; vertical-align: top;"></td>
                 <td style="border: 1px solid black; vertical-align: top; padding: 2px;">
-                    Pada tanggal : <span id="preview-visum-tgl-kembali">...</span>
+                    Pada tanggal: <span id="preview-visum-tgl-kembali">...</span>
                 </td>
             </tr>
             <tr>
+                <td style="border: 1px solid black; vertical-align: top;"></td>
                 <td style="border: 1px solid black; vertical-align: top; padding: 2px; height: 100px;">
                     <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>Kepala Badan Keuangan Daerah</div>
@@ -548,7 +551,8 @@
 
             <!-- ROW VII -->
             <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding-left: 5px;">VII</td>
+                <td style="border: 1px solid black; vertical-align: top; padding-left: 5px; text-align: center;">VII
+                </td>
                 <td colspan="2" style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px;">
                     Catatan Lain Lain
                 </td>
@@ -556,7 +560,8 @@
 
             <!-- ROW VIII -->
             <tr>
-                <td style="border: 1px solid black; vertical-align: top; padding-left: 5px;">VIII</td>
+                <td style="border: 1px solid black; vertical-align: top; padding-left: 5px; text-align: center;">VIII
+                </td>
                 <td colspan="2"
                     style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; text-align: left;">
                     <div>PERHATIAN :</div>
