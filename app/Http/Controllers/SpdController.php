@@ -35,7 +35,7 @@ class SpdController extends Controller
         $request->validate([
             'pegawai_ids' => 'required|array',
             'pegawai_ids.*' => 'exists:pegawaibkd_spd,id',
-            'nomor_surat' => 'required',
+            'nomor_surat' => 'nullable',
             // Add other validations as needed
         ]);
 

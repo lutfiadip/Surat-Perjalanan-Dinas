@@ -166,7 +166,7 @@
                 <div class="grid" style="grid-template-columns: 1fr 1fr 1fr;">
                     <div class="form-group">
                         <label>Nomor Surat</label>
-                        <input type="text" name="nomor_surat" placeholder="contoh: 094 / 123 / XII / 2025" required>
+                        <input type="text" name="nomor_surat" placeholder="contoh: 094 / 123 / XII / 2025">
                     </div>
                     <div class="form-group">
                         <label>Tanggal Surat</label>
