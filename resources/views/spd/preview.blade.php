@@ -64,7 +64,7 @@
 </style>
 
 <div class="preview-section">
-    <h3 style="color: white; margin-top: 0; margin-bottom: 20px; text-align: center;">Live Preview (Halaman 1)
+    <h3 style="color: white; margin-top: 0; margin-bottom: 20px; text-align: center;">Preview (Halaman 1)
     </h3>
 
     <div class="paper">
@@ -170,7 +170,7 @@
         </div>
     </div> <!-- End Page 1 Paper -->
 
-    <h3 style="color: white; margin-top: 20px; margin-bottom: 20px; text-align: center;">Live Preview (Halaman 2)
+    <h3 style="color: white; margin-top: 20px; margin-bottom: 20px; text-align: center;">Preview (Halaman 2)
 
     </h3>
 
@@ -217,7 +217,7 @@
             SURAT PERJALANAN DINAS (SPD)</div>
 
         <table class="spd-table"
-            style="table-layout: fixed; width: 100%; border-collapse: collapse; border: 1px solid black; font-size: 10pt;">
+            style="table-layout: fixed; width: calc(100% - 25px); margin-left: 25px; border-collapse: collapse; border: 1px solid black; font-size: 10pt;">
             <colgroup>
                 <col style="width: 7%;">
                 <col style="width: 37%;">
@@ -417,7 +417,7 @@
         </div>
     </div> <!-- End Page 2 SPD Paper -->
 
-    <h3 style="color: white; margin-top: 20px; margin-bottom: 20px; text-align: center;">Live Preview (Halaman 3)
+    <h3 style="color: white; margin-top: 20px; margin-bottom: 20px; text-align: center;">Preview (Halaman 3)
 
     </h3>
 
@@ -437,28 +437,32 @@
                 <td style="border: 1px solid black; vertical-align: top; padding: 5px;">
                     <table style="width: 100%; border: none;">
                         <tr>
-                            <td style="width: 20px; vertical-align: top;">I.</td>
-                            <td style="width: 115px; vertical-align: top;">Berangkat dari:</td>
-                            <td style="vertical-align: top;" id="preview-visum-berangkat">...</td>
+                            <td style="width: 5%; vertical-align: top; padding-left: 5px;">I.</td>
+                            <td style="width: 40%; vertical-align: top; padding-left: 10px;">Berangkat dari</td>
+                            <td style="width: 3%; vertical-align: top; text-align: center;">:</td>
+                            <td style="width: 52%; vertical-align: top;" id="preview-visum-berangkat">...</td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td style="vertical-align: top;">(tempat kedudukan)</td>
+                            <td style="vertical-align: top; padding-left: 10px;">(tempat kedudukan)</td>
+                            <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td style="vertical-align: top;">Ke:</td>
+                            <td style="vertical-align: top; padding-left: 10px;">Ke</td>
+                            <td style="vertical-align: top; text-align: center;">:</td>
                             <td style="vertical-align: top;" id="preview-visum-tujuan">...</td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td style="vertical-align: top;">Pada Tanggal:</td>
+                            <td style="vertical-align: top; padding-left: 10px;">Pada Tanggal</td>
+                            <td style="vertical-align: top; text-align: center;">:</td>
                             <td style="vertical-align: top;" id="preview-visum-tgl-berangkat">...</td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td colspan="2" style="padding-top: 10px; vertical-align: top;">
+                            <td colspan="3" style="padding-top: 10px; vertical-align: top; padding-left: 10px;">
                                 <div>Kepala Sub Bagian Umum,</div>
                                 <div>Selaku Pejabat Pelaksana Teknis Kegiatan</div>
                                 <div>Sekretariat</div>
