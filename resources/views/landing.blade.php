@@ -84,36 +84,11 @@
                         <!-- Abstract Cards UI -->
                         <div class="relative z-10 flex justify-center items-center w-full lg:w-auto p-10">
                             <img src="{{ asset('img/logo.png') }}" alt="Logo Kabupaten Karanganyar"
-                                class="w-64 sm:w-80 lg:w-[400px] h-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500">
+                                class="w-48 sm:w-64 lg:w-72 h-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500">
                         </div>
                     </div>
 
-                    <!-- Features Grid -->
-                    <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-20">
-                        <dl class="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
-                            <div class="mx-auto flex max-w-xs flex-col gap-y-4">
-                                <dt class="text-base leading-7 text-slate-600">Cetak Dokumen</dt>
-                                <dd
-                                    class="order-first text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-                                    Instan
-                                </dd>
-                            </div>
-                            <div class="mx-auto flex max-w-xs flex-col gap-y-4">
-                                <dt class="text-base leading-7 text-slate-600">Format Surat</dt>
-                                <dd
-                                    class="order-first text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-                                    Standar
-                                </dd>
-                            </div>
-                            <div class="mx-auto flex max-w-xs flex-col gap-y-4">
-                                <dt class="text-base leading-7 text-slate-600">Akses Terbatas</dt>
-                                <dd
-                                    class="order-first text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-                                    Internal
-                                </dd>
-                            </div>
-                        </dl>
-                    </div>
+
 
                 </div>
             </div>

@@ -42,13 +42,16 @@
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Horizontally center content */
-            justify-content: center; /* Vertically center content */
+            align-items: center;
+            /* Horizontally center content */
+            justify-content: center;
+            /* Vertically center content */
         }
 
         .container {
             width: 100%;
-            margin: auto; /* Allow flex to handle centering, but auto margins help with vertical if needed */
+            margin: auto;
+            /* Allow flex to handle centering, but auto margins help with vertical if needed */
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(8px);
             padding: 2rem;
@@ -194,6 +197,15 @@
     <div class="container">
         <!-- LEFT COLUMN: INPUT FORM -->
         <div class="form-section">
+            <a href="{{ url('/') }}"
+                style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); text-decoration: none; margin-bottom: 1rem; font-size: 0.875rem; font-weight: 500; transition: color 0.2s;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5"></path>
+                    <path d="M12 19l-7-7 7-7"></path>
+                </svg>
+                Kembali ke Beranda
+            </a>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h1 style="margin: 0;">Buat SPD</h1>
                 <button type="button" id="btn-toggle-preview" class="btn">
