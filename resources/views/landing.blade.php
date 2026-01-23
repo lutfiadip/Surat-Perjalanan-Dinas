@@ -12,15 +12,15 @@
         rel="stylesheet">
 </head>
 
-<body class="bg-slate-50 font-sans antialiased selection:bg-blue-500 selection:text-white">
+<body class="bg-[#FFF8F3] font-sans antialiased selection:bg-[#1C6DD0] selection:text-white">
     <div class="relative min-h-screen overflow-hidden">
         <!-- Background Gradients -->
-        <div class="absolute -top-40 -right-40 -z-10 h-[500px] w-[500px] rounded-full bg-blue-400/20 blur-3xl filter">
+        <div class="absolute -top-40 -right-40 -z-10 h-[500px] w-[500px] rounded-full bg-[#A3E4DB]/60 blur-3xl filter">
         </div>
-        <div class="absolute top-20 -left-20 -z-10 h-[300px] w-[300px] rounded-full bg-indigo-500/20 blur-3xl filter">
+        <div class="absolute top-20 -left-20 -z-10 h-[300px] w-[300px] rounded-full bg-[#FED1EF]/60 blur-3xl filter">
         </div>
         <div
-            class="absolute bottom-0 right-0 -z-10 h-[600px] w-[600px] translate-y-1/2 rounded-full bg-slate-200/50 blur-3xl filter">
+            class="absolute bottom-0 right-0 -z-10 h-[600px] w-[600px] translate-y-1/2 rounded-full bg-[#1C6DD0]/20 blur-3xl filter">
         </div>
 
         <div class="mx-auto flex min-h-screen max-w-7xl flex-col px-6 lg:px-8">
@@ -28,7 +28,7 @@
             <nav class="flex h-24 items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg shadow-blue-500/20">
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#1C6DD0] to-[#1653a1] text-white shadow-lg shadow-[#1C6DD0]/20">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="h-6 w-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -36,11 +36,11 @@
                         </svg>
                     </div>
                     <span class="text-xl font-bold tracking-tight text-slate-900">SPD<span
-                            class="text-blue-600">.Online</span></span>
+                            class="text-[#1C6DD0]">.Online</span></span>
                 </div>
                 <div>
                     <a href="{{ route('spd.form') }}"
-                        class="text-sm font-semibold leading-6 text-slate-900 hover:text-blue-600 transition">Masuk
+                        class="text-sm font-semibold leading-6 text-slate-900 hover:text-[#1C6DD0] transition">Masuk
                         Operator &rarr;</a>
                 </div>
             </nav>
@@ -57,7 +57,7 @@
                     </div>
                     <h1 class="mt-2 max-w-lg text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
                         Pengelolaan Perjalanan Dinas Yang <span
-                            class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Efisien</span>
+                            class="bg-gradient-to-r from-[#1C6DD0] to-[#1653a1] bg-clip-text text-transparent">Efisien</span>
                     </h1>
                     <p class="mt-6 text-lg leading-8 text-slate-600">
                         Platform terintegrasi untuk pembuatan, pengelolaan, dan pelaporan Surat Perjalanan Dinas (SPD)
@@ -65,7 +65,7 @@
                     </p>
                     <div class="mt-10 flex items-center gap-x-6">
                         <a href="{{ route('spd.form') }}"
-                            class="group relative flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-slate-800 hover:shadow-blue-500/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            class="group relative flex items-center gap-2 rounded-xl bg-[#1C6DD0] px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-[#1653a1] hover:shadow-[#1C6DD0]/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C6DD0]">
                             Buat SPD Baru
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="h-4 w-4 transition-transform group-hover:translate-x-1">

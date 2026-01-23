@@ -9,30 +9,53 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-700: #374151;
-            --gray-900: #111827;
+            --primary: #1C6DD0;
+            /* User: 1C6DD0 (Blue) */
+            --primary-hover: #1653a1;
+            /* Darker Blue */
+            --accent: #1C6DD0;
+            --bg-color: #FFF8F3;
+            /* User: FFF8F3 (Cream/White) */
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
         }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: var(--gray-100);
-            color: var(--gray-900);
+            font-family: 'Instrument Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             line-height: 1.5;
             padding: 2rem;
+            margin: 0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Horizontally center content */
+            justify-content: center; /* Vertically center content */
         }
 
         .container {
-            max-width: 100%;
-            margin: 0 auto;
-            background: white;
+            width: 100%;
+            margin: auto; /* Allow flex to handle centering, but auto margins help with vertical if needed */
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
             padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 1rem;
+            /* rounded-2xl */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             display: block;
             /* Default to block (single column) */
             max-width: 800px;
@@ -60,16 +83,17 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
-            color: var(--gray-700);
+            color: var(--text-color);
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.5rem;
-            border: 1px solid var(--gray-200);
-            border-radius: 0.375rem;
+            padding: 0.625rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            /* rounded-lg */
             font-size: 1rem;
             box-sizing: border-box;
             /* Important for padding */
@@ -93,8 +117,8 @@
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
 
         .grid {
@@ -109,8 +133,9 @@
             background-color: var(--primary);
             color: white;
             border: none;
-            border-radius: 0.375rem;
-            font-weight: 500;
+            border-radius: 0.75rem;
+            /* rounded-xl */
+            font-weight: 600;
             cursor: pointer;
             text-align: center;
             text-decoration: none;
@@ -118,19 +143,60 @@
         }
 
         .btn:hover {
-            opacity: 0.9;
+            background-color: var(--primary-hover);
+        }
+
+        /* Background Blobs */
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .blob-blue {
+            background: rgba(163, 228, 219, 0.6);
+            /* User: A3E4DB (Cyan) */
+            width: 500px;
+            height: 500px;
+            top: -100px;
+            right: -100px;
+        }
+
+        .blob-indigo {
+            background: rgba(254, 209, 239, 0.6);
+            /* User: FED1EF (Pink) */
+            width: 300px;
+            height: 300px;
+            top: 50px;
+            left: -50px;
+        }
+
+        .blob-slate {
+            background: rgba(28, 109, 208, 0.2);
+            /* User: 1C6DD0 (Blue) - Low Opacity */
+            width: 600px;
+            height: 600px;
+            bottom: -100px;
+            right: -100px;
+            transform: none;
         }
     </style>
 </head>
 
 <body>
+    <!-- Background Elements -->
+    <div class="bg-blob blob-blue"></div>
+    <div class="bg-blob blob-indigo"></div>
+    <div class="bg-blob blob-slate"></div>
 
     <div class="container">
         <!-- LEFT COLUMN: INPUT FORM -->
         <div class="form-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h1 style="margin: 0;">Buat SPD</h1>
-                <button type="button" id="btn-toggle-preview" class="btn" style="background-color: #6366f1;">
+                <button type="button" id="btn-toggle-preview" class="btn">
                     Lihat Preview
                 </button>
             </div>
@@ -156,7 +222,7 @@
                         </div>
                     </div>
                     <button type="button" id="btn-add-pegawai" onclick="addPegawai()" class="btn"
-                        style="background-color: #10b981; width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">
+                        style="width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">
                         + Tambah Pengikut
                     </button>
                     <p class="multi-select-note" style="margin-top: 10px;">Pegawai pertama adalah Pegawai Utama,
@@ -194,7 +260,7 @@
                     <div class="form-group">
                         <label>Hari</label>
                         <input type="text" id="hari" name="hari" value="{{ now()->locale('id')->isoFormat('dddd') }}"
-                            required readonly style="background-color: var(--gray-200);">
+                            required readonly style="background-color: var(--border-color);">
                     </div>
                     <div class="form-group">
                         <label>Tanggal Kegiatan</label>
@@ -209,7 +275,7 @@
 Jl. Slamet Riyadi No 20 Surakarta</textarea>
                 </div>
 
-                <hr style="margin: 2rem 0; border: 0; border-top: 2px solid var(--gray-200);">
+                <hr style="margin: 2rem 0; border: 0; border-top: 2px solid var(--border-color);">
                 <h3>Detail SPD</h3>
 
                 <div class="form-group">
@@ -243,7 +309,7 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
                     <div class="form-group">
                         <label>Tanggal Harus Kembali</label>
                         <input type="date" id="tgl_kembali" name="tgl_kembali" value="{{ now()->format('Y-m-d') }}"
-                            required readonly style="background-color: var(--gray-200); cursor: not-allowed;">
+                            required readonly style="background-color: var(--border-color); cursor: not-allowed;">
                     </div>
                 </div>
 
@@ -266,7 +332,7 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
                 <div class="form-group">
                     <label>Penandatangan Surat</label>
                     <select name="penandatangan" class="form-control"
-                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-200); border-radius: 0.375rem;">
+                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
                         <option value="kepala">Kepala Badan Keuangan Daerah</option>
                         <option value="sekretaris">Sekretaris (a.n. Kepala Badan Keuangan Daerah)</option>
                     </select>
@@ -274,8 +340,7 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
 
                 <div style="display: flex; gap: 1rem;">
                     <button type="submit" formaction="{{ route('spd.print') }}" class="btn">Cetak Surat</button>
-                    <button type="submit" formaction="{{ route('spd.export_word') }}" class="btn"
-                        style="background-color: #059669;">Export Word</button>
+                    <button type="submit" formaction="{{ route('spd.export_word') }}" class="btn">Export Word</button>
                 </div>
             </form>
         </div>
@@ -305,7 +370,7 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
                     btn.css('background-color', '#ef4444');
                 } else {
                     btn.html('Lihat Preview');
-                    btn.css('background-color', '#6366f1');
+                    btn.css('background-color', ''); // Reset to default class style
                 }
             });
 
