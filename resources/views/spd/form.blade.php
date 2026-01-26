@@ -197,15 +197,18 @@
     <div class="container">
         <!-- LEFT COLUMN: INPUT FORM -->
         <div class="form-section">
-            <a href="{{ url('/') }}"
-                style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); text-decoration: none; margin-bottom: 1rem; font-size: 0.875rem; font-weight: 500; transition: color 0.2s;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5"></path>
-                    <path d="M12 19l-7-7 7-7"></path>
-                </svg>
-                Kembali ke Beranda
-            </a>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <a href="{{ url('/') }}"
+                    style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5"></path>
+                        <path d="M12 19l-7-7 7-7"></path>
+                    </svg>
+                    Kembali ke Beranda
+                </a>
+            </div>
+
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h1 style="margin: 0;">Buat SPD</h1>
                 <button type="button" id="btn-toggle-preview" class="btn">
@@ -257,7 +260,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Dasar Surat (Untuk Konsiderans "Berdasarkan")</label>
+                    <label>Dasar Surat (Untuk "Berdasarkan")</label>
                     <textarea name="dasar_surat" rows="2"
                         placeholder="Contoh: Surat dari Badan Pengelola... Nomor: ... perihal ...">Surat dari Badan Pengelola Pendapatan Daerah Provinsi Jawa Tengah Nomor: 100.2.2.3/599/BAPENDA/2025 perihal Rekonsiliasi Opsen Pajak Daerah.</textarea>
                 </div>

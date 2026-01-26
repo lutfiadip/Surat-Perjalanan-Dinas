@@ -39,9 +39,18 @@
                             class="text-[#1C6DD0]">.Online</span></span>
                 </div>
                 <div>
-                    <a href="{{ route('spd.form') }}"
-                        class="text-sm font-semibold leading-6 text-slate-900 hover:text-[#1C6DD0] transition">Masuk
-                        Operator &rarr;</a>
+                    @if(isset($user) && $user)
+                        <div class="flex items-center gap-4">
+                            <span
+                                class="text-sm font-semibold text-slate-900 border border-slate-200 rounded-full px-3 py-1">
+                                Halo, <span class="text-[#1C6DD0]">{{ $user->nama }}</span>
+                            </span>
+                            <a href="{{ route('logout') }}"
+                                class="text-sm font-semibold text-red-600 hover:text-red-800 transition">
+                                Logout
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </nav>
 
@@ -52,7 +61,7 @@
                     <div class="mb-8 flex">
                         <div
                             class="relative rounded-full px-3 py-1 text-sm leading-6 text-slate-500 ring-1 ring-slate-900/10 hover:ring-slate-900/20 bg-white/50 backdrop-blur-sm">
-                            Sistem Pengelolaan BKD Karanganyar
+                            Sistem Pembuatan Surat Perjalanan Dinas (SPD) BKD Karanganyar
                         </div>
                     </div>
                     <h1 class="mt-2 max-w-lg text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
@@ -60,21 +69,31 @@
                             class="bg-gradient-to-r from-[#1C6DD0] to-[#1653a1] bg-clip-text text-transparent">Efisien</span>
                     </h1>
                     <p class="mt-6 text-lg leading-8 text-slate-600">
-                        Platform terintegrasi untuk pembuatan, pengelolaan, dan pelaporan Surat Perjalanan Dinas (SPD)
+                        Platform terintegrasi untuk pembuatan Surat Perjalanan Dinas (SPD)
                         di lingkungan Badan Keuangan Daerah.
                     </p>
                     <div class="mt-10 flex items-center gap-x-6">
-                        <a href="{{ route('spd.form') }}"
-                            class="group relative flex items-center gap-2 rounded-xl bg-[#1C6DD0] px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-[#1653a1] hover:shadow-[#1C6DD0]/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C6DD0]">
-                            Buat SPD Baru
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" class="h-4 w-4 transition-transform group-hover:translate-x-1">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
-                        </a>
-                        <a href="#prosedur" class="text-sm font-semibold leading-6 text-slate-900">Lihat Prosedur <span
-                                aria-hidden="true">→</span></a>
+                        @if(isset($user) && $user)
+                            <a href="{{ route('spd.form') }}"
+                                class="group relative flex items-center gap-2 rounded-xl bg-[#1C6DD0] px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-[#1653a1] hover:shadow-[#1C6DD0]/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C6DD0]">
+                                Buka Aplikasi
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                    stroke="currentColor" class="h-4 w-4 transition-transform group-hover:translate-x-1">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                </svg>
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}"
+                                class="group relative flex items-center gap-2 rounded-xl bg-[#1C6DD0] px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-[#1653a1] hover:shadow-[#1C6DD0]/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C6DD0]">
+                                Login
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                    stroke="currentColor" class="h-4 w-4 transition-transform group-hover:translate-x-1">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                </svg>
+                            </a>
+                        @endif
                     </div>
                 </div>
 
