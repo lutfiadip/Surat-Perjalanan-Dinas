@@ -59,7 +59,8 @@
                 <div class="flex items-center">
                     <input id="remember" name="remember" type="checkbox"
                         class="h-4 w-4 rounded border-gray-300 text-[#1C6DD0] focus:ring-[#1C6DD0]">
-                    <label for="remember" class="ml-2 block text-sm text-slate-900">Ingat Saya</label>
+                    <label for="remember" class="ml-2 block text-sm text-slate-900" style="margin-left: 5px;">Ingat
+                        Saya</label>
                 </div>
             </div>
 
