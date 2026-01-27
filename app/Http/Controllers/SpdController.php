@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\PegawaiBkdSpd;
+use App\Models\Spd;
 use Illuminate\Http\Request;
 
 class SpdController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
         $pegawais = PegawaiBkdSpd::all();
         $signatories = [
@@ -26,15 +27,86 @@ class SpdController extends Controller
                 'jabatan' => 'Sekretaris',
             ]
         ];
-        return view('spd.form', compact('pegawais', 'signatories'));
+
+        $draft = null;
+        $pegawaiUtama = null;
+        $pengikuts = [];
+
+        if ($request->has('id')) {
+            $draft = Spd::where('id', $request->id)
+                ->where('created_by', session('user_id'))
+                ->with('pegawais')
+                ->first();
+
+            if ($draft) {
+                // Separate Roles
+                $pegawaiUtama = $draft->pegawais->where('pivot.peran', 'utama')->first();
+                // Pengikuts as array of objects for easier JS handling or collection
+                $pengikuts = $draft->pegawais->where('pivot.peran', 'pengikut')->values();
+            }
+        }
+
+        return view('spd.form', compact('pegawais', 'signatories', 'draft', 'pegawaiUtama', 'pengikuts'));
+    }
+
+    public function store(Request $request)
+    {
+        // Minimal validation for draft
+        // Expecting 'pegawai_utama' (id) and 'pengikut' (array of ids)
+        $data = $request->except('_token', 'pegawai_ids', 'pegawai_utama', 'pengikut');
+        $data['created_by'] = session('user_id');
+        $data['status'] = $request->input('status', 'draft');
+
+        // Check if updating
+        $spd = null;
+        if ($request->has('id') && $request->id) {
+            $spd = Spd::where('id', $request->id)->where('created_by', session('user_id'))->first();
+        }
+
+        if ($spd) {
+            $spd->update($data);
+            // Detach all existing to reset roles
+            $spd->pegawais()->detach();
+        } else {
+            $spd = Spd::create($data);
+        }
+
+        // 1. Pegawai Utama
+        if ($request->filled('pegawai_utama')) {
+            $spd->pegawais()->attach($request->pegawai_utama, ['peran' => 'utama']);
+        }
+
+        // 2. Pengikut
+        if ($request->has('pengikut') && is_array($request->pengikut)) {
+            $pengikutIds = array_unique($request->pengikut);
+            foreach ($pengikutIds as $id) {
+                if ($id != $request->pegawai_utama) {
+                    $spd->pegawais()->attach($id, ['peran' => 'pengikut']);
+                }
+            }
+        }
+
+        return redirect()->route('spd.draft')->with('success', 'Draft berhasil disimpan.');
+    }
+
+    public function draft()
+    {
+        $userId = session('user_id');
+        $drafts = Spd::where('created_by', $userId)
+            ->where('status', 'draft')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('spd.draft', compact('drafts'));
     }
 
     public function print(Request $request)
     {
         // Validate input
         $request->validate([
-            'pegawai_ids' => 'required|array',
-            'pegawai_ids.*' => 'exists:pegawaibkd_spd,id',
+            'pegawai_utama' => 'required|exists:pegawaibkd_spd,id',
+            'pengikut' => 'nullable|array',
+            'pengikut.*' => 'exists:pegawaibkd_spd,id',
             'nomor_surat' => 'nullable',
             // Add other validations as needed
         ]);
@@ -42,7 +114,8 @@ class SpdController extends Controller
         // Fetch selected employees
         // We preserve the order of IDs if possible, or just standard find logic
         // Fetch selected employees and Sort by selection order
-        $ids = $request->pegawai_ids;
+        $ids = array_merge([$request->pegawai_utama], $request->input('pengikut', []));
+        $ids = array_unique($ids); // Remove duplicates if any
         $pegawais = PegawaiBkdSpd::whereIn('id', $ids)->get();
 
         $selectedPegawais = collect($ids)->map(function ($id) use ($pegawais) {
@@ -125,13 +198,15 @@ class SpdController extends Controller
         // but for speed, duplicating effectively.
 
         $request->validate([
-            'pegawai_ids' => 'required|array',
-            'pegawai_ids.*' => 'exists:pegawaibkd_spd,id',
-            'nomor_surat' => 'required',
+            'pegawai_utama' => 'required|exists:pegawaibkd_spd,id',
+            'pengikut' => 'nullable|array',
+            'pengikut.*' => 'exists:pegawaibkd_spd,id',
+            'nomor_surat' => 'nullable',
         ]);
 
         // Fetch selected employees and Sort by selection order
-        $ids = $request->pegawai_ids;
+        $ids = array_merge([$request->pegawai_utama], $request->input('pengikut', []));
+        $ids = array_unique($ids); // Remove duplicates if any
         $pegawais = PegawaiBkdSpd::whereIn('id', $ids)->get();
 
         $selectedPegawais = collect($ids)->map(function ($id) use ($pegawais) {

@@ -19,6 +19,9 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['simple.auth'])->group(function () {
     Route::get('/spd', [SpdController::class, 'create'])->name('spd.form');
+    Route::get('/spd/create', [SpdController::class, 'create'])->name('spd.create'); // Alias
+    Route::post('/spd/store', [SpdController::class, 'store'])->name('spd.store');
+    Route::get('/spd/draft', [SpdController::class, 'draft'])->name('spd.draft');
     Route::post('/spd/print', [SpdController::class, 'print'])->name('spd.print');
     Route::post('/spd/export-word', [SpdController::class, 'exportWord'])->name('spd.export_word');
 });

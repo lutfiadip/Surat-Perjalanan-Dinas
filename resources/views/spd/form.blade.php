@@ -68,10 +68,10 @@
         /* When preview is active */
         .container.with-preview {
             display: grid;
-            grid-template-columns: 1fr 550px;
-            max-width: 100%;
-            /* Expand to full width */
+            grid-template-columns: minmax(0, 1fr) 550px; /* Use minmax(0, 1fr) to prevent flex/grid item expansion issues */
+            max-width: 95vw;
             gap: 2rem;
+            align-items: start; /* Ensure top alignment */
         }
 
         .form-section {
@@ -102,15 +102,7 @@
             /* Important for padding */
         }
 
-        /* Hide preview by default */
-        .preview-section {
-            display: none;
-        }
 
-        /* Show preview when active */
-        .container.with-preview .preview-section {
-            display: block;
-        }
 
         .form-group textarea {
             resize: vertical;
@@ -185,6 +177,87 @@
             right: -100px;
             transform: none;
         }
+
+        /* PREVIEW STYLES (Moved from preview.blade.php) */
+        .preview-section {
+            display: none; /* HEADER FIX: Ensure hidden by default */
+            background: #525659;
+            padding: 15px;
+            border-radius: 8px;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+            overflow-x: auto;
+            position: sticky;
+            top: 20px;
+        }
+
+        .container.with-preview .preview-section {
+            display: block;
+            /* Ensure it's visible when parent has class */
+        }
+
+        .paper {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 20mm;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.15;
+            color: #000;
+            box-sizing: border-box;
+            display: block;
+            zoom: 0.63;
+        }
+
+        .preview-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .paper p {
+            margin: 2px 0;
+        }
+
+        .paper table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .paper td {
+            vertical-align: top;
+            padding: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .container.with-preview {
+                grid-template-columns: 1fr;
+                /* Stack on mobile */
+            }
+
+            .preview-section {
+                display: none;
+                /* By default hidden on mobile unless active? Or standard behavior */
+                position: static;
+                height: auto;
+                max-height: 800px;
+            }
+            
+            /* If with-preview is on mobile, show it */
+            .container.with-preview .preview-section {
+                display: block;
+            }
+
+            .paper {
+                transform: scale(0.9);
+                margin-bottom: -30mm;
+                zoom: 1;
+                transform-origin: top left; /* Fix transform origin */
+            }
+        }
     </style>
 </head>
 
@@ -207,6 +280,13 @@
                     </svg>
                     Kembali ke Beranda
                 </a>
+                <a href="{{ route('spd.draft') }}"
+                    style="display: inline-flex; align-items: center; gap: 0.5rem; color: #1C6DD0; text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
+                    </svg>
+                    Draft Saya
+                </a>
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -218,18 +298,21 @@
 
             <form id="spdForm" action="{{ route('spd.print') }}" method="POST">
                 @csrf
+                <input type="hidden" name="id" value="{{ $draft->id ?? '' }}">
+                <input type="hidden" name="status" value="draft">
 
                 <div class="form-group">
                     <label>Pilih Pegawai</label>
                     <div id="pegawai-wrapper">
                         <div class="pegawai-row" style="margin-bottom: 10px; display: flex; gap: 10px;">
-                            <select name="pegawai_ids[]" required style="flex: 1;" class="select2-pegawai"
+                            <select name="pegawai_utama" required style="flex: 1;" class="select2-pegawai"
                                 onchange="updatePreview()">
                                 <option value="">-- Pilih Pegawai Utama --</option>
                                 @foreach($pegawais as $pegawai)
                                     <option value="{{ $pegawai->id }}" data-nama="{{ $pegawai->nama }}"
                                         data-nip="{{ $pegawai->nip }}" data-pangkat="{{ $pegawai->pangkat_gol }}"
-                                        data-jabatan="{{ $pegawai->jabatan }}">
+                                        data-jabatan="{{ $pegawai->jabatan }}"
+                                        {{ (isset($pegawaiUtama) && $pegawaiUtama->id == $pegawai->id) ? 'selected' : '' }}>
                                         {{ $pegawai->nama }} ({{ $pegawai->nip }})
                                     </option>
                                 @endforeach
@@ -247,28 +330,28 @@
                 <div class="grid" style="grid-template-columns: 1fr 1fr 1fr;">
                     <div class="form-group">
                         <label>Nomor Surat</label>
-                        <input type="text" name="nomor_surat" placeholder="contoh: 094 / 123 / XII / 2025">
+                        <input type="text" name="nomor_surat" placeholder="contoh: 094 / 123 / XII / 2025" value="{{ old('nomor_surat', $draft->nomor_surat ?? '') }}">
                     </div>
                     <div class="form-group">
                         <label>Tanggal Surat</label>
-                        <input type="date" name="tanggal_surat" value="{{ now()->format('Y-m-d') }}" required>
+                        <input type="date" name="tanggal_surat" value="{{ old('tanggal_surat', $draft->tanggal_surat ?? now()->format('Y-m-d')) }}" required>
                     </div>
                     <div class="form-group">
                         <label>Tahun Anggaran</label>
-                        <input type="number" name="tahun_anggaran" value="{{ date('Y') }}" required>
+                        <input type="number" name="tahun_anggaran" value="{{ old('tahun_anggaran', $draft->tahun_anggaran ?? date('Y')) }}" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Dasar Surat (Untuk "Berdasarkan")</label>
                     <textarea name="dasar_surat" rows="2"
-                        placeholder="Contoh: Surat dari Badan Pengelola... Nomor: ... perihal ...">Surat dari Badan Pengelola Pendapatan Daerah Provinsi Jawa Tengah Nomor: 100.2.2.3/599/BAPENDA/2025 perihal Rekonsiliasi Opsen Pajak Daerah.</textarea>
+                        placeholder="Contoh: Surat dari Badan Pengelola... Nomor: ... perihal ...">{{ old('dasar_surat', $draft->dasar_surat ?? 'Surat dari Badan Pengelola Pendapatan Daerah Provinsi Jawa Tengah Nomor: 100.2.2.3/599/BAPENDA/2025 perihal Rekonsiliasi Opsen Pajak Daerah.') }}</textarea>
                 </div>
 
                 <div class="form-group">
                     <label>Untuk (Maksud Perjalanan Dinas)</label>
                     <textarea name="maksud" rows="2" required
-                        placeholder="Contoh: Menghadiri Rekonsiliasi Opsen Pajak Daerah">Menghadiri Rekonsiliasi Opsen Pajak Daerah</textarea>
+                        placeholder="Contoh: Menghadiri Rekonsiliasi Opsen Pajak Daerah">{{ old('maksud', $draft->maksud ?? 'Menghadiri Rekonsiliasi Opsen Pajak Daerah') }}</textarea>
                 </div>
 
                 <div class="grid">
@@ -280,14 +363,13 @@
                     <div class="form-group">
                         <label>Tanggal Kegiatan</label>
                         <input type="date" id="tanggal_kegiatan" name="tanggal_kegiatan"
-                            value="{{ now()->format('Y-m-d') }}" required oninput="updateDay()">
+                            value="{{ old('tanggal_kegiatan', $draft->tanggal_kegiatan ?? now()->format('Y-m-d')) }}" required oninput="updateDay()">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Tempat Kegiatan</label>
-                    <textarea name="tempat" rows="2" required>Bank Jateng KCU Surakarta.
-Jl. Slamet Riyadi No 20 Surakarta</textarea>
+                    <textarea name="tempat" rows="2" required>{{ old('tempat', $draft->tempat ?? "Bank Jateng KCU Surakarta.\nJl. Slamet Riyadi No 20 Surakarta") }}</textarea>
                 </div>
 
                 <hr style="margin: 2rem 0; border: 0; border-top: 2px solid var(--border-color);">
@@ -295,35 +377,35 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
 
                 <div class="form-group">
                     <label>Tingkat Biaya Perjalanan Dinas</label>
-                    <input type="text" name="tingkat_biaya" placeholder="Kosongkan jika tidak ada">
+                    <input type="text" name="tingkat_biaya" placeholder="Kosongkan jika tidak ada" value="{{ old('tingkat_biaya', $draft->tingkat_biaya ?? '') }}">
                 </div>
 
                 <div class="grid">
                     <div class="form-group">
                         <label>Alat Angkut</label>
-                        <input type="text" name="alat_angkut" value="Kendaraan Dinas" required>
+                        <input type="text" name="alat_angkut" value="{{ old('alat_angkut', $draft->alat_angkut ?? 'Kendaraan Dinas') }}" required>
                     </div>
                     <div class="form-group">
                         <label>Lama Perjalanan (Hari)</label>
-                        <input type="number" id="lama_perjalanan" name="lama_perjalanan" value="1" min="1" required
+                        <input type="number" id="lama_perjalanan" name="lama_perjalanan" value="{{ old('lama_perjalanan', $draft->lama_perjalanan ?? '1') }}" min="1" required
                             oninput="calculateReturnDate()">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Tempat Berangkat</label>
-                    <input type="text" name="tempat_berangkat" value="BKD Karanganyar" required>
+                    <input type="text" name="tempat_berangkat" value="{{ old('tempat_berangkat', $draft->tempat_berangkat ?? 'BKD Karanganyar') }}" required>
                 </div>
 
                 <div class="grid">
                     <div class="form-group">
                         <label>Tanggal Berangkat</label>
-                        <input type="date" id="tgl_berangkat" name="tgl_berangkat" value="{{ now()->format('Y-m-d') }}"
+                        <input type="date" id="tgl_berangkat" name="tgl_berangkat" value="{{ old('tgl_berangkat', $draft->tgl_berangkat ?? now()->format('Y-m-d')) }}"
                             required oninput="calculateReturnDate()">
                     </div>
                     <div class="form-group">
                         <label>Tanggal Harus Kembali</label>
-                        <input type="date" id="tgl_kembali" name="tgl_kembali" value="{{ now()->format('Y-m-d') }}"
+                        <input type="date" id="tgl_kembali" name="tgl_kembali" value="{{ old('tgl_kembali', $draft->tgl_kembali ?? now()->format('Y-m-d')) }}"
                             required readonly style="background-color: var(--border-color); cursor: not-allowed;">
                     </div>
                 </div>
@@ -331,29 +413,30 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
                 <div class="grid">
                     <div class="form-group">
                         <label>Pembebanan Anggaran (SKPD)</label>
-                        <input type="text" name="anggaran_skpd" value="Badan Keuangan Daerah" required>
+                        <input type="text" name="anggaran_skpd" value="{{ old('anggaran_skpd', $draft->anggaran_skpd ?? 'Badan Keuangan Daerah') }}" required>
                     </div>
                     <div class="form-group">
                         <label>Kode Rekening</label>
-                        <input type="text" name="kode_rekening" placeholder="Kosongkan jika tidak ada">
+                        <input type="text" name="kode_rekening" placeholder="Kosongkan jika tidak ada" value="{{ old('kode_rekening', $draft->kode_rekening ?? '') }}">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Keterangan Lain-Lain</label>
-                    <textarea name="keterangan_lain" rows="2" placeholder="Kosongkan jika tidak ada"></textarea>
+                    <textarea name="keterangan_lain" rows="2" placeholder="Kosongkan jika tidak ada">{{ old('keterangan_lain', $draft->keterangan_lain ?? '') }}</textarea>
                 </div>
 
                 <div class="form-group">
                     <label>Penandatangan Surat</label>
                     <select name="penandatangan" class="form-control"
                         style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
-                        <option value="kepala">Kepala Badan Keuangan Daerah</option>
-                        <option value="sekretaris">Sekretaris (a.n. Kepala Badan Keuangan Daerah)</option>
+                        <option value="kepala" {{ (isset($draft) && $draft->penandatangan == 'kepala') ? 'selected' : '' }}>Kepala Badan Keuangan Daerah</option>
+                        <option value="sekretaris" {{ (isset($draft) && $draft->penandatangan == 'sekretaris') ? 'selected' : '' }}>Sekretaris (a.n. Kepala Badan Keuangan Daerah)</option>
                     </select>
                 </div>
 
                 <div style="display: flex; gap: 1rem;">
+                    <button type="submit" formaction="{{ route('spd.store') }}" class="btn" style="background-color: #64748b;">Simpan Draft</button>
                     <button type="submit" formaction="{{ route('spd.print') }}" class="btn">Cetak Surat</button>
                     <button type="submit" formaction="{{ route('spd.export_word') }}" class="btn">Export Word</button>
                 </div>
@@ -369,8 +452,7 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
 
     <script>
         const signatories = @json($signatories);
-
-
+        const existingPengikuts = @json($pengikuts ?? []);
 
         $(document).ready(function () {
             // Toggle Preview Handler
@@ -396,6 +478,13 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             }).on('change', function () {
                 updatePreview();
             });
+
+            // Populate Pengikut
+            if (Array.isArray(existingPengikuts) && existingPengikuts.length > 0) {
+                existingPengikuts.forEach(function(p) {
+                    addPegawai(p.id);
+                });
+            }
 
             // Initial Preview Update
             updatePreview();
@@ -670,7 +759,7 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
             return `${day} ${month} ${year}`;
         }
 
-        function addPegawai() {
+        function addPegawai(selectedId = null) {
             const wrapper = $('#pegawai-wrapper');
 
             // 1. Get the original select HTML from the first row as a string/template
@@ -697,8 +786,13 @@ Jl. Slamet Riyadi No 20 Surakarta</textarea>
                 'display': 'block',
                 'flex': '1'
             });
+            newSelect.attr('name', 'pengikut[]');
             newSelect.prop('required', false);
             newSelect.find('option:first').text('-- Pilih Pengikut --');
+
+            if (selectedId) {
+                newSelect.val(selectedId);
+            }
 
             newRow.append(newSelect);
 
