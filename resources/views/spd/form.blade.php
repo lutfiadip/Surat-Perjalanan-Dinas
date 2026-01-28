@@ -271,14 +271,14 @@
         <!-- LEFT COLUMN: INPUT FORM -->
         <div class="form-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <a href="{{ url('/') }}"
+                <a href="{{ route('spd.index') }}"
                     style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 12H5"></path>
                         <path d="M12 19l-7-7 7-7"></path>
                     </svg>
-                    Kembali ke Beranda
+                    Kembali ke Draft
                 </a>
                 <a href="{{ route('spd.draft') }}"
                     style="display: inline-flex; align-items: center; gap: 0.5rem; color: #1C6DD0; text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s;">
@@ -296,7 +296,7 @@
                 </button>
             </div>
 
-            <form id="spdForm" action="{{ route('spd.print') }}" method="POST">
+            <form id="spdForm" action="{{ route('spd.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="id" value="{{ $draft->id ?? '' }}">
                 <input type="hidden" name="status" value="draft">
@@ -436,9 +436,15 @@
                 </div>
 
                 <div style="display: flex; gap: 1rem;">
-                    <button type="submit" formaction="{{ route('spd.store') }}" class="btn" style="background-color: #64748b;">Simpan Draft</button>
-                    <button type="submit" formaction="{{ route('spd.print') }}" class="btn">Cetak Surat</button>
-                    <button type="submit" formaction="{{ route('spd.export_word') }}" class="btn">Export Word</button>
+                    @if(isset($draft) && $draft->status == 'final')
+                        {{-- Final Mode: Print & Export Only --}}
+                        <a href="{{ route('spd.print.final', ['id' => $draft->id]) }}" target="_blank" class="btn" style="text-decoration: none; text-align: center;">Cetak Surat</a>
+                        <a href="{{ route('spd.export_word.final', ['id' => $draft->id]) }}" class="btn" style="text-decoration: none; text-align: center;">Export Word</a>
+                    @else
+                        {{-- Draft Mode: Save Actions --}}
+                        <button type="submit" name="action" value="draft" class="btn" style="background-color: #64748b;">Simpan Draft</button>
+                        <button type="submit" name="action" value="final" class="btn" onclick="return confirm('Apakah Anda yakin ingin memfinalisasi dokumen ini? Dokumen yang sudah final tidak dapat diedit lagi.')">Simpan Final</button>
+                    @endif
                 </div>
             </form>
         </div>

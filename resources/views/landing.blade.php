@@ -138,7 +138,7 @@
                     </p>
                     <div class="mt-10 flex items-center gap-x-6">
                         @if(isset($user) && $user)
-                            <a href="{{ route('spd.form') }}"
+                            <a href="{{ route('spd.index') }}"
                                 class="group relative flex items-center gap-2 rounded-xl bg-[#1C6DD0] px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-[#1653a1] hover:shadow-[#1C6DD0]/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C6DD0]">
                                 Buka Aplikasi
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"

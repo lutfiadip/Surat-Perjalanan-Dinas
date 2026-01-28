@@ -44,7 +44,7 @@ class LoginController extends Controller
                 \Illuminate\Support\Facades\Cookie::queue('remember_user_id', $user->id, 60 * 24 * 30);
             }
 
-            return redirect()->route('spd.form');
+            return redirect()->route('spd.draft');
         }
 
         return back()->with('error', 'Username atau password salah.');
