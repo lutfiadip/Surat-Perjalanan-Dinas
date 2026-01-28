@@ -11,13 +11,20 @@
     <style>
         body {
             font-family: 'Instrument Sans', sans-serif;
-            background-color: #FFF8F3;
         }
     </style>
 </head>
 
-<body class="p-8">
-    <div class="max-w-4xl mx-auto">
+<body class="bg-[#FFF8F3] font-sans antialiased selection:bg-[#1C6DD0] selection:text-white p-8 relative min-h-screen">
+    <!-- Background Gradients -->
+    <div class="absolute -top-40 -right-40 -z-10 h-[500px] w-[500px] rounded-full bg-[#A3E4DB]/60 blur-3xl filter">
+    </div>
+    <div class="absolute top-20 -left-20 -z-10 h-[300px] w-[300px] rounded-full bg-[#FED1EF]/60 blur-3xl filter">
+    </div>
+    <div class="absolute bottom-0 right-0 -z-10 h-[600px] w-[600px] translate-y-1/2 rounded-full bg-[#1C6DD0]/20 blur-3xl filter">
+    </div>
+
+    <div class="max-w-4xl mx-auto relative z-10">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-slate-900">Draft SPD Saya</h1>
             <a href="{{ route('spd.create') }}"
