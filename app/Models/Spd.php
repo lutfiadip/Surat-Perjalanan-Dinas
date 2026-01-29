@@ -25,4 +25,9 @@ class Spd extends Model
         return $this->belongsToMany(PegawaiBkdSpd::class, 'spd_pegawai', 'spd_id', 'pegawai_id')
             ->withPivot('peran');
     }
+
+    public function penandatangan()
+    {
+        return $this->belongsTo(Penandatangan::class, 'penandatangan_id');
+    }
 }

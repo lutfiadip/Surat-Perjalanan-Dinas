@@ -490,8 +490,16 @@
                         <label>Penandatangan Surat</label>
                         <select name="penandatangan" class="form-control"
                             style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
-                            <option value="kepala" {{ (isset($draft) && $draft->penandatangan == 'kepala') ? 'selected' : '' }}>Kepala Badan Keuangan Daerah</option>
-                            <option value="sekretaris" {{ (isset($draft) && $draft->penandatangan == 'sekretaris') ? 'selected' : '' }}>Sekretaris (a.n. Kepala Badan Keuangan Daerah)</option>
+                            @foreach($signatories as $signer)
+                                <option value="{{ $signer->id }}" 
+                                    data-nama="{{ $signer->nama }}"
+                                    data-nip="{{ $signer->nip }}"
+                                    data-pangkat="{{ $signer->pangkat }}"
+                                    data-jabatan="{{ $signer->jabatan }}"
+                                    {{ (isset($draft) && $draft->penandatangan_id == $signer->id) ? 'selected' : '' }}>
+                                    {{ $signer->jabatan }} - {{ $signer->nama }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -583,8 +591,19 @@
             const tglBerangkat = formatDateIndo($('[name="tgl_berangkat"]').val());
             const tglKembali = formatDateIndo($('[name="tgl_kembali"]').val());
 
-            const signRoleVal = $('[name="penandatangan"]').val();
-            const signer = signatories[signRoleVal] || signatories['kepala'];
+            // Get Signatory Data from Selected Option
+            const signSelect = $('[name="penandatangan"]');
+            const selectedSigner = signSelect.find('option:selected');
+            
+            const signer = {
+                nama: selectedSigner.data('nama') || '',
+                nip: selectedSigner.data('nip') || '',
+                pangkat: selectedSigner.data('pangkat') || '',
+                jabatan: selectedSigner.data('jabatan') || ''
+            };
+            
+            // Allow Title Case logic if needed, but for now use raw name from DB
+            signer.nama_title = signer.nama; 
 
             // --- PAGE 1: SURAT TUGAS ---
             $('#preview-nomor').text(nomor);
@@ -606,7 +625,8 @@
             const signContainer = $('#preview-signature-container');
             let signHtml = '';
 
-            if (signRoleVal === 'sekretaris') {
+            // Check if context is Sekretaris (case insensitive)
+            if (signer.jabatan && signer.jabatan.toLowerCase().includes('sekretaris')) {
                 // Table layout for hanging "a.n." and indented details, matching User Image
                 // Note: User image shows Name in Title Case, Pangkat included.
                 // Structure:

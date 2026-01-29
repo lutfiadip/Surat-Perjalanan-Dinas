@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PegawaiBkdSpd;
+use App\Models\Penandatangan;
 use App\Models\Spd;
 use Illuminate\Http\Request;
 
@@ -11,22 +12,8 @@ class SpdController extends Controller
     public function create(Request $request)
     {
         $pegawais = PegawaiBkdSpd::all();
-        $signatories = [
-            'kepala' => [
-                'nama' => 'KURNIADI MAULATO, S.Sos., M.Si',
-                'nama_title' => 'Kurniadi Maulato, S.Sos., M.Si',
-                'nip' => '19700510 199003 1 006',
-                'pangkat' => 'Pembina Utama Muda (IV/c)',
-                'jabatan' => 'Kepala Badan Keuangan Daerah',
-            ],
-            'sekretaris' => [
-                'nama' => 'PUJIYANTO, S.Sos, M.Si.',
-                'nama_title' => 'Pujiyanto, S.Sos, M.Si.',
-                'nip' => '19710515 199003 1 002',
-                'pangkat' => 'Pembina Tk.I (IV/b)',
-                'jabatan' => 'Sekretaris',
-            ]
-        ];
+        // Fetch active signatories from database
+        $signatories = Penandatangan::where('status_aktif', 1)->get();
 
         $draft = null;
         $pegawaiUtama = null;
@@ -55,22 +42,8 @@ class SpdController extends Controller
         $pegawais = PegawaiBkdSpd::all();
 
         // 2. Definisi signatories (sama seperti create)
-        $signatories = [
-            'kepala' => [
-                'nama' => 'KURNIADI MAULATO, S.Sos., M.Si',
-                'nama_title' => 'Kurniadi Maulato, S.Sos., M.Si',
-                'nip' => '19700510 199003 1 006',
-                'pangkat' => 'Pembina Utama Muda (IV/c)',
-                'jabatan' => 'Kepala Badan Keuangan Daerah',
-            ],
-            'sekretaris' => [
-                'nama' => 'PUJIYANTO, S.Sos, M.Si.',
-                'nama_title' => 'Pujiyanto, S.Sos, M.Si.',
-                'nip' => '19710515 199003 1 002',
-                'pangkat' => 'Pembina Tk.I (IV/b)',
-                'jabatan' => 'Sekretaris',
-            ]
-        ];
+        // 2. Definisi signatories (Updated to use Table)
+        $signatories = Penandatangan::where('status_aktif', 1)->get();
 
         // 3. Ambil Draft SPD berdasarkan ID & Session User
         // STRICT: Hanya boleh edit punya sendiri
@@ -93,8 +66,10 @@ class SpdController extends Controller
         $userId = session('user_id');
 
         // Common Data
-        $data = $request->except('_token', 'pegawai_ids', 'pegawai_utama', 'pengikut', 'action');
+        // Common Data
+        $data = $request->except('_token', 'pegawai_ids', 'pegawai_utama', 'pengikut', 'action', 'penandatangan');
         $data['created_by'] = $userId;
+        $data['penandatangan_id'] = $request->input('penandatangan');
 
         // Validation Rules
         if ($action === 'final') {
@@ -320,36 +295,37 @@ class SpdController extends Controller
         }
 
         // Signatory Selection
-        $signerType = $request->input('penandatangan', 'kepala');
+        $signerId = $request->input('penandatangan');
+        $signer = Penandatangan::find($signerId);
 
-        if ($signerType == 'sekretaris') {
-            $signatory = [
-                'nama' => 'PUJIYANTO, S.Sos, M.Si.',
-                'nama_title' => 'Pujiyanto, S.Sos, M.Si.',
-                'nip' => '19710515 199003 1 002',
-                'pangkat' => 'Pembina Tk.I (IV/b)',
-                'jabatan' => 'Sekretaris',
-                'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
-            ];
-            $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
+        // Fallback or specific logic if not found (though validation should handle it)
+        if (!$signer) {
+            // Fallback to active kepala if possible, or error
+            $signer = Penandatangan::where('jabatan', 'like', '%Kepala%')->where('status_aktif', 1)->first();
+        }
+
+        $signatory = [
+            'nama' => $signer->nama,
+            'nip' => $signer->nip,
+            'pangkat' => $signer->pangkat,
+            'jabatan' => $signer->jabatan,
+            'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah', // Static as per observation
+        ];
+
+        $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
+
+        if (stripos($signer->jabatan, 'Sekretaris') !== false) {
+            // Sekretaris Layout (a.n.)
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
                 <tr><td style="vertical-align: top; border: none; padding: 0;">a.n.</td><td style="vertical-align: top; border: none; padding: 0;">Kepala Badan Keuangan Daerah<br>Sekretaris</td></tr>
                 <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama_title'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
             </table>';
         } else {
-            $signatory = [
-                'nama' => 'KURNIADI MAULATO, S.Sos., M.Si',
-                'nama_title' => 'Kurniadi Maulato, S.Sos., M.Si',
-                'nip' => '19700510 199003 1 006',
-                'pangkat' => 'Pembina Utama Muda (IV/c)',
-                'jabatan' => 'Kepala Badan Keuangan Daerah',
-                'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
-            ];
-            $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
-            $signatory['full_signature_page1'] = '<br>' . $tgl . '<br>Kepala Badan Keuangan Daerah<br><br><br><br><br>' . $signatory['nama_title'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'];
+            // Kepala Layout
+            $signatory['full_signature_page1'] = '<br>' . $tgl . '<br>Kepala Badan Keuangan Daerah<br><br><br><br><br>' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'];
         }
 
         $pptk = [
@@ -424,36 +400,37 @@ class SpdController extends Controller
         }
 
         // 5. Signatory
-        $signerType = $data['penandatangan'] ?? 'kepala';
+        $signer = $spd->penandatangan; // Relationship
 
-        if ($signerType == 'sekretaris') {
-            $signatory = [
-                'nama' => 'PUJIYANTO, S.Sos, M.Si.',
-                'nama_title' => 'Pujiyanto, S.Sos, M.Si.',
-                'nip' => '19710515 199003 1 002',
-                'pangkat' => 'Pembina Tk.I (IV/b)',
-                'jabatan' => 'Sekretaris',
-                'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
-            ];
-            $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
+        // Fallback checking
+        if (!$signer) {
+            // Try to recover from id if relation failed logic but id exists?
+            // Or just default fallback
+            $signer = Penandatangan::where('jabatan', 'like', '%Kepala%')->where('status_aktif', 1)->first();
+        }
+
+        $signatory = [
+            'nama' => $signer->nama,
+            'nip' => $signer->nip,
+            'pangkat' => $signer->pangkat,
+            'jabatan' => $signer->jabatan,
+            'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
+        ];
+
+        $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
+
+        if (stripos($signer->jabatan, 'Sekretaris') !== false) {
+            // Sekretaris Layout (a.n.)
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
                 <tr><td style="vertical-align: top; border: none; padding: 0;">a.n.</td><td style="vertical-align: top; border: none; padding: 0;">Kepala Badan Keuangan Daerah<br>Sekretaris</td></tr>
                 <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama_title'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
             </table>';
         } else {
-            $signatory = [
-                'nama' => 'KURNIADI MAULATO, S.Sos., M.Si',
-                'nama_title' => 'Kurniadi Maulato, S.Sos., M.Si',
-                'nip' => '19700510 199003 1 006',
-                'pangkat' => 'Pembina Utama Muda (IV/c)',
-                'jabatan' => 'Kepala Badan Keuangan Daerah',
-                'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
-            ];
-            $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
-            $signatory['full_signature_page1'] = '<br>' . $tgl . '<br>Kepala Badan Keuangan Daerah<br><br><br><br><br>' . $signatory['nama_title'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'];
+            // Kepala Layout
+            $signatory['full_signature_page1'] = '<br>' . $tgl . '<br>Kepala Badan Keuangan Daerah<br><br><br><br><br>' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'];
         }
 
         // 6. PPTK
