@@ -258,6 +258,36 @@
                 transform-origin: top left; /* Fix transform origin */
             }
         }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: black;
+        }
+
+        .btn-draft {
+            background-color: #64748b;
+        }
+
+        .btn-draft:hover {
+            background-color: #475569; /* Slate 600 */
+        }
+
+        .btn-danger {
+            background-color: #ef4444 !important;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626 !important; /* Red 600 */
+        }
     </style>
 </head>
 
@@ -271,14 +301,13 @@
         <!-- LEFT COLUMN: INPUT FORM -->
         <div class="form-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <a href="{{ route('spd.index') }}"
-                    style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s;">
+                <a href="{{ route('spd.index') }}" class="back-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 12H5"></path>
                         <path d="M12 19l-7-7 7-7"></path>
                     </svg>
-                    Kembali ke Draft
+                    Kembali ke Halaman Dokumen
                 </a>
 
             </div>
@@ -474,7 +503,7 @@
                         <a href="{{ route('spd.export_word.final', ['id' => $draft->id]) }}" class="btn" style="text-decoration: none; text-align: center;">Export Word</a>
                     @else
                         {{-- Draft Mode: Save Actions --}}
-                        <button type="submit" name="action" value="draft" class="btn" style="background-color: #64748b;">Simpan Draft</button>
+                        <button type="submit" name="action" value="draft" class="btn btn-draft">Simpan Draft</button>
                         <button type="submit" name="action" value="final" class="btn" onclick="return confirm('Apakah Anda yakin ingin memfinalisasi dokumen ini? Dokumen yang sudah final tidak dapat diedit lagi.')">Simpan Final</button>
                     @endif
                 </div>
@@ -502,10 +531,10 @@
 
                 if (container.hasClass('with-preview')) {
                     btn.html('Tutup Preview');
-                    btn.css('background-color', '#ef4444');
+                    btn.addClass('btn-danger');
                 } else {
                     btn.html('Lihat Preview');
-                    btn.css('background-color', ''); // Reset to default class style
+                    btn.removeClass('btn-danger'); // Reset to default class style
                 }
             });
 
