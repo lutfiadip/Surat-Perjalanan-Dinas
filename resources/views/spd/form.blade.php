@@ -280,13 +280,7 @@
                     </svg>
                     Kembali ke Draft
                 </a>
-                <a href="{{ route('spd.draft') }}"
-                    style="display: inline-flex; align-items: center; gap: 0.5rem; color: #1C6DD0; text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
-                    </svg>
-                    Draft Saya
-                </a>
+
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -301,138 +295,176 @@
                 <input type="hidden" name="id" value="{{ $draft->id ?? '' }}">
                 <input type="hidden" name="status" value="draft">
 
-                <div class="form-group">
-                    <label>Pilih Pegawai</label>
-                    <div id="pegawai-wrapper">
-                        <div class="pegawai-row" style="margin-bottom: 10px; display: flex; gap: 10px;">
-                            <select name="pegawai_utama" required style="flex: 1;" class="select2-pegawai"
-                                onchange="updatePreview()">
-                                <option value="">-- Pilih Pegawai Utama --</option>
-                                @foreach($pegawais as $pegawai)
-                                    <option value="{{ $pegawai->id }}" data-nama="{{ $pegawai->nama }}"
-                                        data-nip="{{ $pegawai->nip }}" data-pangkat="{{ $pegawai->pangkat_gol }}"
-                                        data-jabatan="{{ $pegawai->jabatan }}"
-                                        {{ (isset($pegawaiUtama) && $pegawaiUtama->id == $pegawai->id) ? 'selected' : '' }}>
-                                        {{ $pegawai->nama }} ({{ $pegawai->nip }})
-                                    </option>
-                                @endforeach
-                            </select>
+                <!-- SECTION 1: INFORMASI SURAT -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4">1. Informasi Surat</h3>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div class="form-group">
+                            <label>Nomor Surat</label>
+                            <input type="text" name="nomor_surat" placeholder="contoh: 094 / 123 / XII / 2025" value="{{ old('nomor_surat', $draft->nomor_surat ?? '') }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Surat</label>
+                            <input type="date" name="tanggal_surat" value="{{ old('tanggal_surat', $draft->tanggal_surat ?? now()->format('Y-m-d')) }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tahun Anggaran</label>
+                            <input type="number" name="tahun_anggaran" value="{{ old('tahun_anggaran', $draft->tahun_anggaran ?? date('Y')) }}" required>
                         </div>
                     </div>
-                    <button type="button" id="btn-add-pegawai" onclick="addPegawai()" class="btn"
-                        style="width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">
-                        + Tambah Pengikut
-                    </button>
-                    <p class="multi-select-note" style="margin-top: 10px;">Pegawai pertama adalah Pegawai Utama,
-                        selanjutnya adalah Pengikut.</p>
                 </div>
 
-                <div class="grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                <!-- SECTION 2: DASAR DAN MAKSUD PENUGASAN -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 mb-2">2. Dasar dan Maksud Penugasan</h3>
+                    <p class="text-sm text-slate-500 mb-4">Isi sesuai surat undangan atau perintah yang diterima.</p>
+                    
                     <div class="form-group">
-                        <label>Nomor Surat</label>
-                        <input type="text" name="nomor_surat" placeholder="contoh: 094 / 123 / XII / 2025" value="{{ old('nomor_surat', $draft->nomor_surat ?? '') }}">
+                        <label>Dasar Surat (Untuk "Berdasarkan")</label>
+                        <textarea name="dasar_surat" rows="2"
+                            placeholder="Contoh: Surat dari... Nomor: ... perihal ...">{{ old('dasar_surat', $draft->dasar_surat ?? 'Surat dari Badan Pengelola Pendapatan Daerah Provinsi Jawa Tengah Nomor: 100.2.2.3/599/BAPENDA/2025 perihal Rekonsiliasi Opsen Pajak Daerah.') }}</textarea>
                     </div>
+
                     <div class="form-group">
-                        <label>Tanggal Surat</label>
-                        <input type="date" name="tanggal_surat" value="{{ old('tanggal_surat', $draft->tanggal_surat ?? now()->format('Y-m-d')) }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Tahun Anggaran</label>
-                        <input type="number" name="tahun_anggaran" value="{{ old('tahun_anggaran', $draft->tahun_anggaran ?? date('Y')) }}" required>
+                        <label>Untuk (Maksud Perjalanan Dinas)</label>
+                        <textarea name="maksud" rows="2" required
+                            placeholder="Contoh: Menghadiri Rekonsiliasi Opsen Pajak Daerah">{{ old('maksud', $draft->maksud ?? 'Menghadiri Rekonsiliasi Opsen Pajak Daerah') }}</textarea>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Dasar Surat (Untuk "Berdasarkan")</label>
-                    <textarea name="dasar_surat" rows="2"
-                        placeholder="Contoh: Surat dari Badan Pengelola... Nomor: ... perihal ...">{{ old('dasar_surat', $draft->dasar_surat ?? 'Surat dari Badan Pengelola Pendapatan Daerah Provinsi Jawa Tengah Nomor: 100.2.2.3/599/BAPENDA/2025 perihal Rekonsiliasi Opsen Pajak Daerah.') }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Untuk (Maksud Perjalanan Dinas)</label>
-                    <textarea name="maksud" rows="2" required
-                        placeholder="Contoh: Menghadiri Rekonsiliasi Opsen Pajak Daerah">{{ old('maksud', $draft->maksud ?? 'Menghadiri Rekonsiliasi Opsen Pajak Daerah') }}</textarea>
-                </div>
-
-                <div class="grid">
+                <!-- SECTION 3: PEGAWAI YANG DITUGASKAN -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4">3. Pegawai yang Ditugaskan</h3>
+                    
                     <div class="form-group">
-                        <label>Hari</label>
-                        <input type="text" id="hari" name="hari" value="{{ now()->locale('id')->isoFormat('dddd') }}"
-                            required readonly style="background-color: var(--border-color);">
-                    </div>
-                    <div class="form-group">
-                        <label>Tanggal Kegiatan</label>
-                        <input type="date" id="tanggal_kegiatan" name="tanggal_kegiatan"
-                            value="{{ old('tanggal_kegiatan', $draft->tanggal_kegiatan ?? now()->format('Y-m-d')) }}" required oninput="updateDay()">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Tempat Kegiatan</label>
-                    <textarea name="tempat" rows="2" required>{{ old('tempat', $draft->tempat ?? "Bank Jateng KCU Surakarta.\nJl. Slamet Riyadi No 20 Surakarta") }}</textarea>
-                </div>
-
-                <hr style="margin: 2rem 0; border: 0; border-top: 2px solid var(--border-color);">
-                <h3>Detail SPD</h3>
-
-                <div class="form-group">
-                    <label>Tingkat Biaya Perjalanan Dinas</label>
-                    <input type="text" name="tingkat_biaya" placeholder="Kosongkan jika tidak ada" value="{{ old('tingkat_biaya', $draft->tingkat_biaya ?? '') }}">
-                </div>
-
-                <div class="grid">
-                    <div class="form-group">
-                        <label>Alat Angkut</label>
-                        <input type="text" name="alat_angkut" value="{{ old('alat_angkut', $draft->alat_angkut ?? 'Kendaraan Dinas') }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Lama Perjalanan (Hari)</label>
-                        <input type="number" id="lama_perjalanan" name="lama_perjalanan" value="{{ old('lama_perjalanan', $draft->lama_perjalanan ?? '1') }}" min="1" required
-                            oninput="calculateReturnDate()">
+                        <label>Pilih Pegawai Utama</label>
+                        <div id="pegawai-wrapper">
+                            <div class="pegawai-row" style="margin-bottom: 10px; display: flex; gap: 10px;">
+                                <select name="pegawai_utama" required style="flex: 1;" class="select2-pegawai"
+                                    onchange="updatePreview()">
+                                    <option value="">-- Pilih Pegawai Utama --</option>
+                                    @foreach($pegawais as $pegawai)
+                                        <option value="{{ $pegawai->id }}" data-nama="{{ $pegawai->nama }}"
+                                            data-nip="{{ $pegawai->nip }}" data-pangkat="{{ $pegawai->pangkat_gol }}"
+                                            data-jabatan="{{ $pegawai->jabatan }}"
+                                            {{ (isset($pegawaiUtama) && $pegawaiUtama->id == $pegawai->id) ? 'selected' : '' }}>
+                                            {{ $pegawai->nama }} ({{ $pegawai->nip }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-add-pegawai" onclick="addPegawai()" class="btn"
+                            style="width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">
+                            + Tambah Pengikut
+                        </button>
+                        <p class="multi-select-note" style="margin-top: 10px;">Pegawai pertama adalah Pegawai Utama,
+                            selanjutnya adalah Pengikut.</p>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Tempat Berangkat</label>
-                    <input type="text" name="tempat_berangkat" value="{{ old('tempat_berangkat', $draft->tempat_berangkat ?? 'BKD Karanganyar') }}" required>
-                </div>
+                <!-- SECTION 4: INFORMASI KEGIATAN -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4">4. Informasi Kegiatan</h3>
+                    
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>Hari</label>
+                            <input type="text" id="hari" name="hari" value="{{ now()->locale('id')->isoFormat('dddd') }}"
+                                required readonly style="background-color: var(--border-color);">
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Kegiatan</label>
+                            <input type="date" id="tanggal_kegiatan" name="tanggal_kegiatan"
+                                value="{{ old('tanggal_kegiatan', $draft->tanggal_kegiatan ?? now()->format('Y-m-d')) }}" required oninput="updateDay()">
+                        </div>
+                    </div>
 
-                <div class="grid">
                     <div class="form-group">
-                        <label>Tanggal Berangkat</label>
-                        <input type="date" id="tgl_berangkat" name="tgl_berangkat" value="{{ old('tgl_berangkat', $draft->tgl_berangkat ?? now()->format('Y-m-d')) }}"
-                            required oninput="calculateReturnDate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Tanggal Harus Kembali</label>
-                        <input type="date" id="tgl_kembali" name="tgl_kembali" value="{{ old('tgl_kembali', $draft->tgl_kembali ?? now()->format('Y-m-d')) }}"
-                            required readonly style="background-color: var(--border-color); cursor: not-allowed;">
-                    </div>
-                </div>
-
-                <div class="grid">
-                    <div class="form-group">
-                        <label>Pembebanan Anggaran (SKPD)</label>
-                        <input type="text" name="anggaran_skpd" value="{{ old('anggaran_skpd', $draft->anggaran_skpd ?? 'Badan Keuangan Daerah') }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Kode Rekening</label>
-                        <input type="text" name="kode_rekening" placeholder="Kosongkan jika tidak ada" value="{{ old('kode_rekening', $draft->kode_rekening ?? '') }}">
+                        <label>Tempat Kegiatan</label>
+                        <textarea name="tempat" rows="2" required>{{ old('tempat', $draft->tempat ?? "Bank Jateng KCU Surakarta.\nJl. Slamet Riyadi No 20 Surakarta") }}</textarea>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Keterangan Lain-Lain</label>
-                    <textarea name="keterangan_lain" rows="2" placeholder="Kosongkan jika tidak ada">{{ old('keterangan_lain', $draft->keterangan_lain ?? '') }}</textarea>
+                <!-- SECTION 5: DETAIL PERJALANAN DINAS -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 mb-2">5. Detail Perjalanan Dinas</h3>
+                    <p class="text-sm text-slate-500 mb-4">Isi informasi perjalanan sesuai pelaksanaan dinas.</p>
+
+                    <div class="form-group">
+                        <label>Tingkat Biaya Perjalanan Dinas</label>
+                        <input type="text" name="tingkat_biaya" placeholder="Kosongkan jika tidak ada" value="{{ old('tingkat_biaya', $draft->tingkat_biaya ?? '') }}">
+                    </div>
+
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>Alat Angkut</label>
+                            <input type="text" name="alat_angkut" value="{{ old('alat_angkut', $draft->alat_angkut ?? 'Kendaraan Dinas') }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Lama Perjalanan (Hari)</label>
+                            <input type="number" id="lama_perjalanan" name="lama_perjalanan" value="{{ old('lama_perjalanan', $draft->lama_perjalanan ?? '1') }}" min="1" required
+                                oninput="calculateReturnDate()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tempat Berangkat</label>
+                        <input type="text" name="tempat_berangkat" value="{{ old('tempat_berangkat', $draft->tempat_berangkat ?? 'BKD Karanganyar') }}" required>
+                    </div>
+
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>Tanggal Berangkat</label>
+                            <input type="date" id="tgl_berangkat" name="tgl_berangkat" value="{{ old('tgl_berangkat', $draft->tgl_berangkat ?? now()->format('Y-m-d')) }}"
+                                required oninput="calculateReturnDate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Harus Kembali</label>
+                            <input type="date" id="tgl_kembali" name="tgl_kembali" value="{{ old('tgl_kembali', $draft->tgl_kembali ?? now()->format('Y-m-d')) }}"
+                                required readonly style="background-color: var(--border-color); cursor: not-allowed;">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Penandatangan Surat</label>
-                    <select name="penandatangan" class="form-control"
-                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
-                        <option value="kepala" {{ (isset($draft) && $draft->penandatangan == 'kepala') ? 'selected' : '' }}>Kepala Badan Keuangan Daerah</option>
-                        <option value="sekretaris" {{ (isset($draft) && $draft->penandatangan == 'sekretaris') ? 'selected' : '' }}>Sekretaris (a.n. Kepala Badan Keuangan Daerah)</option>
-                    </select>
+                <!-- SECTION 6: PEMBIAYAAN DAN ANGGARAN -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4">6. Pembiayaan dan Anggaran</h3>
+                    
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>Pembebanan Anggaran (SKPD)</label>
+                            <input type="text" name="anggaran_skpd" value="{{ old('anggaran_skpd', $draft->anggaran_skpd ?? 'Badan Keuangan Daerah') }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Kode Rekening</label>
+                            <input type="text" name="kode_rekening" placeholder="Kosongkan jika tidak ada" value="{{ old('kode_rekening', $draft->kode_rekening ?? '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 7: KETERANGAN TAMBAHAN -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4">7. Keterangan Tambahan</h3>
+                    
+                    <div class="form-group">
+                        <label>Keterangan Lain-Lain</label>
+                        <textarea name="keterangan_lain" rows="2" placeholder="Kosongkan jika tidak ada">{{ old('keterangan_lain', $draft->keterangan_lain ?? '') }}</textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION 8: PENGESAHAN SURAT -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4">8. Pengesahan Surat</h3>
+                    
+                    <div class="form-group">
+                        <label>Penandatangan Surat</label>
+                        <select name="penandatangan" class="form-control"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
+                            <option value="kepala" {{ (isset($draft) && $draft->penandatangan == 'kepala') ? 'selected' : '' }}>Kepala Badan Keuangan Daerah</option>
+                            <option value="sekretaris" {{ (isset($draft) && $draft->penandatangan == 'sekretaris') ? 'selected' : '' }}>Sekretaris (a.n. Kepala Badan Keuangan Daerah)</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div style="display: flex; gap: 1rem;">
@@ -766,6 +798,13 @@
         }
 
         function addPegawai(selectedId = null) {
+            // Check if Pegawai Utama is selected
+            const pegawaiUtama = $('select[name="pegawai_utama"]').val();
+            if (!pegawaiUtama) {
+                alert('Mohon pilih Pegawai Utama terlebih dahulu.');
+                return;
+            }
+
             const wrapper = $('#pegawai-wrapper');
 
             // 1. Get the original select HTML from the first row as a string/template
@@ -778,6 +817,7 @@
             tempSelect.removeClass('select2-hidden-accessible');
             tempSelect.removeAttr('data-select2-id tabindex aria-hidden');
             tempSelect.find('option').removeAttr('data-select2-id');
+            tempSelect.find('option').removeAttr('selected'); // Fix: Remove pre-selected attribute from clone
             tempSelect.val(''); // clear value
 
             // 3. Create the new Row container

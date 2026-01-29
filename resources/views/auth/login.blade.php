@@ -32,7 +32,7 @@
         </div>
 
         @if(session('error'))
-            <div class="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-xs">
+            <div class="mb-4 p-3 rounded-xl bg-red-100 border border-red-400 text-red-700 text-sm font-medium text-center">
                 {{ session('error') }}
             </div>
         @endif
