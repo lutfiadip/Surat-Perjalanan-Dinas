@@ -512,6 +512,7 @@ class SpdController extends Controller
 
         $count = 0;
         foreach ($spds as $spd) {
+            /** @var Spd $spd */
             $spd->pegawais()->detach();
             $spd->delete();
             $count++;
