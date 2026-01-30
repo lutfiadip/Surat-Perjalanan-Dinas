@@ -278,7 +278,8 @@ if (file_exists($path)) {
                                             timbul
                                             dibebankan
                                             pada APBD Kabupaten Karanganyar Tahun Anggaran
-                                            {{ $data['tahun_anggaran'] }}.</td>
+                                            {{ $data['tahun_anggaran'] }}.
+                                        </td>
                                     </tr>
                                 </table>
                             </td>
@@ -302,9 +303,9 @@ if (file_exists($path)) {
         <!-- ========================================== -->
         <!-- HALAMAN 2: SPD DEPAN -->
         <!-- ========================================== -->
-        </div>
-        <br clear=all style='page-break-before:always; mso-break-type:section-break'>
-        <div class="Section2">
+    </div>
+    <br clear=all style='page-break-before:always; mso-break-type:section-break'>
+    <div class="Section2">
 
         <!-- KOP SURAT (Repeat) -->
         <table style="border-bottom: 1px solid #000; margin-bottom: 10px;">
@@ -563,7 +564,8 @@ if (file_exists($path)) {
                                             a.</td>
                                         <td
                                             style="border: none; padding: 0; vertical-align: top; mso-padding-alt: 0cm 0cm 0cm 0cm;">
-                                            {{ $data['tempat_berangkat'] }}</td>
+                                            {{ $data['tempat_berangkat'] }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td
@@ -571,7 +573,8 @@ if (file_exists($path)) {
                                             b.</td>
                                         <td
                                             style="border: none; padding: 0; vertical-align: top; mso-padding-alt: 0cm 0cm 0cm 0cm;">
-                                            {!! nl2br(e($data['tempat'])) !!}</td>
+                                            {!! nl2br(e($data['tempat'])) !!}
+                                        </td>
                                     </tr>
                                 </table>
                             </td>
@@ -595,7 +598,8 @@ if (file_exists($path)) {
                                             a.</td>
                                         <td
                                             style="border: none; padding: 0; vertical-align: top; mso-padding-alt: 0cm 0cm 0cm 0cm;">
-                                            {{ $data['lama_perjalanan'] }}</td>
+                                            {{ $data['lama_perjalanan'] }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td
@@ -603,7 +607,8 @@ if (file_exists($path)) {
                                             b.</td>
                                         <td
                                             style="border: none; padding: 0; vertical-align: top; mso-padding-alt: 0cm 0cm 0cm 0cm;">
-                                            {{ $data['tgl_berangkat'] }}</td>
+                                            {{ $data['tgl_berangkat'] }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td
@@ -611,7 +616,8 @@ if (file_exists($path)) {
                                             c.</td>
                                         <td
                                             style="border: none; padding: 0; vertical-align: top; mso-padding-alt: 0cm 0cm 0cm 0cm;">
-                                            {{ $data['tgl_kembali'] }}</td>
+                                            {{ $data['tgl_kembali'] }}
+                                        </td>
                                     </tr>
                                 </table>
                             </td>
@@ -631,10 +637,12 @@ if (file_exists($path)) {
                                             <tr>
                                                 <td
                                                     style="width: 20px; border: none; padding: 0; vertical-align: top; mso-padding-alt: 0cm 0cm 0cm 0cm;">
-                                                    {{ $loop->iteration }}.</td>
+                                                    {{ $loop->iteration }}.
+                                                </td>
                                                 <td
                                                     style="border: none; padding: 0; vertical-align: top; mso-padding-alt: 0cm 0cm 0cm 0cm;">
-                                                    {{ $pengikut->nama }}</td>
+                                                    {{ $pengikut->nama }}
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </table>
@@ -661,7 +669,8 @@ if (file_exists($path)) {
                                             a.</td>
                                         <td
                                             style="border: none; padding: 0; vertical-align: top; mso-padding-alt: 0cm 0cm 0cm 0cm;">
-                                            {{ $data['anggaran_skpd'] }}</td>
+                                            {{ $data['anggaran_skpd'] }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td
@@ -669,7 +678,8 @@ if (file_exists($path)) {
                                             b.</td>
                                         <td
                                             style="border: none; padding: 0; vertical-align: top; mso-padding-alt: 0cm 0cm 0cm 0cm;">
-                                            {{ $data['kode_rekening'] ?? '' }}</td>
+                                            {{ $data['kode_rekening'] ?? '' }}
+                                        </td>
                                     </tr>
                                 </table>
                             </td>
@@ -681,7 +691,8 @@ if (file_exists($path)) {
                             <td class="border" style="padding: 5px; vertical-align: top;">Keterangan Lain - Lain</td>
                             <td class="border"
                                 style="padding: 5px; vertical-align: top; word-wrap: break-word; word-break: break-all;">
-                                {!! nl2br(e($data['keterangan_lain'] ?? '')) !!}</td>
+                                {!! nl2br(e($data['keterangan_lain'] ?? '')) !!}
+                            </td>
                         </tr>
                     </table>
 
@@ -764,8 +775,8 @@ if (file_exists($path)) {
                                 style="padding: 0px 0px 0px 10px; margin: 0px; text-align: left; vertical-align: top; mso-padding-alt: 0pt 0pt 0pt 10pt; text-indent: 0px;">
                                 Kepala Sub Bagian Umum,<br>Selaku Pejabat Pelaksana Teknis
                                 Kegiatan<br>Sekretariat<br><br><br><br><span
-                                    style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">(NOVAN DEKA
-                                    SETYA G, S.S.T.P., M.M)</span><br>NIP. 19901113 201507 1 001</td>
+                                    style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">({{ $pptk['nama'] }})</span><br>NIP.
+                                {{ $pptk['nip'] }}</td>
                         </tr>
                     </table>
                 </td>

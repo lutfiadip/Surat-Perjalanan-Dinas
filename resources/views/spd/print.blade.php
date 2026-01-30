@@ -646,8 +646,8 @@
                                 <div>Selaku Pejabat Pelaksana Teknis Kegiatan</div>
                                 <div>Sekretariat</div>
                                 <br><br><br>
-                                <div>(NOVAN DEKA SETYA G, S.S.T.P., M.M)</div>
-                                <div>NIP. 19901113 201507 1 001</div>
+                                <div>({{ $pptk['nama'] }})</div>
+                                <div>NIP. {{ $pptk['nip'] }}</div>
                             </td>
                         </tr>
                     </table>

@@ -12,8 +12,8 @@ class SpdController extends Controller
     public function create(Request $request)
     {
         $pegawais = PegawaiBkdSpd::all();
-        // Fetch active signatories from database
-        $signatories = Penandatangan::where('status_aktif', 1)->get();
+        // Fetch active signatories from database (Only Kepala/Sekretaris for dropdown)
+        $signatories = Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->get();
 
         $draft = null;
         $pegawaiUtama = null;
@@ -33,7 +33,15 @@ class SpdController extends Controller
             }
         }
 
-        return view('spd.form', compact('pegawais', 'signatories', 'draft', 'pegawaiUtama', 'pengikuts'));
+        // Fetch PPTK for preview
+        $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
+        $pptk = [
+            'nama' => $pptkModel ? $pptkModel->nama : '.......................',
+            'nip' => $pptkModel ? $pptkModel->nip : '.......................',
+            'jabatan' => $pptkModel ? $pptkModel->jabatan : 'Kepala Sub Bagian Umum',
+        ];
+
+        return view('spd.form', compact('pegawais', 'signatories', 'draft', 'pegawaiUtama', 'pengikuts', 'pptk'));
     }
 
     public function edit($id)
@@ -42,8 +50,8 @@ class SpdController extends Controller
         $pegawais = PegawaiBkdSpd::all();
 
         // 2. Definisi signatories (sama seperti create)
-        // 2. Definisi signatories (Updated to use Table)
-        $signatories = Penandatangan::where('status_aktif', 1)->get();
+        // Fetch active signatories from database (Only Kepala/Sekretaris for dropdown)
+        $signatories = Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->get();
 
         // 3. Ambil Draft SPD berdasarkan ID & Session User
         // STRICT: Hanya boleh edit punya sendiri
@@ -56,8 +64,16 @@ class SpdController extends Controller
         $pegawaiUtama = $draft->pegawais->where('pivot.peran', 'utama')->first();
         $pengikuts = $draft->pegawais->where('pivot.peran', 'pengikut')->values();
 
+        // Fetch PPTK for preview
+        $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
+        $pptk = [
+            'nama' => $pptkModel ? $pptkModel->nama : '.......................',
+            'nip' => $pptkModel ? $pptkModel->nip : '.......................',
+            'jabatan' => $pptkModel ? $pptkModel->jabatan : 'Kepala Sub Bagian Umum',
+        ];
+
         // 5. Return view yang sama (form.blade.php sudah support edit mode)
-        return view('spd.form', compact('pegawais', 'signatories', 'draft', 'pegawaiUtama', 'pengikuts'));
+        return view('spd.form', compact('pegawais', 'signatories', 'draft', 'pegawaiUtama', 'pengikuts', 'pptk'));
     }
 
     public function store(Request $request)
@@ -245,10 +261,12 @@ class SpdController extends Controller
 
         // PPTK / Pejabat Pelaksana Teknis Kegiatan (Usually Kasubbag Umum as per template)
         // For dynamic signature in SPD Part I ("Berangkat dari...")
+        // PPTK (Dynamic from DB)
+        $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
         $pptk = [
-            'nama' => 'NOVAN DEKA SETYA G, S.S.T.P., M.M',
-            'nip' => '19901113 201507 1 001',
-            'jabatan' => 'Kepala Sub Bagian Umum',
+            'nama' => $pptkModel ? $pptkModel->nama : '.......................', // Fallback if missing
+            'nip' => $pptkModel ? $pptkModel->nip : '.......................',
+            'jabatan' => $pptkModel ? $pptkModel->jabatan : 'Kepala Sub Bagian Umum',
         ];
 
         return view('spd.print', compact('selectedPegawais', 'data', 'signatory', 'pptk'));
@@ -328,10 +346,12 @@ class SpdController extends Controller
             $signatory['full_signature_page1'] = '<br>' . $tgl . '<br>Kepala Badan Keuangan Daerah<br><br><br><br><br>' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'];
         }
 
+        // PPTK (Dynamic from DB)
+        $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
         $pptk = [
-            'nama' => 'NOVAN DEKA SETYA G, S.S.T.P., M.M',
-            'nip' => '19901113 201507 1 001',
-            'jabatan' => 'Kepala Sub Bagian Umum',
+            'nama' => $pptkModel ? $pptkModel->nama : '.......................', // Fallback if missing
+            'nip' => $pptkModel ? $pptkModel->nip : '.......................',
+            'jabatan' => $pptkModel ? $pptkModel->jabatan : 'Kepala Sub Bagian Umum',
         ];
 
         return response()
@@ -433,11 +453,12 @@ class SpdController extends Controller
             $signatory['full_signature_page1'] = '<br>' . $tgl . '<br>Kepala Badan Keuangan Daerah<br><br><br><br><br>' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'];
         }
 
-        // 6. PPTK
+        // 6. PPTK (Dynamic from DB)
+        $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
         $pptk = [
-            'nama' => 'NOVAN DEKA SETYA G, S.S.T.P., M.M',
-            'nip' => '19901113 201507 1 001',
-            'jabatan' => 'Kepala Sub Bagian Umum',
+            'nama' => $pptkModel ? $pptkModel->nama : '.......................', // Fallback if missing
+            'nip' => $pptkModel ? $pptkModel->nip : '.......................',
+            'jabatan' => $pptkModel ? $pptkModel->jabatan : 'Kepala Sub Bagian Umum',
         ];
 
         return compact('selectedPegawais', 'data', 'signatory', 'pptk');

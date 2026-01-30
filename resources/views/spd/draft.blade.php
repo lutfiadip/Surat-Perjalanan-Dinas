@@ -131,11 +131,42 @@
             <h1 class="text-3xl font-bold text-slate-900">Manajemen Surat Perjalanan Dinas</h1>
         </div>
 
-        @if(session('success'))
-            <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
-                {{ session('success') }}
-            </div>
-        @endif
+        {{-- Notification Container --}}
+        <div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] w-full max-w-lg px-4 pointer-events-none">
+            @if(session('success'))
+                <div class="flash-message mb-4 p-4 bg-green-100 text-green-700 rounded-xl shadow-lg border border-green-200 pointer-events-auto flex items-center gap-3">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="flash-message mb-4 p-4 bg-red-100 text-red-700 rounded-xl shadow-lg border border-red-200 pointer-events-auto flex items-center gap-3">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    const flashMessages = document.querySelectorAll('.flash-message');
+                    flashMessages.forEach(function(message) {
+                        message.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        message.style.opacity = '0';
+                        message.style.transform = 'translateY(-20px)';
+                        setTimeout(function() {
+                            message.remove();
+                        }, 500);
+                    });
+                }, 3000);
+            });
+        </script>
 
         <form action="{{ route('spd.bulk_destroy') }}" method="POST" id="bulk-delete-form"
             onsubmit="return confirm('Apakah Anda yakin ingin menghapus item yang dipilih?')">
