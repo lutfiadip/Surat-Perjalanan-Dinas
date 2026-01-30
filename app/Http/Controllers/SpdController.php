@@ -20,10 +20,14 @@ class SpdController extends Controller
         $pengikuts = [];
 
         if ($request->has('id')) {
-            $draft = Spd::where('id', $request->id)
-                ->where('created_by', session('user_id'))
-                ->with('pegawais')
-                ->first();
+            $query = Spd::where('id', $request->id)->with('pegawais');
+
+            // Allow Admin to access any, User only their own
+            if (session('role') !== 'admin') {
+                $query->where('created_by', session('user_id'));
+            }
+
+            $draft = $query->first();
 
             if ($draft) {
                 // Separate Roles
@@ -54,11 +58,14 @@ class SpdController extends Controller
         $signatories = Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->get();
 
         // 3. Ambil Draft SPD berdasarkan ID & Session User
-        // STRICT: Hanya boleh edit punya sendiri
-        $draft = Spd::where('id', $id)
-            ->where('created_by', session('user_id'))
-            ->with('pegawais')
-            ->firstOrFail();
+        // Admin access all, User only own
+        $query = Spd::where('id', $id)->with('pegawais');
+
+        if (session('role') !== 'admin') {
+            $query->where('created_by', session('user_id'));
+        }
+
+        $draft = $query->firstOrFail();
 
         // 4. Pisahkan Pegawai Utama & Pengikut
         $pegawaiUtama = $draft->pegawais->where('pivot.peran', 'utama')->first();
@@ -114,10 +121,12 @@ class SpdController extends Controller
         // Check if updating
         $spd = null;
         if ($request->has('id') && $request->id) {
-            // STRICT UPDATE: Must verify ownership
-            $spd = Spd::where('id', $request->id)
-                ->where('created_by', $userId)
-                ->first();
+            // STRICT UPDATE: Admin can update any draft, User only own
+            $query = Spd::where('id', $request->id);
+            if (session('role') !== 'admin') {
+                $query->where('created_by', $userId);
+            }
+            $spd = $query->first();
 
             if (!$spd) {
                 abort(404, 'Draft not found or unauthorized.');
@@ -164,16 +173,17 @@ class SpdController extends Controller
         $userId = session('user_id');
 
         // DRAFTS
-        $drafts = Spd::where('created_by', $userId)
-            ->where('status', 'draft')
-            ->orderBy('id', 'desc')
-            ->get();
-
+        $draftsQuery = Spd::where('status', 'draft')->orderBy('id', 'desc')->with('creator');
         // FINALS (Arsip)
-        $finals = Spd::where('created_by', $userId)
-            ->where('status', 'final')
-            ->orderBy('id', 'desc')
-            ->get();
+        $finalsQuery = Spd::where('status', 'final')->orderBy('id', 'desc')->with('creator');
+
+        if (session('role') !== 'admin') {
+            $draftsQuery->where('created_by', $userId);
+            $finalsQuery->where('created_by', $userId);
+        }
+
+        $drafts = $draftsQuery->get();
+        $finals = $finalsQuery->get();
 
         return view('spd.draft', compact('drafts', 'finals'));
     }
@@ -468,10 +478,12 @@ class SpdController extends Controller
     {
         $userId = session('user_id');
 
-        // STRICT: Only delete own records
-        $spd = Spd::where('id', $id)
-            ->where('created_by', $userId)
-            ->firstOrFail();
+        // STRICT: Admin can delete any, User only own
+        $query = Spd::where('id', $id);
+        if (session('role') !== 'admin') {
+            $query->where('created_by', $userId);
+        }
+        $spd = $query->firstOrFail();
 
         // 1. Detach Pegawai relations (Cleanup pivot)
         $spd->pegawais()->detach();
@@ -491,10 +503,12 @@ class SpdController extends Controller
             return redirect()->route('spd.draft')->with('error', 'Tidak ada dokumen yang dipilih.');
         }
 
-        // Fetch valid items owned by user
-        $spds = Spd::whereIn('id', $ids)
-            ->where('created_by', $userId)
-            ->get();
+        // Fetch valid items owned by user (or any for admin)
+        $query = Spd::whereIn('id', $ids);
+        if (session('role') !== 'admin') {
+            $query->where('created_by', $userId);
+        }
+        $spds = $query->get();
 
         $count = 0;
         foreach ($spds as $spd) {

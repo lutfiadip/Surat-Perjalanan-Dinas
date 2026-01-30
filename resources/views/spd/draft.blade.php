@@ -45,6 +45,9 @@
                         <button onclick="toggleUserMenu()"
                             class="flex items-center gap-2 text-sm font-semibold text-slate-900 border border-slate-200 rounded-full px-3 py-1 hover:bg-slate-50 transition focus:outline-none bg-white/50 backdrop-blur-sm">
                             Halo, <span class="text-[#1C6DD0]">{{ session('nama') }}</span>
+                            @if(session('role') === 'admin')
+                                <span class="ml-2 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-bold border border-red-200">ADMIN</span>
+                            @endif
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="h-4 w-4 text-slate-500">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -134,18 +137,24 @@
         {{-- Notification Container --}}
         <div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] w-full max-w-lg px-4 pointer-events-none">
             @if(session('success'))
-                <div class="flash-message mb-4 p-4 bg-green-100 text-green-700 rounded-xl shadow-lg border border-green-200 pointer-events-auto flex items-center gap-3">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <div
+                    class="flash-message mb-4 p-4 bg-green-100 text-green-700 rounded-xl shadow-lg border border-green-200 pointer-events-auto flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>{{ session('success') }}</span>
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="flash-message mb-4 p-4 bg-red-100 text-red-700 rounded-xl shadow-lg border border-red-200 pointer-events-auto flex items-center gap-3">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <div
+                    class="flash-message mb-4 p-4 bg-red-100 text-red-700 rounded-xl shadow-lg border border-red-200 pointer-events-auto flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>{{ session('error') }}</span>
                 </div>
@@ -153,14 +162,14 @@
         </div>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
+            document.addEventListener('DOMContentLoaded', function () {
+                setTimeout(function () {
                     const flashMessages = document.querySelectorAll('.flash-message');
-                    flashMessages.forEach(function(message) {
+                    flashMessages.forEach(function (message) {
                         message.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
                         message.style.opacity = '0';
                         message.style.transform = 'translateY(-20px)';
-                        setTimeout(function() {
+                        setTimeout(function () {
                             message.remove();
                         }, 500);
                     });
@@ -206,6 +215,9 @@
                             </th>
                             <th class="p-4 font-semibold text-slate-700 w-12 text-center">No</th>
                             <th class="p-4 font-semibold text-slate-700">Maksud / Tujuan</th>
+                            @if(session('role') === 'admin')
+                                <th class="p-4 font-semibold text-slate-700">Oleh</th>
+                            @endif
                             <th class="p-4 font-semibold text-slate-700">Tanggal Surat</th>
                             <th class="p-4 font-semibold text-slate-700 text-right">Aksi</th>
                         </tr>
@@ -221,6 +233,11 @@
                                 <td class="p-4 text-slate-900">
                                     {{ $draft->maksud ?? '(Belum diisi)' }}
                                 </td>
+                                @if(session('role') === 'admin')
+                                    <td class="p-4 text-slate-500 text-sm">
+                                        {{ $draft->creator->nama ?? 'Unknown' }}
+                                    </td>
+                                @endif
                                 <td class="p-4 text-slate-600">
                                     {{ $draft->tanggal_surat ? \Carbon\Carbon::parse($draft->tanggal_surat)->isoFormat('D MMMM Y') : '-' }}
                                 </td>
@@ -265,6 +282,9 @@
                             <th class="p-4 font-semibold text-slate-700 w-12 text-center">No</th>
                             <th class="p-4 font-semibold text-slate-700">Nomor Surat</th>
                             <th class="p-4 font-semibold text-slate-700">Maksud / Tujuan</th>
+                            @if(session('role') === 'admin')
+                                <th class="p-4 font-semibold text-slate-700">Oleh</th>
+                            @endif
                             <th class="p-4 font-semibold text-slate-700">Tanggal Surat</th>
                             <th class="p-4 font-semibold text-slate-700 text-right">Aksi</th>
                         </tr>
@@ -283,6 +303,11 @@
                                 <td class="p-4 text-slate-600">
                                     {{ $final->maksud ?? '(Belum diisi)' }}
                                 </td>
+                                @if(session('role') === 'admin')
+                                    <td class="p-4 text-slate-500 text-sm">
+                                        {{ $final->creator->nama ?? 'Unknown' }}
+                                    </td>
+                                @endif
                                 <td class="p-4 text-slate-600">
                                     {{ $final->tanggal_surat ? \Carbon\Carbon::parse($final->tanggal_surat)->isoFormat('D MMMM Y') : '-' }}
                                 </td>

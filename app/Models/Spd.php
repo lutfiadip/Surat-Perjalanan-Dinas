@@ -30,4 +30,9 @@ class Spd extends Model
     {
         return $this->belongsTo(Penandatangan::class, 'penandatangan_id');
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }
