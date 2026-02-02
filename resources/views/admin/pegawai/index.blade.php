@@ -84,52 +84,50 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-50/50 border-b border-slate-100">
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-12">No
+                            <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-16">No
                             </th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama /
+                            <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama /
                                 NIP</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Jabatan
+                            <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Jabatan
                                 / Unit Kerja</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
+                            <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
                                 Status</th>
                             <th
-                                class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-48 text-right">
+                                class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-48 text-right">
                                 Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @forelse($pegawai as $index => $item)
                             <tr class="hover:bg-slate-50/50 transition-colors">
-                                <td class="px-6 py-4 text-sm text-slate-500">
+                                <td class="px-8 py-5 text-sm text-slate-500">
                                     {{ $pegawai->firstItem() + $index }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-8 py-5">
                                     <div class="font-semibold text-slate-900">{{ $item->nama }}</div>
                                     <div class="text-xs text-slate-500 font-mono mt-0.5">{{ $item->nip ?? '-' }}</div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-8 py-5">
                                     <div class="text-sm text-slate-700">{{ $item->jabatan }}</div>
                                     <div class="text-xs text-slate-500 mt-0.5">{{ $item->pangkat_gol ?? '-' }}</div>
                                     @if($item->unit_kerja)
                                         <div class="text-xs text-slate-500 mt-1 italic">{{ $item->unit_kerja }}</div>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-8 py-5">
                                     @if($item->status_aktif)
                                         <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                            class="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-bold bg-white text-slate-900 border border-slate-900">
                                             Aktif
                                         </span>
                                     @else
                                         <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                            class="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-bold bg-white text-slate-400 border border-slate-300">
                                             Nonaktif
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 text-right flex items-center justify-end gap-2">
+                                <td class="px-8 py-5 text-right flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.pegawai.edit', $item->id) }}"
                                         class="p-2 text-slate-400 hover:text-[#1C6DD0] hover:bg-blue-50 rounded-lg transition-all"
                                         title="Edit">

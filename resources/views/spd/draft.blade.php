@@ -15,7 +15,8 @@
     </style>
 </head>
 
-<body class="bg-[#FFF8F3] font-sans antialiased selection:bg-[#1C6DD0] selection:text-white relative min-h-screen">
+<body
+    class="bg-[#FFF8F3] font-sans antialiased selection:bg-[#1C6DD0] selection:text-white relative min-h-screen flex flex-col">
     <!-- Background Gradients -->
     <div class="absolute -top-40 -right-40 -z-10 h-[500px] w-[500px] rounded-full bg-[#A3E4DB]/60 blur-3xl filter">
     </div>
@@ -46,7 +47,8 @@
                             class="flex items-center gap-2 text-sm font-semibold text-slate-900 border border-slate-200 rounded-full px-3 py-1 hover:bg-slate-50 transition focus:outline-none bg-white/50 backdrop-blur-sm">
                             Halo, <span class="text-[#1C6DD0]">{{ session('nama') }}</span>
                             @if(session('role') === 'admin')
-                                <span class="ml-2 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-bold border border-red-200">ADMIN</span>
+                                <span
+                                    class="ml-2 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-bold border border-red-200">ADMIN</span>
                             @endif
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="h-4 w-4 text-slate-500">
@@ -377,6 +379,10 @@
         });
     </script>
     </form>
+
+    <footer class="mt-auto py-6 text-center text-sm text-slate-500 relative z-50">
+        &copy; 2026 Badan Keuangan Daerah. All rights reserved.
+    </footer>
 </body>
 
 </html>

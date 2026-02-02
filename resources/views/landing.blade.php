@@ -13,7 +13,7 @@
 </head>
 
 <body class="bg-[#FFF8F3] font-sans antialiased selection:bg-[#1C6DD0] selection:text-white">
-    <div class="relative min-h-screen overflow-hidden">
+    <div class="relative min-h-screen overflow-hidden flex flex-col">
         <!-- Background Gradients -->
         <div class="absolute -top-40 -right-40 -z-10 h-[500px] w-[500px] rounded-full bg-[#A3E4DB]/60 blur-3xl filter">
         </div>
@@ -149,7 +149,7 @@
                             </a>
                             @if(session('role') === 'admin')
                                 <a href="{{ route('admin.dashboard') }}"
-                                    class="group relative flex items-center gap-2 rounded-xl bg-slate-800 px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-slate-700 hover:shadow-slate-800/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-800">
+                                    class="group relative flex items-center gap-2 rounded-xl bg-white border border-[#1C6DD0] px-6 py-3.5 text-sm font-semibold text-[#1C6DD0] shadow-lg transition-all hover:bg-[#1C6DD0] hover:text-white hover:shadow-blue-500/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1C6DD0]">
                                     Admin Dashboard
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                         stroke="currentColor" class="h-4 w-4 transition-transform group-hover:translate-x-1">
@@ -188,6 +188,12 @@
 
                 </div>
             </div>
+        </div>
+
+        <footer class="mt-auto py-6 text-center text-sm text-slate-500 relative z-10">
+            &copy; 2026 Badan Keuangan Daerah. All rights reserved.
+        </footer>
+    </div>
 </body>
 
 </html>
