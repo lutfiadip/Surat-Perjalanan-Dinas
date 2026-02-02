@@ -76,8 +76,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- NIP -->
                             <div>
-                                <label for="nip" class="block text-sm font-semibold text-slate-900 mb-2">NIP <span
-                                        class="text-slate-400 font-normal">(Opsional)</span></label>
+                                <label for="nip" class="block text-sm font-semibold text-slate-900 mb-2">NIP</label>
                                 <input type="text" name="nip" id="nip" value="{{ old('nip', $pegawai->nip ?? '') }}"
                                     class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
                                     placeholder="Contoh: 19800101 200501 1 001">
@@ -90,7 +89,7 @@
                             <div>
                                 <label for="pangkat_gol" class="block text-sm font-semibold text-slate-900 mb-2">Pangkat
                                     /
-                                    Golongan <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                                    Golongan</label>
                                 <input type="text" name="pangkat_gol" id="pangkat_gol"
                                     value="{{ old('pangkat_gol', $pegawai->pangkat_gol ?? '') }}"
                                     class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"

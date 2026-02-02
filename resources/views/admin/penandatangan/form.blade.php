@@ -29,7 +29,8 @@
                     </div>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-                            {{ isset($penandatangan) ? 'Edit Penandatangan' : 'Tambah Penandatangan' }}</h1>
+                            {{ isset($penandatangan) ? 'Edit Penandatangan' : 'Tambah Penandatangan' }}
+                        </h1>
                         <p class="text-xs text-slate-500 font-medium">Master Data</p>
                     </div>
                 </div>
@@ -64,10 +65,12 @@
                     <div>
                         <p class="font-bold text-sm">Perhatian</p>
                         <p class="text-xs mt-1 leading-relaxed">Fitur edit ini sebaiknya hanya digunakan untuk
-                            <strong>memperbaiki kesalahan penulisan (typo)</strong>. </p>
+                            <strong>memperbaiki kesalahan penulisan (typo)</strong>.
+                        </p>
                         <p class="text-xs mt-1 leading-relaxed">Jika ada <strong>pergantian pejabat</strong>, harap
                             <strong>Nonaktifkan</strong> data lama dan <strong>Buat Baru</strong> untuk data pejabat
-                            pengganti agar riwayat data tetap terjaga.</p>
+                            pengganti agar riwayat data tetap terjaga.
+                        </p>
                     </div>
                 </div>
             @endif
@@ -97,8 +100,7 @@
 
                         <!-- NIP -->
                         <div>
-                            <label for="nip" class="block text-sm font-semibold text-slate-900 mb-2">NIP <span
-                                    class="text-slate-400 font-normal">(Opsional)</span></label>
+                            <label for="nip" class="block text-sm font-semibold text-slate-900 mb-2">NIP</label>
                             <input type="text" name="nip" id="nip" value="{{ old('nip', $penandatangan->nip ?? '') }}"
                                 class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
                                 placeholder="Contoh: 19700510 199003 1 006">
@@ -109,8 +111,7 @@
 
                         <!-- Pangkat -->
                         <div>
-                            <label for="pangkat" class="block text-sm font-semibold text-slate-900 mb-2">Pangkat <span
-                                    class="text-slate-400 font-normal">(Opsional)</span></label>
+                            <label for="pangkat" class="block text-sm font-semibold text-slate-900 mb-2">Pangkat</label>
                             <input type="text" name="pangkat" id="pangkat"
                                 value="{{ old('pangkat', $penandatangan->pangkat ?? '') }}"
                                 class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
