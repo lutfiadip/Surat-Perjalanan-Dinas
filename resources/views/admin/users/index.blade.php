@@ -152,12 +152,13 @@
                                 <td class="px-8 py-5">
                                     @if($item->status === 'aktif')
                                         <span
-                                            class="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-bold bg-white text-slate-900 border border-slate-900">
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                                             Aktif
                                         </span>
                                     @else
                                         <span
-                                            class="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-bold bg-white text-slate-400 border border-slate-300">
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white text-red-600 border border-red-600">
                                             Nonaktif
                                         </span>
                                     @endif

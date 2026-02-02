@@ -153,8 +153,7 @@
                                         </span>
                                     @else
                                         <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white text-red-600 border border-red-600">
                                             Nonaktif
                                         </span>
                                     @endif

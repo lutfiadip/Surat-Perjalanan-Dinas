@@ -255,9 +255,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="p-12 text-center text-slate-500 py-20">
-                                        <div class="flex flex-col items-center justify-center gap-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300 mb-2"
+                                    <td colspan="6" class="p-8 text-center text-slate-500 py-12">
+                                        <div class="flex flex-row items-center justify-center gap-4">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -266,8 +266,12 @@
                                                 <line x1="16" y1="17" x2="8" y2="17"></line>
                                                 <polyline points="10 9 9 9 8 9"></polyline>
                                             </svg>
-                                            <span class="font-medium">Belum ada draft tersimpan.</span>
-                                            <p class="text-xs text-slate-400">Mulai buat dokumen perjalanan dinas baru.</p>
+                                            <div class="text-left">
+                                                <span class="font-medium block text-slate-600">Belum ada draft
+                                                    tersimpan.</span>
+                                                <p class="text-xs text-slate-400">Mulai buat dokumen perjalanan dinas baru.
+                                                </p>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -360,9 +364,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="p-12 text-center text-slate-500 py-20">
-                                        <div class="flex flex-col items-center justify-center gap-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300 mb-2"
+                                    <td colspan="7" class="p-8 text-center text-slate-500 py-12">
+                                        <div class="flex flex-row items-center justify-center gap-4">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -370,7 +374,10 @@
                                                 <path d="M12 18v-4"></path>
                                                 <path d="M12 10h.01"></path>
                                             </svg>
-                                            <span>Belum ada dokumen final.</span>
+                                            <div class="text-left">
+                                                <span class="font-medium block text-slate-600">Belum ada dokumen final.</span>
+                                                <p class="text-xs text-slate-400">Dokumen yang sudah selesai akan muncul di sini.</p>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
