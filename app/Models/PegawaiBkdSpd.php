@@ -16,6 +16,12 @@ class PegawaiBkdSpd extends Model
         'pangkat_gol',
         'nip',
         'jabatan',
+        'unit_kerja',
+        'status_aktif',
+    ];
+
+    protected $casts = [
+        'status_aktif' => 'boolean',
     ];
 
     // Disable timestamps if the table doesn't have them, usually legacy tables don't
