@@ -27,7 +27,8 @@
                     </div>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-                            {{ isset($user) ? 'Edit User' : 'Tambah User' }}</h1>
+                            {{ isset($user) ? 'Edit User' : 'Tambah User' }}
+                        </h1>
                         <p class="text-xs text-slate-500 font-medium">Master Data</p>
                     </div>
                 </div>
@@ -111,17 +112,7 @@
                             </div>
                         </div>
 
-                        <!-- Email -->
-                        <div>
-                            <label for="email" class="block text-sm font-semibold text-slate-900 mb-2">Email</label>
-                            <input type="email" name="email" id="email" value="{{ old('email', $user->email ?? '') }}"
-                                required
-                                class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
-                                placeholder="Contoh: admin@example.com">
-                            @error('email')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+
 
                         <!-- Password -->
                         <div>

@@ -22,7 +22,7 @@ class AdminPegawaiController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nip' => 'nullable|string|max:20',
+            'nip' => 'nullable|string',
             'pangkat_gol' => 'nullable|string|max:50',
             'jabatan' => 'required|string|max:100',
             'unit_kerja' => 'nullable|string|max:150',
@@ -43,7 +43,7 @@ class AdminPegawaiController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nip' => 'nullable|string|max:20',
+            'nip' => 'nullable|string',
             'pangkat_gol' => 'nullable|string|max:50',
             'jabatan' => 'required|string|max:100',
             'unit_kerja' => 'nullable|string|max:150',

@@ -22,7 +22,7 @@ class AdminPenandatanganController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nip' => 'nullable|string|max:20',
+            'nip' => 'nullable|string',
             'pangkat' => 'nullable|string|max:50',
             'jabatan' => 'required|string|max:100',
             'jenis' => 'required|in:kepala,pptk,bendahara', // Adjust based on known types
@@ -43,7 +43,7 @@ class AdminPenandatanganController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nip' => 'nullable|string|max:20',
+            'nip' => 'nullable|string',
             'pangkat' => 'nullable|string|max:50',
             'jabatan' => 'required|string|max:100',
             'jenis' => 'required|in:kepala,pptk,bendahara',

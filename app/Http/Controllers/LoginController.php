@@ -13,7 +13,7 @@ class LoginController extends Controller
     {
         // Jika sudah login, redirect ke halaman utama/SPD
         if (Session::has('user_id')) {
-            return redirect()->route('spd.form');
+            return redirect()->route('landing');
         }
         return view('auth.login');
     }
@@ -45,7 +45,7 @@ class LoginController extends Controller
                 \Illuminate\Support\Facades\Cookie::queue('remember_user_id', $user->id, 60 * 24 * 30);
             }
 
-            return redirect()->route('spd.draft');
+            return redirect()->route('landing');
         }
 
         return back()->with('error', 'Username atau password salah.');

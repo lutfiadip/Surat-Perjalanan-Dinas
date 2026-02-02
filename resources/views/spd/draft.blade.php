@@ -120,7 +120,7 @@
         </nav>
     </div>
 
-    <div class="max-w-4xl mx-auto relative z-10">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
         <div class="mb-4">
             <a href="{{ url('/') }}"
                 class="inline-flex items-center gap-2 text-slate-500 hover:text-slate-700 text-sm font-medium transition-colors">
@@ -135,7 +135,9 @@
         <div class="mb-6">
             <h1 class="text-3xl font-bold text-slate-900">Manajemen Surat Perjalanan Dinas</h1>
         </div>
+    </div>
 
+    <div class="max-w-4xl mx-auto relative z-10 px-6 lg:px-8">
         {{-- Notification Container --}}
         <div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] w-full max-w-lg px-4 pointer-events-none">
             @if(session('success'))
@@ -208,20 +210,20 @@
             </div>
 
             <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
-                <table class="w-full text-left border-collapse" id="draft-table">
+                <table class="w-full text-left border-collapse table-fixed" id="draft-table">
                     <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th class="p-4 w-10 text-center">
+                            <th class="p-4 w-14 text-center">
                                 <input type="checkbox" onclick="toggleCheckboxes(this, 'draft-table')"
                                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                             </th>
-                            <th class="p-4 font-semibold text-slate-700 w-12 text-center">No</th>
+                            <th class="p-4 font-semibold text-slate-700 w-14 text-center">No</th>
                             <th class="p-4 font-semibold text-slate-700">Maksud / Tujuan</th>
                             @if(session('role') === 'admin')
-                                <th class="p-4 font-semibold text-slate-700">Oleh</th>
+                                <th class="p-4 font-semibold text-slate-700 w-48">Oleh</th>
                             @endif
-                            <th class="p-4 font-semibold text-slate-700">Tanggal Surat</th>
-                            <th class="p-4 font-semibold text-slate-700 text-right">Aksi</th>
+                            <th class="p-4 font-semibold text-slate-700 w-48">Tanggal Surat</th>
+                            <th class="p-4 font-semibold text-slate-700 text-right w-32">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -252,9 +254,20 @@
                             </tr>
                         @empty
                             <tr>
-
-                                <td colspan="5" class="p-8 text-center text-slate-500">
-                                    Belum ada draft tersimpan.
+                                <td colspan="6" class="p-12 text-center text-slate-500 py-20">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300 mb-2"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                                            <polyline points="10 9 9 9 8 9"></polyline>
+                                        </svg>
+                                        <span class="font-medium">Belum ada draft tersimpan.</span>
+                                        <p class="text-xs text-slate-400">Mulai buat dokumen perjalanan dinas baru.</p>
+                                    </div>
                                 </td>
                             </tr>
                         @endforelse
@@ -274,21 +287,21 @@
             </div>
 
             <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
-                <table class="w-full text-left border-collapse" id="final-table">
+                <table class="w-full text-left border-collapse table-fixed" id="final-table">
                     <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th class="p-4 w-10 text-center">
+                            <th class="p-4 w-14 text-center">
                                 <input type="checkbox" onclick="toggleCheckboxes(this, 'final-table')"
                                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                             </th>
-                            <th class="p-4 font-semibold text-slate-700 w-12 text-center">No</th>
-                            <th class="p-4 font-semibold text-slate-700">Nomor Surat</th>
+                            <th class="p-4 font-semibold text-slate-700 w-14 text-center">No</th>
+                            <th class="p-4 font-semibold text-slate-700 w-48">Nomor Surat</th>
                             <th class="p-4 font-semibold text-slate-700">Maksud / Tujuan</th>
                             @if(session('role') === 'admin')
-                                <th class="p-4 font-semibold text-slate-700">Oleh</th>
+                                <th class="p-4 font-semibold text-slate-700 w-48">Oleh</th>
                             @endif
-                            <th class="p-4 font-semibold text-slate-700">Tanggal Surat</th>
-                            <th class="p-4 font-semibold text-slate-700 text-right">Aksi</th>
+                            <th class="p-4 font-semibold text-slate-700 w-48">Tanggal Surat</th>
+                            <th class="p-4 font-semibold text-slate-700 text-right w-48">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -345,8 +358,18 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="p-8 text-center text-slate-500">
-                                    Belum ada dokumen final.
+                                <td colspan="7" class="p-12 text-center text-slate-500 py-20">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300 mb-2"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                            <path d="M12 18v-4"></path>
+                                            <path d="M12 10h.01"></path>
+                                        </svg>
+                                        <span>Belum ada dokumen final.</span>
+                                    </div>
                                 </td>
                             </tr>
                         @endforelse

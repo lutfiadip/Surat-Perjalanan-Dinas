@@ -134,7 +134,7 @@
                                 </td>
                                 <td class="px-8 py-5">
                                     <div class="font-semibold text-slate-900">{{ $item->name }}</div>
-                                    <div class="text-xs text-slate-500 mt-0.5">{{ $item->email }}</div>
+
                                 </td>
                                 <td class="px-8 py-5">
                                     @if($item->role === 'admin')

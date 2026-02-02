@@ -24,7 +24,7 @@ class AdminUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
-            'email' => 'required|email|max:255|unique:users,email',
+
             'password' => 'required|string|min:6',
             'role' => 'required|in:admin,user',
         ]);
@@ -32,7 +32,7 @@ class AdminUserController extends Controller
         User::create([
             'name' => $request->name,
             'username' => $request->username,
-            'email' => $request->email,
+
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'status' => 'aktif', // Default active
@@ -54,7 +54,7 @@ class AdminUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $id,
-            'email' => 'required|email|max:255|unique:users,email,' . $id,
+
             'password' => 'nullable|string|min:6',
             'role' => 'required|in:admin,user',
         ]);
@@ -62,7 +62,7 @@ class AdminUserController extends Controller
         $data = [
             'name' => $request->name,
             'username' => $request->username,
-            'email' => $request->email,
+
             'role' => $request->role,
         ];
 

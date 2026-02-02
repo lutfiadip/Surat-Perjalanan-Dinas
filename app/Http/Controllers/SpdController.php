@@ -110,9 +110,33 @@ class SpdController extends Controller
             $data['status'] = 'final';
 
             // Generate Internal Number if not exists
-            // Format: SPD/YYYY/MM/RANDOM (simple unique fallback)
-            // Ideally should be sequential but user asked for simple
             $data['nomor_surat_tugas'] = 'SPD/' . date('Y') . '/' . date('m') . '/' . mt_rand(1000, 9999);
+
+            // SNAPSHOT SIGNATORIES
+            // 1. Main Signatory
+            $signerId = $request->input('penandatangan');
+            if ($signerId) {
+                $signerModel = Penandatangan::find($signerId);
+                if ($signerModel) {
+                    $data['signatory_snapshot'] = json_encode([
+                        'nama' => $signerModel->nama,
+                        'nip' => $signerModel->nip,
+                        'pangkat' => $signerModel->pangkat,
+                        'jabatan' => $signerModel->jabatan,
+                        'jenis' => $signerModel->jenis,
+                    ]);
+                }
+            }
+
+            // 2. PPTK Snapshot
+            $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
+            if ($pptkModel) {
+                $data['pptk_snapshot'] = json_encode([
+                    'nama' => $pptkModel->nama,
+                    'nip' => $pptkModel->nip,
+                    'jabatan' => $pptkModel->jabatan,
+                ]);
+            }
 
         } else {
             // Draft: Minimal validation or nullable allowed
@@ -431,26 +455,38 @@ class SpdController extends Controller
         }
 
         // 5. Signatory
-        $signer = $spd->penandatangan; // Relationship
+        $signatorySnapshot = $spd->signatory_snapshot ? json_decode($spd->signatory_snapshot, true) : null;
 
-        // Fallback checking
-        if (!$signer) {
-            // Try to recover from id if relation failed logic but id exists?
-            // Or just default fallback
-            $signer = Penandatangan::where('jabatan', 'like', '%Kepala%')->where('status_aktif', 1)->first();
+        if ($signatorySnapshot) {
+            $signatory = [
+                'nama' => $signatorySnapshot['nama'],
+                'nip' => $signatorySnapshot['nip'],
+                'pangkat' => $signatorySnapshot['pangkat'],
+                'jabatan' => $signatorySnapshot['jabatan'],
+                'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
+            ];
+            // Determine layout based on 'jabatan' or 'jenis' from snapshot
+            $isSekretaris = stripos($signatory['jabatan'], 'Sekretaris') !== false;
+        } else {
+            // Fallback to Relationship (Old behavior / Backward Compatibility)
+            $signer = $spd->penandatangan;
+            if (!$signer) {
+                // Try to recover or default
+                $signer = Penandatangan::where('jabatan', 'like', '%Kepala%')->where('status_aktif', 1)->first();
+            }
+            $signatory = [
+                'nama' => $signer->nama,
+                'nip' => $signer->nip,
+                'pangkat' => $signer->pangkat,
+                'jabatan' => $signer->jabatan,
+                'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
+            ];
+            $isSekretaris = stripos($signer->jabatan, 'Sekretaris') !== false;
         }
-
-        $signatory = [
-            'nama' => $signer->nama,
-            'nip' => $signer->nip,
-            'pangkat' => $signer->pangkat,
-            'jabatan' => $signer->jabatan,
-            'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
-        ];
 
         $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
 
-        if (stripos($signer->jabatan, 'Sekretaris') !== false) {
+        if ($isSekretaris) {
             // Sekretaris Layout (a.n.)
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
@@ -464,13 +500,22 @@ class SpdController extends Controller
             $signatory['full_signature_page1'] = '<br>' . $tgl . '<br>Kepala Badan Keuangan Daerah<br><br><br><br><br>' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'];
         }
 
-        // 6. PPTK (Dynamic from DB)
-        $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
-        $pptk = [
-            'nama' => $pptkModel ? $pptkModel->nama : '.......................', // Fallback if missing
-            'nip' => $pptkModel ? $pptkModel->nip : '.......................',
-            'jabatan' => $pptkModel ? $pptkModel->jabatan : 'Kepala Sub Bagian Umum',
-        ];
+        // 6. PPTK (Snapshot or Dynamic)
+        $pptkSnapshot = $spd->pptk_snapshot ? json_decode($spd->pptk_snapshot, true) : null;
+        if ($pptkSnapshot) {
+            $pptk = [
+                'nama' => $pptkSnapshot['nama'],
+                'nip' => $pptkSnapshot['nip'],
+                'jabatan' => $pptkSnapshot['jabatan'],
+            ];
+        } else {
+            $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
+            $pptk = [
+                'nama' => $pptkModel ? $pptkModel->nama : '.......................',
+                'nip' => $pptkModel ? $pptkModel->nip : '.......................',
+                'jabatan' => $pptkModel ? $pptkModel->jabatan : 'Kepala Sub Bagian Umum',
+            ];
+        }
 
         return compact('selectedPegawais', 'data', 'signatory', 'pptk');
     }
