@@ -33,16 +33,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('admin.dashboard') }}"
-                        class="text-sm font-medium text-slate-600 hover:text-[#1C6DD0] transition-colors flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M19 12H5M12 19l-7-7 7-7" />
-                        </svg>
-                        Kembali ke Dashboard
-                    </a>
-                </div>
+
             </div>
         </div>
     </header>
@@ -86,6 +77,17 @@
                     setTimeout(closeFlashMessage, 3000); // Auto dismiss after 3 seconds
                 </script>
             @endif
+        </div>
+
+        <div class="mb-6">
+            <a href="{{ route('admin.dashboard') }}"
+                class="inline-flex items-center gap-2 text-slate-500 hover:text-[#1C6DD0] text-sm font-medium transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                Kembali ke Dashboard
+            </a>
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">

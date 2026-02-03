@@ -31,16 +31,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('landing') }}"
-                        class="text-sm font-medium text-slate-600 hover:text-[#1C6DD0] transition-colors flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 12h18M3 12l6-6M3 12l6 6" />
-                        </svg>
-                        Kembali ke Modul SPD
-                    </a>
-                </div>
+
             </div>
         </div>
     </header>
@@ -48,6 +39,16 @@
     <!-- Main Content -->
     <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-10 relative">
         <div class="max-w-4xl mx-auto">
+            <div class="mb-6">
+                <a href="{{ route('landing') }}"
+                    class="inline-flex items-center gap-2 text-slate-500 hover:text-[#1C6DD0] text-sm font-medium transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12h18M3 12l6-6M3 12l6 6" />
+                    </svg>
+                    Kembali ke Modul SPD
+                </a>
+            </div>
 
             <div class="text-center mb-10">
                 <h2 class="text-3xl font-bold text-slate-900 mb-3">Selamat Datang, Admin</h2>

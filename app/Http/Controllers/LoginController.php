@@ -37,6 +37,7 @@ class LoginController extends Controller
             // Simpan user_id ke session
             Session::put('user_id', $user->id);
             Session::put('role', $user->role); // Store role
+            Session::put('name', $user->name);
 
             // Fitur Remember Me (Manual Cookie)
             if ($request->has('remember')) {
