@@ -418,11 +418,16 @@ class SpdController extends Controller
     private function prepareDataFromModel($id)
     {
         // 1. Fetch SPD
-        $spd = Spd::where('id', $id)
-            ->where('created_by', session('user_id'))
+        // 1. Fetch SPD
+        $query = Spd::where('id', $id)
             ->where('status', 'final')
-            ->with('pegawais')
-            ->firstOrFail();
+            ->with('pegawais');
+
+        if (session('role') !== 'admin') {
+            $query->where('created_by', session('user_id'));
+        }
+
+        $spd = $query->firstOrFail();
 
         // 2. Prepare Pegawais
         // Sort: Utama first, then Pengikut order (if pivot has info, otherwise generic)
