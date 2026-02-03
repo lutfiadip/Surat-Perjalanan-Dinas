@@ -41,11 +41,11 @@
                         class="text-[#1C6DD0]">.Online</span></span>
             </a>
             <div>
-                @if(session('nama'))
+                @if(session('name'))
                     <div class="relative" id="user-menu-container">
                         <button onclick="toggleUserMenu()"
                             class="flex items-center gap-2 text-sm font-semibold text-slate-900 border border-slate-200 rounded-full px-3 py-1 hover:bg-slate-50 transition focus:outline-none bg-white/50 backdrop-blur-sm">
-                            Halo, <span class="text-[#1C6DD0]">{{ session('nama') }}</span>
+                            Halo, <span class="text-[#1C6DD0]">{{ session('name') }}</span>
                             @if(session('role') === 'admin')
                                 <span
                                     class="ml-2 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-bold border border-red-200">ADMIN</span>
@@ -61,7 +61,7 @@
                             style="display: none;">
                             <div class="px-4 py-2 border-b border-gray-100 mb-1">
                                 <p class="text-xs text-slate-500">Masuk sebagai</p>
-                                <p class="text-sm font-semibold text-slate-900 truncate">{{ session('nama') }}</p>
+                                <p class="text-sm font-semibold text-slate-900 truncate">{{ session('name') }}</p>
                             </div>
                             <a href="{{ route('spd.draft') }}"
                                 class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">
@@ -375,8 +375,10 @@
                                                 <path d="M12 10h.01"></path>
                                             </svg>
                                             <div class="text-left">
-                                                <span class="font-medium block text-slate-600">Belum ada dokumen final.</span>
-                                                <p class="text-xs text-slate-400">Dokumen yang sudah selesai akan muncul di sini.</p>
+                                                <span class="font-medium block text-slate-600">Belum ada dokumen
+                                                    final.</span>
+                                                <p class="text-xs text-slate-400">Dokumen yang sudah selesai akan muncul di
+                                                    sini.</p>
                                             </div>
                                         </div>
                                     </td>

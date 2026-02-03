@@ -43,7 +43,7 @@
                         <div class="relative" id="user-menu-container">
                             <button onclick="toggleUserMenu()"
                                 class="flex items-center gap-2 text-sm font-semibold text-slate-900 border border-slate-200 rounded-full px-3 py-1 hover:bg-slate-50 transition focus:outline-none bg-white/50 backdrop-blur-sm">
-                                Halo, <span class="text-[#1C6DD0]">{{ $user->nama }}</span>
+                                Halo, <span class="text-[#1C6DD0]">{{ $user->name }}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                     stroke="currentColor" class="h-4 w-4 text-slate-500">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -55,7 +55,7 @@
                                 style="transition: opacity 0.2s ease-out, transform 0.2s ease-out; display: none;">
                                 <div class="px-4 py-2 border-b border-gray-100 mb-1">
                                     <p class="text-xs text-slate-500">Masuk sebagai</p>
-                                    <p class="text-sm font-semibold text-slate-900 truncate">{{ $user->nama }}</p>
+                                    <p class="text-sm font-semibold text-slate-900 truncate">{{ $user->name }}</p>
                                 </div>
                                 <a href="{{ route('spd.draft') }}"
                                     class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">
