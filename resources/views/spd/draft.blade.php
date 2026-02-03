@@ -46,10 +46,6 @@
                         <button onclick="toggleUserMenu()"
                             class="flex items-center gap-2 text-sm font-semibold text-slate-900 border border-slate-200 rounded-full px-3 py-1 hover:bg-slate-50 transition focus:outline-none bg-white/50 backdrop-blur-sm">
                             Halo, <span class="text-[#1C6DD0]">{{ session('name') }}</span>
-                            @if(session('role') === 'admin')
-                                <span
-                                    class="ml-2 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-bold border border-red-200">ADMIN</span>
-                            @endif
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="h-4 w-4 text-slate-500">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -240,7 +236,7 @@
                                     </td>
                                     @if(session('role') === 'admin')
                                         <td class="p-4 text-slate-500 text-sm">
-                                            {{ $draft->creator->nama ?? 'Unknown' }}
+                                            {{ $draft->creator->name ?? 'Unknown' }}
                                         </td>
                                     @endif
                                     <td class="p-4 text-slate-600">
@@ -325,7 +321,7 @@
                                     </td>
                                     @if(session('role') === 'admin')
                                         <td class="p-4 text-slate-500 text-sm">
-                                            {{ $final->creator->nama ?? 'Unknown' }}
+                                            {{ $final->creator->name ?? 'Unknown' }}
                                         </td>
                                     @endif
                                     <td class="p-4 text-slate-600">
