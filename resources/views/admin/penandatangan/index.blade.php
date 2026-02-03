@@ -122,7 +122,7 @@
                             <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
                                 Status</th>
                             <th
-                                class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-48 text-right">
+                                class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-48 text-center">
                                 Aksi</th>
                         </tr>
                     </thead>
@@ -160,7 +160,7 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 text-right flex items-center justify-end gap-2">
+                                <td class="px-6 py-4 text-center flex items-center justify-center gap-2">
                                     <a href="{{ route('admin.penandatangan.edit', $item->id) }}"
                                         class="p-2 text-slate-400 hover:text-[#1C6DD0] hover:bg-blue-50 rounded-lg transition-all"
                                         title="Edit Typo">

@@ -240,7 +240,7 @@
                                         </td>
                                     @endif
                                     <td class="p-4 text-slate-600">
-                                        {{ $draft->tanggal_surat ? \Carbon\Carbon::parse($draft->tanggal_surat)->isoFormat('D MMMM Y') : '-' }}
+                                        {{ $draft->tanggal_surat ? \Carbon\Carbon::parse($draft->tanggal_surat)->locale('id')->isoFormat('D MMMM Y') : '-' }}
                                     </td>
                                     <td class="p-4 text-right">
                                         <a href="{{ route('spd.edit', ['id' => $draft->id]) }}"
@@ -325,7 +325,7 @@
                                         </td>
                                     @endif
                                     <td class="p-4 text-slate-600">
-                                        {{ $final->tanggal_surat ? \Carbon\Carbon::parse($final->tanggal_surat)->isoFormat('D MMMM Y') : '-' }}
+                                        {{ $final->tanggal_surat ? \Carbon\Carbon::parse($final->tanggal_surat)->locale('id')->isoFormat('D MMMM Y') : '-' }}
                                     </td>
                                     <td class="p-4 text-right flex justify-end gap-2">
                                         <a href="{{ route('spd.print.final', ['id' => $final->id]) }}" target="_blank"

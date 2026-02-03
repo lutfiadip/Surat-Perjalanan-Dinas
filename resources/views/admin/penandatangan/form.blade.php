@@ -145,7 +145,7 @@
                                         jenis...</option>
                                     <option value="kepala" {{ (old('jenis', $penandatangan->jenis ?? '') == 'kepala') ? 'selected' : '' }}>Kepala (Tanda Tangan Utama)</option>
                                     <option value="pptk" {{ (old('jenis', $penandatangan->jenis ?? '') == 'pptk') ? 'selected' : '' }}>PPTK (Pejabat Pelaksana Teknis Kegiatan)</option>
-                                    <option value="bendahara" {{ (old('jenis', $penandatangan->jenis ?? '') == 'bendahara') ? 'selected' : '' }}>Bendahara</option>
+
                                 </select>
                                 <div
                                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
