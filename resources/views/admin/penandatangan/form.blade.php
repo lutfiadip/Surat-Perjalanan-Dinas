@@ -93,7 +93,7 @@
                             <input type="text" name="nama" id="nama"
                                 value="{{ old('nama', $penandatangan->nama ?? '') }}" required
                                 class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
-                                placeholder="Contoh: KURNIADI MAULATO, S.Sos., M.Si">
+                                placeholder="Contoh: Nama Lengkap, Gelar">
                             @error('nama')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -104,7 +104,7 @@
                             <label for="nip" class="block text-sm font-semibold text-slate-900 mb-2">NIP</label>
                             <input type="text" name="nip" id="nip" value="{{ old('nip', $penandatangan->nip ?? '') }}"
                                 class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
-                                placeholder="Contoh: 19700510 199003 1 006">
+                                placeholder="Contoh: xxxxxxxx xxxxxx x xxx">
                             @error('nip')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -116,7 +116,7 @@
                             <input type="text" name="pangkat" id="pangkat"
                                 value="{{ old('pangkat', $penandatangan->pangkat ?? '') }}"
                                 class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
-                                placeholder="Contoh: Pembina Utama Muda (IV/c)">
+                                placeholder="Contoh: Pangkat (Golongan)">
                             @error('pangkat')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror

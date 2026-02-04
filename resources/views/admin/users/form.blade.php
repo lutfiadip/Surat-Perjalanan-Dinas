@@ -66,7 +66,7 @@
                             <input type="text" name="name" id="name" value="{{ old('name', $user->name ?? '') }}"
                                 required
                                 class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
-                                placeholder="Contoh: Admin Utama">
+                                placeholder="Masukkan Nama">
                             @error('name')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -80,7 +80,7 @@
                                 <input type="text" name="username" id="username"
                                     value="{{ old('username', $user->username ?? '') }}" required
                                     class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
-                                    placeholder="Contoh: admin123">
+                                    placeholder="Masukkan Username">
                                 @error('username')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror

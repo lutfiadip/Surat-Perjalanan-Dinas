@@ -68,7 +68,7 @@
                             <input type="text" name="nama" id="nama" value="{{ old('nama', $pegawai->nama ?? '') }}"
                                 required
                                 class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
-                                placeholder="Contoh: Budi Santoso, S.Kom">
+                                placeholder="Contoh: Nama Lengkap, Gelar">
                             @error('nama')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -80,7 +80,7 @@
                                 <label for="nip" class="block text-sm font-semibold text-slate-900 mb-2">NIP</label>
                                 <input type="text" name="nip" id="nip" value="{{ old('nip', $pegawai->nip ?? '') }}"
                                     class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
-                                    placeholder="Contoh: 19800101 200501 1 001">
+                                    placeholder="Contoh: xxxxxxxx xxxxxx x xxx">
                                 @error('nip')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -94,7 +94,7 @@
                                 <input type="text" name="pangkat_gol" id="pangkat_gol"
                                     value="{{ old('pangkat_gol', $pegawai->pangkat_gol ?? '') }}"
                                     class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
-                                    placeholder="Contoh: Penata Muda (III/a)">
+                                    placeholder="Contoh: Pangkat (Golongan)">
                                 @error('pangkat_gol')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -120,7 +120,7 @@
                             <input type="text" name="unit_kerja" id="unit_kerja"
                                 value="{{ old('unit_kerja', $pegawai->unit_kerja ?? '') }}"
                                 class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
-                                placeholder="Contoh: Bidang Anggaran / Sekretariat">
+                                placeholder="Contoh: Bidang Sekretariat">
                             @error('unit_kerja')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
