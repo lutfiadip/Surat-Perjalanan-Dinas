@@ -7,9 +7,21 @@ use App\Models\PegawaiBkdSpd;
 
 class AdminPegawaiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pegawai = PegawaiBkdSpd::orderBy('nama')->paginate(10);
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
+
+        $query = PegawaiBkdSpd::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('nip', 'like', "%{$search}%");
+            });
+        }
+
+        $pegawai = $query->orderBy('nama')->paginate($perPage)->withQueryString();
         return view('admin.pegawai.index', compact('pegawai'));
     }
 
