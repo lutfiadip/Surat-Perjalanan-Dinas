@@ -25,7 +25,7 @@ class AdminPenandatanganController extends Controller
             'nip' => 'nullable|string',
             'pangkat' => 'nullable|string|max:50',
             'jabatan' => 'required|string|max:100',
-            'jenis' => 'required|in:kepala,pptk,bendahara', // Adjust based on known types
+            'jenis' => 'required|in:kepala,pptk,bendahara,sekretaris,kasubbag', // Adjust based on known types
         ]);
 
         Penandatangan::create($request->all() + ['status_aktif' => 1]);
@@ -46,7 +46,7 @@ class AdminPenandatanganController extends Controller
             'nip' => 'nullable|string',
             'pangkat' => 'nullable|string|max:50',
             'jabatan' => 'required|string|max:100',
-            'jenis' => 'required|in:kepala,pptk,bendahara',
+            'jenis' => 'required|in:kepala,pptk,bendahara,sekretaris,kasubbag',
         ]);
 
         $penandatangan = Penandatangan::findOrFail($id);
