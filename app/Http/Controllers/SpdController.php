@@ -284,10 +284,37 @@ class SpdController extends Controller
 
         $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
 
-        // Check for Sekretaris (by Jabatan or Jenis)
-        $isSekretaris = stripos($signer->jabatan, 'Sekretaris') !== false || strtolower($signer->jenis) === 'sekretaris';
+        // Check for Variant and Type
+        $variant = $signer->variant_ttd ?? 'normal'; // Default to normal if not set
+        $jenis = strtolower($signer->jenis);
+        $isSekretaris = stripos($signer->jabatan, 'Sekretaris') !== false || $jenis === 'sekretaris';
 
-        if ($isSekretaris) {
+        // STRICT RENDERING LOGIC ORDER
+        // 1. Plt
+        // 2. Plh
+        // 3. a.n. Sekretaris (Normal)
+        // 4. Normal (Center)
+
+        if ($variant === 'plt') {
+            // Plt. Layout (Left Aligned)
+            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
+                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;">Plt.</td><td style="vertical-align: top; border: none; padding: 0;">' . $signer->jabatan . '</td></tr>
+                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signer->nama . '<br>' . $signer->pangkat . '<br>NIP. ' . $signer->nip . '</td></tr>
+            </table>';
+        } elseif ($variant === 'plh') {
+            // Plh. Layout (Left Aligned)
+            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
+                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;">Plh.</td><td style="vertical-align: top; border: none; padding: 0;">' . $signer->jabatan . '</td></tr>
+                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signer->nama . '<br>' . $signer->pangkat . '<br>NIP. ' . $signer->nip . '</td></tr>
+            </table>';
+        } elseif ($isSekretaris && $variant === 'normal') {
+            // a.n. Sekretaris Layout (Left Aligned)
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
@@ -296,12 +323,13 @@ class SpdController extends Controller
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signer->nama . '<br>' . $signer->pangkat . '<br>NIP. ' . $signer->nip . '</td></tr>
             </table>';
         } else {
+            // Normal Layout (Center Aligned)
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0;">Kepala Badan Keuangan Daerah</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0; text-align: center;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0; text-align: center;">' . $signer->jabatan . '</td></tr>
                 <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signer->nama . '<br>' . $signer->pangkat . '<br>NIP. ' . $signer->nip . '</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0; text-align: center;">' . $signer->nama . '<br>' . $signer->pangkat . '<br>NIP. ' . $signer->nip . '</td></tr>
             </table>';
         }
 
@@ -378,11 +406,31 @@ class SpdController extends Controller
 
         $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
 
-        // Detect Sekretaris
-        $isSekretaris = stripos($signer->jabatan, 'Sekretaris') !== false || strtolower($signer->jenis) === 'sekretaris';
+        // Check for Variant and Type
+        $variant = $signer->variant_ttd ?? 'normal';
+        $jenis = strtolower($signer->jenis);
+        $isSekretaris = stripos($signer->jabatan, 'Sekretaris') !== false || $jenis === 'sekretaris';
 
-        if ($isSekretaris) {
-            // Sekretaris Layout (a.n.)
+        if ($variant === 'plt') {
+            // Plt. Layout (Left Aligned)
+            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
+                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;">Plt.</td><td style="vertical-align: top; border: none; padding: 0;">' . $signer->jabatan . '</td></tr>
+                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
+            </table>';
+        } elseif ($variant === 'plh') {
+            // Plh. Layout (Left Aligned)
+            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
+                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;">Plh.</td><td style="vertical-align: top; border: none; padding: 0;">' . $signer->jabatan . '</td></tr>
+                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
+            </table>';
+        } elseif ($isSekretaris && $variant === 'normal') {
+            // a.n. Sekretaris Layout (Left Aligned)
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
@@ -391,13 +439,13 @@ class SpdController extends Controller
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
             </table>';
         } else {
-            // Kepala Layout
+            // Normal Layout (Center Aligned)
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0;">Kepala Badan Keuangan Daerah</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0; text-align: center;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0; text-align: center;">' . $signer->jabatan . '</td></tr>
                 <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0; text-align: center;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
             </table>';
         }
 
@@ -510,23 +558,35 @@ class SpdController extends Controller
         }
 
         // 5. Signatory Processing (with fallback to 'jenis' check)
-        $isSekretaris = false;
+        $variant = $signatory['variant_ttd'] ?? ($signer->variant_ttd ?? 'normal');
+        $jenis = strtolower($signatory['jenis'] ?? ($signer->jenis ?? 'kepala'));
+        $jabatan = $signatory['jabatan'] ?? ($signer->jabatan ?? '');
 
-        if (isset($signatory['jabatan']) && stripos($signatory['jabatan'], 'Sekretaris') !== false) {
-            $isSekretaris = true;
-        } elseif (isset($signatory['jenis']) && strtolower($signatory['jenis']) === 'sekretaris') {
-            $isSekretaris = true;
-        } else {
-            // Check original model if applicable (for non-snapshot cases)
-            if (isset($signer) && (stripos($signer->jabatan, 'Sekretaris') !== false || strtolower($signer->jenis) === 'sekretaris')) {
-                $isSekretaris = true;
-            }
-        }
+        $isSekretaris = stripos($jabatan, 'Sekretaris') !== false || $jenis === 'sekretaris';
 
         $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
 
-        if ($isSekretaris) {
-            // Sekretaris Layout (a.n.)
+        // STRICT RENDERING LOGIC ORDER (Mirrors print/exportWord)
+        if ($variant === 'plt') {
+            // Plt. Layout
+            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
+                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;">Plt.</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['jabatan'] . '</td></tr>
+                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
+            </table>';
+        } elseif ($variant === 'plh') {
+            // Plh. Layout
+            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
+                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;">Plh.</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['jabatan'] . '</td></tr>
+                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
+            </table>';
+        } elseif ($isSekretaris && $variant === 'normal') {
+            // a.n. Sekretaris Layout
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
@@ -535,13 +595,13 @@ class SpdController extends Controller
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
             </table>';
         } else {
-            // Kepala Layout
+            // Normal Layout
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0;">Kepala Badan Keuangan Daerah</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0; text-align: center;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0; text-align: center;">' . $signatory['jabatan'] . '</td></tr>
                 <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0; text-align: center;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
             </table>';
         }
 

@@ -496,8 +496,10 @@
                                     data-nip="{{ $signer->nip }}"
                                     data-pangkat="{{ $signer->pangkat }}"
                                     data-jabatan="{{ $signer->jabatan }}"
+                                    data-variant="{{ $signer->variant_ttd ?? 'normal' }}"
+                                    data-jenis="{{ $signer->jenis }}"
                                     {{ (isset($draft) && $draft->penandatangan_id == $signer->id) ? 'selected' : '' }}>
-                                    {{ $signer->jabatan }} - {{ $signer->nama }}
+                                    {{ $signer->jabatan }} - {{ $signer->nama }} ({{ strtoupper($signer->variant_ttd ?? 'normal') }})
                                 </option>
                             @endforeach
                         </select>
@@ -599,7 +601,9 @@
                 nama: selectedSigner.data('nama') || '',
                 nip: selectedSigner.data('nip') || '',
                 pangkat: selectedSigner.data('pangkat') || '',
-                jabatan: selectedSigner.data('jabatan') || ''
+                jabatan: selectedSigner.data('jabatan') || '',
+                variant: selectedSigner.data('variant') || 'normal',
+                jenis: selectedSigner.data('jenis') || ''
             };
             
             // Allow Title Case logic if needed, but for now use raw name from DB
@@ -622,18 +626,47 @@
 
             // Signatory Page 1
             // Signatory Page 1 Logic
+            // Signatory Page 1 Logic
             const signContainer = $('#preview-signature-container');
             let signHtml = '';
 
-            // Check if context is Sekretaris (case insensitive)
-            if (signer.jabatan && signer.jabatan.toLowerCase().includes('sekretaris')) {
-                // Table layout for hanging "a.n." and indented details, matching User Image
-                // Note: User image shows Name in Title Case, Pangkat included.
-                // Structure:
-                // Row 1: Date (Indented/Col 2)
-                // Row 2: a.n. (Col 1) | Kepala... Sekretaris (Col 2)
-                // Row 3: Name, Pangkat, NIP (Col 2)
+            // Helper to determine type
+            const variant = signer.variant;
+            const isSekretaris = (signer.jabatan && signer.jabatan.toLowerCase().includes('sekretaris')) || (signer.jenis && signer.jenis.toLowerCase() === 'sekretaris');
 
+            // 1. Plt/Plh (Left Aligned)
+            if (variant === 'plt' || variant === 'plh') {
+                const prefix = variant === 'plt' ? 'Plt.' : 'Plh.';
+                signHtml = `
+                <table style="width: 100%; border: none; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
+                     <tr>
+                        <td colspan="2" style="height: 10px; border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30px; border: none; padding: 0;"></td>
+                        <td style="border: none; padding: 0;">${tglSurat}</td>
+                    </tr>
+                     <tr>
+                        <td style="vertical-align: top; border: none; padding: 0;">${prefix}</td>
+                        <td style="vertical-align: top; border: none; padding: 0;">
+                            ${signer.jabatan}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="height: 60px; border: none;"></td>
+                    </tr>
+                    <tr>
+                        <td style="border: none; padding: 0;"></td>
+                        <td style="vertical-align: top; border: none; padding: 0;">
+                            ${signer.nama_title}<br>
+                            ${signer.pangkat}<br>
+                            NIP. ${signer.nip}
+                        </td>
+                    </tr>
+                </table>`;
+            } 
+            // 2. Sekretaris + Normal (Left Aligned a.n.)
+            else if (isSekretaris && variant === 'normal') {
                 signHtml = `
                 <table style="width: 100%; border: none; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
                      <tr>
@@ -662,8 +695,9 @@
                         </td>
                     </tr>
                 </table>`;
-            } else {
-                // Standard Kepala Layout - Using Table for Alignment Consistency with Sekretaris
+            }
+            // 3. Normal (Center Aligned)
+            else {
                 signHtml = `
                 <table style="width: 100%; border: none; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
                      <tr>
@@ -671,12 +705,12 @@
                     </tr>
                     <tr>
                         <td style="width: 30px; border: none; padding: 0;"></td>
-                        <td style="border: none; padding: 0;">${tglSurat}</td>
+                        <td style="border: none; padding: 0; text-align: center;">${tglSurat}</td>
                     </tr>
                      <tr>
                         <td style="vertical-align: top; border: none; padding: 0;"></td>
-                        <td style="vertical-align: top; border: none; padding: 0;">
-                            Kepala Badan Keuangan Daerah
+                        <td style="vertical-align: top; border: none; padding: 0; text-align: center;">
+                            ${signer.jabatan}
                         </td>
                     </tr>
                     <tr>
@@ -684,7 +718,7 @@
                     </tr>
                     <tr>
                         <td style="border: none; padding: 0;"></td>
-                        <td style="vertical-align: top; border: none; padding: 0;">
+                        <td style="vertical-align: top; border: none; padding: 0; text-align: center;">
                             ${signer.nama_title}<br>
                             ${signer.pangkat}<br>
                             NIP. ${signer.nip}

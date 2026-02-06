@@ -161,6 +161,31 @@
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <!-- Varian TTD -->
+                        <div>
+                            <label for="variant_ttd" class="block text-sm font-semibold text-slate-900 mb-2">Varian
+                                TTD</label>
+                            <div class="relative">
+                                <select name="variant_ttd" id="variant_ttd"
+                                    class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm py-3 px-4 appearance-none">
+                                    <option value="normal" {{ (old('variant_ttd', $penandatangan->variant_ttd ?? '') == 'normal') ? 'selected' : '' }}>Normal</option>
+                                    <option value="plt" {{ (old('variant_ttd', $penandatangan->variant_ttd ?? '') == 'plt') ? 'selected' : '' }}>Plt. (Pelaksana Tugas)</option>
+                                    <option value="plh" {{ (old('variant_ttd', $penandatangan->variant_ttd ?? '') == 'plh') ? 'selected' : '' }}>Plh. (Pelaksana Harian)</option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M6 9l6 6 6-6" />
+                                    </svg>
+                                </div>
+                            </div>
+                            @error('variant_ttd')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-end gap-3">

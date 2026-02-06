@@ -17,6 +17,7 @@ class Penandatangan extends Model
         'nip',
         'jabatan',
         'jenis',
+        'variant_ttd',
         'status_aktif',
     ];
 
