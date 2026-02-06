@@ -630,13 +630,46 @@
             const signContainer = $('#preview-signature-container');
             let signHtml = '';
 
-            // Helper to determine type
+            // Helper to determine type - STRICT checking on jenis as requested
             const variant = signer.variant;
-            const isSekretaris = (signer.jabatan && signer.jabatan.toLowerCase().includes('sekretaris')) || (signer.jenis && signer.jenis.toLowerCase() === 'sekretaris');
+            const isSekretaris = signer.jenis && signer.jenis.toLowerCase() === 'sekretaris';
+
+            // Helper for Title Case (Name formatting only, preserve titles)
+            const toTitleCase = (str) => {
+                if (!str) return '';
+                // Split at first comma
+                const parts = str.split(/,(.+)/); // Split by first comma, capturing the rest
+                
+                // Format Name Part (Parts[0])
+                let formattedName = parts[0].toLowerCase().split(' ').map(function(word) {
+                    return (word.charAt(0).toUpperCase() + word.slice(1));
+                }).join(' ');
+                
+                // If there are titles (Parts[1] is the rest including subsequent commas if regex captured correctly, or just check index)
+                // Actually safer to just find index of first comma
+                const commaIndex = str.indexOf(',');
+                if (commaIndex > -1) {
+                    const titlePart = str.substring(commaIndex); // Include comma and everything after
+                    return formattedName + titlePart;
+                }
+                
+                return formattedName;
+            };
+
+            const signerNamePage1 = toTitleCase(signer.nama_title);
 
             // 1. Plt/Plh (Left Aligned)
             if (variant === 'plt' || variant === 'plh') {
                 const prefix = variant === 'plt' ? 'Plt.' : 'Plh.';
+                
+                // Determine Jabatan Text based on Jenis
+                let jabatanText = signer.jabatan;
+                if (signer.jenis && signer.jenis.toLowerCase() === 'kepala') {
+                    jabatanText = 'Kepala Badan Keuangan Daerah';
+                } else if (signer.jenis && signer.jenis.toLowerCase() === 'sekretaris') {
+                    jabatanText = 'Sekretaris';
+                }
+
                 signHtml = `
                 <table style="width: 100%; border: none; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
                      <tr>
@@ -649,7 +682,7 @@
                      <tr>
                         <td style="vertical-align: top; border: none; padding: 0;">${prefix}</td>
                         <td style="vertical-align: top; border: none; padding: 0;">
-                            ${signer.jabatan}
+                            ${jabatanText}
                         </td>
                     </tr>
                     <tr>
@@ -658,16 +691,16 @@
                     <tr>
                         <td style="border: none; padding: 0;"></td>
                         <td style="vertical-align: top; border: none; padding: 0;">
-                            ${signer.nama_title}<br>
+                            ${signerNamePage1}<br>
                             ${signer.pangkat}<br>
                             NIP. ${signer.nip}
                         </td>
                     </tr>
                 </table>`;
-            } 
+            }
             // 2. Sekretaris + Normal (Left Aligned a.n.)
             else if (isSekretaris && variant === 'normal') {
-                signHtml = `
+                 signHtml = `
                 <table style="width: 100%; border: none; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
                      <tr>
                         <td colspan="2" style="height: 10px; border: none;"></td>
@@ -688,16 +721,22 @@
                     </tr>
                     <tr>
                         <td style="border: none; padding: 0;"></td>
-                        <td style="vertical-align: top; border: none; padding: 0;">
-                            ${signer.nama_title}<br>
+                         <td style="vertical-align: top; border: none; padding: 0;">
+                            ${signerNamePage1}<br>
                             ${signer.pangkat}<br>
                             NIP. ${signer.nip}
                         </td>
                     </tr>
                 </table>`;
             }
-            // 3. Normal (Center Aligned)
+            // 3. Normal (Left Aligned - was Center)
             else {
+                // Determine Jabatan Text based on Jenis for Normal
+                let jabatanText = signer.jabatan;
+                if (signer.jenis && signer.jenis.toLowerCase() === 'kepala') {
+                    jabatanText = 'Kepala Badan Keuangan Daerah';
+                }
+
                 signHtml = `
                 <table style="width: 100%; border: none; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
                      <tr>
@@ -705,12 +744,12 @@
                     </tr>
                     <tr>
                         <td style="width: 30px; border: none; padding: 0;"></td>
-                        <td style="border: none; padding: 0; text-align: center;">${tglSurat}</td>
+                        <td style="border: none; padding: 0;">${tglSurat}</td>
                     </tr>
                      <tr>
                         <td style="vertical-align: top; border: none; padding: 0;"></td>
-                        <td style="vertical-align: top; border: none; padding: 0; text-align: center;">
-                            ${signer.jabatan}
+                        <td style="vertical-align: top; border: none; padding: 0;">
+                            ${jabatanText}
                         </td>
                     </tr>
                     <tr>
@@ -718,8 +757,8 @@
                     </tr>
                     <tr>
                         <td style="border: none; padding: 0;"></td>
-                        <td style="vertical-align: top; border: none; padding: 0; text-align: center;">
-                            ${signer.nama_title}<br>
+                        <td style="vertical-align: top; border: none; padding: 0;">
+                            ${signerNamePage1}<br>
                             ${signer.pangkat}<br>
                             NIP. ${signer.nip}
                         </td>
