@@ -192,30 +192,33 @@ if (file_exists($path)) {
                             <td style="width: 20px; text-align: center;">:</td>
                             <td>
                                 @foreach($selectedPegawais as $index => $pegawai)
-                                    <table style="margin-bottom: 0px;">
+                                    <table
+                                        style="margin: 0; padding: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
+                                        cellpadding="0" cellspacing="0">
                                         <tr>
-                                            <td style="width: 20px;">{{ $index + 1 }}.</td>
-                                            <td>
-                                                <table>
+                                            <td style="width: 20px; vertical-align: top; padding: 0;">{{ $index + 1 }}.</td>
+                                            <td style="padding: 0;">
+                                                <table style="margin: 0; padding: 0; border-collapse: collapse;"
+                                                    cellpadding="0" cellspacing="0">
                                                     <tr>
-                                                        <td style="width: 100px;">Nama</td>
-                                                        <td style="width: 10px;">:</td>
-                                                        <td>{{ $pegawai->nama }}</td>
+                                                        <td style="width: 100px; padding: 0;">Nama</td>
+                                                        <td style="width: 10px; padding: 0;">:</td>
+                                                        <td style="padding: 0;">{{ $pegawai->nama }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>Pangkat / Gol</td>
-                                                        <td>:</td>
-                                                        <td>{{ $pegawai->pangkat_gol }}</td>
+                                                        <td style="padding: 0;">Pangkat / Gol</td>
+                                                        <td style="padding: 0;">:</td>
+                                                        <td style="padding: 0;">{{ $pegawai->pangkat_gol }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>NIP</td>
-                                                        <td>:</td>
-                                                        <td>{{ $pegawai->nip }}</td>
+                                                        <td style="padding: 0;">NIP</td>
+                                                        <td style="padding: 0;">:</td>
+                                                        <td style="padding: 0;">{{ $pegawai->nip }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>Jabatan</td>
-                                                        <td>:</td>
-                                                        <td>{{ $pegawai->jabatan }}</td>
+                                                        <td style="padding: 0;">Jabatan</td>
+                                                        <td style="padding: 0;">:</td>
+                                                        <td style="padding: 0;">{{ $pegawai->jabatan }}</td>
                                                     </tr>
                                                 </table>
                                             </td>

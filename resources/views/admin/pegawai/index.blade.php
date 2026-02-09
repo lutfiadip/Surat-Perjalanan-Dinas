@@ -175,43 +175,45 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-8 py-5 text-center flex items-center justify-center gap-2">
-                                    <a href="{{ route('admin.pegawai.edit', $item->id) }}"
-                                        class="p-2 text-slate-400 hover:text-[#1C6DD0] hover:bg-blue-50 rounded-lg transition-all"
-                                        title="Edit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                        </svg>
-                                    </a>
-                                    <form action="{{ route('admin.pegawai.toggle_status', $item->id) }}" method="POST"
-                                        class="inline-block"
-                                        onsubmit="return confirm('Apakah Anda yakin ingin mengubah status pegawai ini?')">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit"
-                                            class="p-2 {{ $item->status_aktif ? 'text-red-400 hover:text-red-600 hover:bg-red-50' : 'text-green-400 hover:text-green-600 hover:bg-green-50' }} rounded-lg transition-all"
-                                            title="{{ $item->status_aktif ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                            @if($item->status_aktif)
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <circle cx="12" cy="12" r="10"></circle>
-                                                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                                                    <line x1="9" y1="9" x2="15" y2="15"></line>
-                                                </svg>
-                                            @else
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                                </svg>
-                                            @endif
-                                        </button>
-                                    </form>
+                                <td class="px-8 py-5 text-center align-middle">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <a href="{{ route('admin.pegawai.edit', $item->id) }}"
+                                            class="p-2 text-slate-400 hover:text-[#1C6DD0] hover:bg-blue-50 rounded-lg transition-all"
+                                            title="Edit">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                        </a>
+                                        <form action="{{ route('admin.pegawai.toggle_status', $item->id) }}" method="POST"
+                                            class="inline-block"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin mengubah status pegawai ini?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit"
+                                                class="p-2 {{ $item->status_aktif ? 'text-red-400 hover:text-red-600 hover:bg-red-50' : 'text-green-400 hover:text-green-600 hover:bg-green-50' }} rounded-lg transition-all"
+                                                title="{{ $item->status_aktif ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                                @if($item->status_aktif)
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="10"></circle>
+                                                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                                                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                                                    </svg>
+                                                @else
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                    </svg>
+                                                @endif
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
