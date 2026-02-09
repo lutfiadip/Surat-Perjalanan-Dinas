@@ -192,7 +192,7 @@ if (file_exists($path)) {
                             <td style="width: 20px; text-align: center;">:</td>
                             <td>
                                 @foreach($selectedPegawais as $index => $pegawai)
-                                    <table style="margin-bottom: 10px;">
+                                    <table style="margin-bottom: 0px;">
                                         <tr>
                                             <td style="width: 20px;">{{ $index + 1 }}.</td>
                                             <td>
@@ -776,7 +776,8 @@ if (file_exists($path)) {
                                 Kepala Sub Bagian Umum,<br>Selaku Pejabat Pelaksana Teknis
                                 Kegiatan<br>Sekretariat<br><br><br><br><span
                                     style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">({{ $pptk['nama'] }})</span><br>NIP.
-                                {{ $pptk['nip'] }}</td>
+                                {{ $pptk['nip'] }}
+                            </td>
                         </tr>
                     </table>
                 </td>

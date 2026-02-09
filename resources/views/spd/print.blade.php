@@ -110,7 +110,7 @@
         /* KEPADA LIST */
         .kepada-list-item {
             display: flex;
-            margin-bottom: 4px;
+            margin-bottom: 0;
         }
 
         .kepada-num {

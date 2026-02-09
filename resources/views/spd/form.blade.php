@@ -830,7 +830,7 @@
 
                     // 1. POPULATE PAGE 1 LIST
                     const itemHtml1 = `
-                    <div style="display: flex; margin-bottom: 4px;">
+                    <div style="display: flex; margin-bottom: 0px;">
                         <div style="width: 20px; flex-shrink: 0;">${index}.</div>
                         <div style="flex: 1;">
                             <div style="display: flex;">
