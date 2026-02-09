@@ -226,12 +226,12 @@
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                 </th>
                                 <th class="p-4 font-semibold text-slate-700 w-14 text-center">No</th>
-                                <th class="p-4 font-semibold text-slate-700">Maksud / Tujuan</th>
+                                <th class="p-4 font-semibold text-slate-700 text-center">Maksud / Tujuan</th>
                                 @if(session('role') === 'admin')
-                                    <th class="p-4 font-semibold text-slate-700 w-48">Oleh</th>
+                                    <th class="p-4 font-semibold text-slate-700 w-48 text-center">Oleh</th>
                                 @endif
-                                <th class="p-4 font-semibold text-slate-700 w-48">Tanggal Surat</th>
-                                <th class="p-4 font-semibold text-slate-700 text-right w-32">Aksi</th>
+                                <th class="p-4 font-semibold text-slate-700 w-48 text-center">Tanggal Surat</th>
+                                <th class="p-4 font-semibold text-slate-700 text-center w-32">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -242,18 +242,18 @@
                                             class="spd-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                     </td>
                                     <td class="p-4 text-center text-slate-500">{{ $loop->iteration }}</td>
-                                    <td class="p-4 text-slate-900">
+                                    <td class="p-4 text-slate-900 text-center">
                                         {{ $draft->maksud ?? '(Belum diisi)' }}
                                     </td>
                                     @if(session('role') === 'admin')
-                                        <td class="p-4 text-slate-500 text-sm">
+                                        <td class="p-4 text-slate-500 text-sm text-center">
                                             {{ $draft->creator->name ?? 'Unknown' }}
                                         </td>
                                     @endif
-                                    <td class="p-4 text-slate-600">
+                                    <td class="p-4 text-slate-600 text-center">
                                         {{ $draft->tanggal_surat ? \Carbon\Carbon::parse($draft->tanggal_surat)->locale('id')->isoFormat('D MMMM Y') : '-' }}
                                     </td>
-                                    <td class="p-4 text-right">
+                                    <td class="p-4 text-center">
                                         <a href="{{ route('spd.edit', ['id' => $draft->id]) }}"
                                             class="inline-block px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 font-medium text-sm transition">
                                             Lanjutkan
@@ -307,66 +307,68 @@
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                 </th>
                                 <th class="p-4 font-semibold text-slate-700 w-14 text-center">No</th>
-                                <th class="p-4 font-semibold text-slate-700 w-48">Nomor Surat</th>
-                                <th class="p-4 font-semibold text-slate-700">Maksud / Tujuan</th>
+                                <th class="p-4 font-semibold text-slate-700 w-48 text-center">Nomor Surat</th>
+                                <th class="p-4 font-semibold text-slate-700 text-center">Maksud / Tujuan</th>
                                 @if(session('role') === 'admin')
-                                    <th class="p-4 font-semibold text-slate-700 w-48">Oleh</th>
+                                    <th class="p-4 font-semibold text-slate-700 w-48 text-center">Oleh</th>
                                 @endif
-                                <th class="p-4 font-semibold text-slate-700 w-48">Tanggal Surat</th>
-                                <th class="p-4 font-semibold text-slate-700 text-right w-48">Aksi</th>
+                                <th class="p-4 font-semibold text-slate-700 w-48 text-center">Tanggal Surat</th>
+                                <th class="p-4 font-semibold text-slate-700 text-center w-48">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse($finals as $final)
                                 <tr class="hover:bg-slate-50 transition">
-                                    <td class="p-4 text-center">
+                                    <td class="p-4 text-center align-middle">
                                         <input type="checkbox" name="ids[]" value="{{ $final->id }}"
                                             class="spd-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                     </td>
-                                    <td class="p-4 text-center text-slate-500">{{ $loop->iteration }}</td>
-                                    <td class="p-4 text-slate-900 font-medium">
+                                    <td class="p-4 text-center text-slate-500 align-middle">{{ $loop->iteration }}</td>
+                                    <td class="p-4 text-slate-900 font-medium text-center align-middle">
                                         {{ $final->nomor_surat ?? '-' }}
                                     </td>
-                                    <td class="p-4 text-slate-600">
+                                    <td class="p-4 text-slate-600 align-middle text-center">
                                         {{ $final->maksud ?? '(Belum diisi)' }}
                                     </td>
                                     @if(session('role') === 'admin')
-                                        <td class="p-4 text-slate-500 text-sm">
+                                        <td class="p-4 text-slate-500 text-sm align-middle text-center">
                                             {{ $final->creator->name ?? 'Unknown' }}
                                         </td>
                                     @endif
-                                    <td class="p-4 text-slate-600">
+                                    <td class="p-4 text-slate-600 align-middle text-center">
                                         {{ $final->tanggal_surat ? \Carbon\Carbon::parse($final->tanggal_surat)->locale('id')->isoFormat('D MMMM Y') : '-' }}
                                     </td>
-                                    <td class="p-4 text-right flex justify-end gap-2">
-                                        <a href="{{ route('spd.print.final', ['id' => $final->id]) }}" target="_blank"
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 font-medium text-sm transition border border-slate-300">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round">
-                                                <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                                <path
-                                                    d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
-                                                </path>
-                                                <rect x="6" y="14" width="12" height="8"></rect>
-                                            </svg>
-                                            Cetak
-                                        </a>
-                                        <a href="{{ route('spd.export_word.final', ['id' => $final->id]) }}"
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-medium text-sm transition border border-blue-200">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round">
-                                                <path
-                                                    d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z">
-                                                </path>
-                                                <polyline points="14 2 14 8 20 8"></polyline>
-                                                <path d="M16 13H8"></path>
-                                                <path d="M16 17H8"></path>
-                                                <path d="M10 9H8"></path>
-                                            </svg>
-                                            Word
-                                        </a>
+                                    <td class="p-4 text-center align-middle">
+                                        <div class="flex justify-center gap-2 items-center">
+                                            <a href="{{ route('spd.print.final', ['id' => $final->id]) }}" target="_blank"
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 font-medium text-sm transition border border-slate-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                                    <path
+                                                        d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                                                    </path>
+                                                    <rect x="6" y="14" width="12" height="8"></rect>
+                                                </svg>
+                                                Cetak
+                                            </a>
+                                            <a href="{{ route('spd.export_word.final', ['id' => $final->id]) }}"
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-medium text-sm transition border border-blue-200">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <path
+                                                        d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z">
+                                                    </path>
+                                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                                    <path d="M16 13H8"></path>
+                                                    <path d="M16 17H8"></path>
+                                                    <path d="M10 9H8"></path>
+                                                </svg>
+                                                Word
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
