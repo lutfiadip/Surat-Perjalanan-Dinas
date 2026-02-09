@@ -637,23 +637,20 @@
             // Helper for Title Case (Name formatting only, preserve titles)
             const toTitleCase = (str) => {
                 if (!str) return '';
-                // Split at first comma
-                const parts = str.split(/,(.+)/); // Split by first comma, capturing the rest
-                
-                // Format Name Part (Parts[0])
-                let formattedName = parts[0].toLowerCase().split(' ').map(function(word) {
+                const commaIndex = str.indexOf(',');
+                let namePart = str;
+                let titlePart = '';
+
+                if (commaIndex > -1) {
+                    namePart = str.substring(0, commaIndex);
+                    titlePart = str.substring(commaIndex);
+                }
+
+                let formattedName = namePart.toLowerCase().split(' ').map(function(word) {
                     return (word.charAt(0).toUpperCase() + word.slice(1));
                 }).join(' ');
-                
-                // If there are titles (Parts[1] is the rest including subsequent commas if regex captured correctly, or just check index)
-                // Actually safer to just find index of first comma
-                const commaIndex = str.indexOf(',');
-                if (commaIndex > -1) {
-                    const titlePart = str.substring(commaIndex); // Include comma and everything after
-                    return formattedName + titlePart;
-                }
-                
-                return formattedName;
+
+                return formattedName + titlePart;
             };
 
             const signerNamePage1 = toTitleCase(signer.nama_title);

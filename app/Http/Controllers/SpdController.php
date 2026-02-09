@@ -297,6 +297,9 @@ class SpdController extends Controller
         // 3. a.n. Sekretaris (Normal)
         // 4. Normal (Center)
 
+        // Pre-calculate Title Case Name for Page 1
+        $signerNamePage1 = $this->formatNameCustom($signatory['nama']);
+
         if ($variant === 'plt') {
             // Determine Jabatan Text based on Jenis for Plt
             $jabatanText = $signer->jabatan;
@@ -307,10 +310,6 @@ class SpdController extends Controller
             }
 
             // Plt. Layout
-            // Name Override for Page 1 (Title Case)
-            // "Huruf pertama tiap kata besar selanjutnya kecil" -> ucwords(strtolower(...))
-            $signerNamePage1 = $this->formatNameCustom($signer->nama);
-
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
@@ -439,6 +438,9 @@ class SpdController extends Controller
         $jenis = strtolower($signer->jenis);
         $isSekretaris = $jenis === 'sekretaris';
 
+        // Pre-calculate Title Case Name for Page 1
+        $signerNamePage1 = $this->formatNameCustom($signatory['nama']);
+
         if ($variant === 'plt') {
             // Determine Jabatan Text based on Jenis for Plt
             $jabatanText = $signer->jabatan;
@@ -449,9 +451,6 @@ class SpdController extends Controller
             }
 
             // Plt. Layout (Left Aligned)
-            // Name Override for Page 1 (Title Case - Name only, preserve titles)
-            $signerNamePage1 = $this->formatNameCustom($signatory['nama']);
-
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
@@ -498,7 +497,7 @@ class SpdController extends Controller
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
                 <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
                 <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
             </table>';
         }
 
@@ -620,6 +619,9 @@ class SpdController extends Controller
         $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
 
         // STRICT RENDERING LOGIC ORDER (Mirrors print/exportWord)
+        // Pre-calculate Title Case Name for Page 1
+        $signerNamePage1 = $this->formatNameCustom($signatory['nama']);
+
         if ($variant === 'plt') {
             // Determine Jabatan Text based on Jenis for Plt
             $jabatanText = $signatory['jabatan'];
@@ -630,9 +632,6 @@ class SpdController extends Controller
             }
 
             // Plt. Layout
-            // Name Override for Page 1 (Title Case - Name only, preserve titles)
-            $signerNamePage1 = $this->formatNameCustom($signatory['nama']);
-
             $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
                 <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
@@ -678,7 +677,7 @@ class SpdController extends Controller
                 <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
                 <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
                 <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
             </table>';
         }
 
