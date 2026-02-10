@@ -43,6 +43,7 @@
                 <label for="username" class="block text-sm font-medium leading-6 text-slate-900">Username</label>
                 <div style="margin-top: 3px;">
                     <input id="username" name="username" type="text" required autocomplete="username"
+                        placeholder="Masukkan username"
                         class="block w-full rounded-md border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#1C6DD0] sm:text-sm sm:leading-6">
                 </div>
             </div>
@@ -51,6 +52,7 @@
                 <label for="password" class="block text-sm font-medium leading-6 text-slate-900">Password</label>
                 <div class="relative" style="margin-top: 3px;">
                     <input id="password" name="password" type="password" required autocomplete="current-password"
+                        placeholder="Masukkan password"
                         class="block w-full rounded-md border-0 py-2.5 px-3 pr-10 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#1C6DD0] sm:text-sm sm:leading-6">
                     <button type="button" onclick="togglePassword()"
                         style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; padding: 0; cursor: pointer; z-index: 10;"
