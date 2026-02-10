@@ -97,21 +97,27 @@
                 <h2 class="text-lg font-bold text-slate-900">Daftar Pegawai</h2>
 
                 <div class="flex items-center gap-4 flex-1 justify-end">
-                    <form method="GET" action="{{ route('admin.pegawai.index') }}" class="relative w-64">
+                    <form method="GET" action="{{ route('admin.pegawai.index') }}" class="flex items-center gap-2">
                         @if(request('per_page'))
                             <input type="hidden" name="per_page" value="{{ request('per_page') }}">
                         @endif
-                        <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none"
-                            style="padding-left: 0.7rem;">
-                            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
+
+
+
+                        <div class="relative w-64">
+                            <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none"
+                                style="padding-left: 0.7rem;">
+                                <svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </div>
+                            <input type="text" name="search" value="{{ request('search') }}" style="padding-left: 2rem"
+                                class="block w-full pr-3 py-2 border border-slate-200 rounded-xl leading-5 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] sm:text-xs transition-colors"
+                                placeholder="Cari nama / NIP...">
                         </div>
-                        <input type="text" name="search" value="{{ request('search') }}" style="padding-left: 2rem"
-                            class="block w-full pr-3 py-2 border border-slate-200 rounded-xl leading-5 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] sm:text-xs transition-colors"
-                            placeholder="Cari nama / NIP...">
                     </form>
 
                     <a href="{{ route('admin.pegawai.create') }}"
@@ -138,7 +144,16 @@
                             <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Jabatan
                                 / Unit Kerja</th>
                             <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
-                                Status</th>
+                                <button type="button" id="statusDropdownBtn" onclick="toggleStatusDropdown(event)"
+                                    class="flex items-center gap-1 hover:text-[#1C6DD0] transition-colors focus:outline-none font-semibold uppercase">
+                                    Status
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M6 9l6 6 6-6" />
+                                    </svg>
+                                </button>
+                            </th>
                             <th
                                 class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-48 text-center">
                                 Aksi</th>
@@ -275,6 +290,62 @@
         </div>
     </main>
 
+    <!-- Status Dropdown Menu (Fixed Position) -->
+    <div id="statusDropdown"
+        class="fixed bg-white rounded-lg shadow-xl border border-slate-100 py-1 hidden z-[100] w-32 transform transition-all duration-200 origin-top-left">
+        <a href="{{ route('admin.pegawai.index', array_merge(request()->except('status'), ['status' => null])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('status') === null ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Semua
+        </a>
+        <a href="{{ route('admin.pegawai.index', array_merge(request()->except('status'), ['status' => '1'])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('status') == '1' ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Aktif
+        </a>
+        <a href="{{ route('admin.pegawai.index', array_merge(request()->except('status'), ['status' => '0'])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('status') == '0' ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Nonaktif
+        </a>
+    </div>
+
+    <script>
+        function toggleStatusDropdown(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const dropdown = document.getElementById('statusDropdown');
+            const btn = document.getElementById('statusDropdownBtn');
+
+            if (!dropdown || !btn) return;
+
+            const rect = btn.getBoundingClientRect();
+
+            if (dropdown.classList.contains('hidden')) {
+                // Show and position
+                dropdown.classList.remove('hidden');
+                // Position exactly below the button aligned to left
+                dropdown.style.top = (rect.bottom + 5) + 'px';
+                dropdown.style.left = rect.left + 'px';
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            const dropdown = document.getElementById('statusDropdown');
+            const btn = document.getElementById('statusDropdownBtn');
+            if (dropdown && !dropdown.classList.contains('hidden') && !btn.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Handling sticky header issues - close on scroll
+        window.addEventListener('scroll', function () {
+            const dropdown = document.getElementById('statusDropdown');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        }, true);
+    </script>
 </body>
 
 </html>

@@ -21,6 +21,10 @@ class AdminPegawaiController extends Controller
             });
         }
 
+        if ($request->has('status') && in_array($request->status, ['0', '1'])) {
+            $query->where('status_aktif', $request->status);
+        }
+
         $pegawai = $query->orderBy('nama')->paginate($perPage)->withQueryString();
         return view('admin.pegawai.index', compact('pegawai'));
     }
