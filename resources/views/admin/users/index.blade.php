@@ -116,9 +116,29 @@
                             <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama
                                 Lengkap</th>
                             <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
-                                Role</th>
+                                <button type="button" id="roleDropdownBtn"
+                                    onclick="toggleDropdown(event, 'roleDropdown')"
+                                    class="flex items-center gap-1 hover:text-[#1C6DD0] transition-colors focus:outline-none font-semibold uppercase">
+                                    Role
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M6 9l6 6 6-6" />
+                                    </svg>
+                                </button>
+                            </th>
                             <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
-                                Status</th>
+                                <button type="button" id="statusDropdownBtn"
+                                    onclick="toggleDropdown(event, 'statusDropdown')"
+                                    class="flex items-center gap-1 hover:text-[#1C6DD0] transition-colors focus:outline-none font-semibold uppercase">
+                                    Status
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M6 9l6 6 6-6" />
+                                    </svg>
+                                </button>
+                            </th>
                             <th
                                 class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-48 text-center">
                                 Aksi</th>
@@ -235,6 +255,96 @@
         </div>
     </main>
 
+    <!-- Role Dropdown Menu (Fixed Position) -->
+    <div id="roleDropdown"
+        class="fixed bg-white rounded-lg shadow-xl border border-slate-100 py-1 hidden z-[100] w-32 transform transition-all duration-200 origin-top-left">
+        <a href="{{ route('admin.users.index', array_merge(request()->except('role'), ['role' => null])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('role') === null ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Semua
+        </a>
+        <a href="{{ route('admin.users.index', array_merge(request()->except('role'), ['role' => 'admin'])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('role') == 'admin' ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Admin
+        </a>
+        <a href="{{ route('admin.users.index', array_merge(request()->except('role'), ['role' => 'user'])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('role') == 'user' ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            User
+        </a>
+    </div>
+
+    <!-- Status Dropdown Menu (Fixed Position) -->
+    <div id="statusDropdown"
+        class="fixed bg-white rounded-lg shadow-xl border border-slate-100 py-1 hidden z-[100] w-32 transform transition-all duration-200 origin-top-left">
+        <a href="{{ route('admin.users.index', array_merge(request()->except('status'), ['status' => null])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('status') === null ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Semua
+        </a>
+        <a href="{{ route('admin.users.index', array_merge(request()->except('status'), ['status' => 'aktif'])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('status') == 'aktif' ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Aktif
+        </a>
+        <a href="{{ route('admin.users.index', array_merge(request()->except('status'), ['status' => 'nonaktif'])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('status') == 'nonaktif' ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Nonaktif
+        </a>
+    </div>
+
+    <script>
+        function toggleDropdown(event, dropdownId) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Close all other dropdowns
+            const allDropdowns = ['roleDropdown', 'statusDropdown'];
+            allDropdowns.forEach(id => {
+                if (id !== dropdownId) {
+                    const d = document.getElementById(id);
+                    if (d) d.classList.add('hidden');
+                }
+            });
+
+            const dropdown = document.getElementById(dropdownId);
+            const btn = event.currentTarget; // Get button that triggered event
+
+            if (!dropdown || !btn) return;
+
+            const rect = btn.getBoundingClientRect();
+
+            if (dropdown.classList.contains('hidden')) {
+                // Show and position
+                dropdown.classList.remove('hidden');
+                // Position exactly below the button aligned to left
+                dropdown.style.top = (rect.bottom + 5) + 'px';
+                dropdown.style.left = rect.left + 'px';
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            const allDropdowns = ['roleDropdown', 'statusDropdown'];
+            allDropdowns.forEach(id => {
+                const dropdown = document.getElementById(id);
+                // We need to check if click is on ANY button that opens a dropdown, but simpler is just to close if not clicked inside dropdown
+                // and relying on stopPropagation in toggle function to handle button clicks
+                if (dropdown && !dropdown.classList.contains('hidden') && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        });
+
+        // Handling sticky header issues - close on scroll
+        window.addEventListener('scroll', function () {
+            const allDropdowns = ['roleDropdown', 'statusDropdown'];
+            allDropdowns.forEach(id => {
+                const dropdown = document.getElementById(id);
+                if (dropdown && !dropdown.classList.contains('hidden')) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        }, true);
+    </script>
 </body>
 
 </html>

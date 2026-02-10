@@ -8,9 +8,19 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::orderBy('name')->paginate(10);
+        $query = User::query();
+
+        if ($request->has('role') && in_array($request->role, ['admin', 'user'])) {
+            $query->where('role', $request->role);
+        }
+
+        if ($request->has('status') && in_array($request->status, ['aktif', 'nonaktif'])) {
+            $query->where('status', $request->status);
+        }
+
+        $users = $query->orderBy('name')->paginate(10)->withQueryString();
         return view('admin.users.index', compact('users'));
     }
 

@@ -7,9 +7,15 @@ use App\Models\Penandatangan;
 
 class AdminPenandatanganController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $penandatangan = Penandatangan::orderBy('nama')->paginate(10);
+        $query = Penandatangan::query();
+
+        if ($request->has('status') && in_array($request->status, ['0', '1'])) {
+            $query->where('status_aktif', $request->status);
+        }
+
+        $penandatangan = $query->orderBy('nama')->paginate(10)->withQueryString();
         return view('admin.penandatangan.index', compact('penandatangan'));
     }
 

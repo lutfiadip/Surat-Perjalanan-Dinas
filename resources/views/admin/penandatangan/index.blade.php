@@ -120,7 +120,18 @@
                             <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
                                 Jenis</th>
                             <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
-                                Status</th>
+                                Varian</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
+                                <button type="button" id="statusDropdownBtn" onclick="toggleStatusDropdown(event)"
+                                    class="flex items-center gap-1 hover:text-[#1C6DD0] transition-colors focus:outline-none font-semibold uppercase">
+                                    Status
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M6 9l6 6 6-6" />
+                                    </svg>
+                                </button>
+                            </th>
                             <th
                                 class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-48 text-center">
                                 Aksi</th>
@@ -144,6 +155,12 @@
                                     <span
                                         class="capitalize inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700">
                                         {{ $item->jenis }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="capitalize inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700">
+                                        {{ $item->variant_ttd ?? '-' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
@@ -232,6 +249,62 @@
         </div>
     </main>
 
+    <!-- Status Dropdown Menu (Fixed Position) -->
+    <div id="statusDropdown"
+        class="fixed bg-white rounded-lg shadow-xl border border-slate-100 py-1 hidden z-[100] w-32 transform transition-all duration-200 origin-top-left">
+        <a href="{{ route('admin.penandatangan.index', array_merge(request()->except('status'), ['status' => null])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('status') === null ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Semua
+        </a>
+        <a href="{{ route('admin.penandatangan.index', array_merge(request()->except('status'), ['status' => '1'])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('status') == '1' ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Aktif
+        </a>
+        <a href="{{ route('admin.penandatangan.index', array_merge(request()->except('status'), ['status' => '0'])) }}"
+            class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 {{ request('status') == '0' ? 'font-semibold bg-slate-50 text-[#1C6DD0]' : '' }}">
+            Nonaktif
+        </a>
+    </div>
+
+    <script>
+        function toggleStatusDropdown(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const dropdown = document.getElementById('statusDropdown');
+            const btn = document.getElementById('statusDropdownBtn');
+
+            if (!dropdown || !btn) return;
+
+            const rect = btn.getBoundingClientRect();
+
+            if (dropdown.classList.contains('hidden')) {
+                // Show and position
+                dropdown.classList.remove('hidden');
+                // Position exactly below the button aligned to left
+                dropdown.style.top = (rect.bottom + 5) + 'px';
+                dropdown.style.left = rect.left + 'px';
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            const dropdown = document.getElementById('statusDropdown');
+            const btn = document.getElementById('statusDropdownBtn');
+            if (dropdown && !dropdown.classList.contains('hidden') && !btn.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Handling sticky header issues - close on scroll
+        window.addEventListener('scroll', function () {
+            const dropdown = document.getElementById('statusDropdown');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        }, true);
+    </script>
 </body>
 
 </html>
