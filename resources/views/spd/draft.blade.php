@@ -192,54 +192,133 @@
                 onsubmit="return confirm('Apakah Anda yakin ingin menghapus item yang dipilih?')">
                 @csrf
 
-                {{-- Floating Action Button (Top Right) --}}
-                <div class="fixed bottom-8 right-8 z-50">
-                    <button type="submit" id="btn-delete-batch"
-                        class="hidden bg-red-600 text-white rounded-full px-6 py-3 shadow-lg hover:bg-red-700 transition font-medium flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                            </path>
-                        </svg>
-                        Hapus Terpilih
-                    </button>
-                </div>
 
-                <div class="mb-6 flex justify-between items-end">
+
+                <!-- Default Header -->
+                <div id="default-header" class="mb-6 flex justify-between items-end transition-all duration-300">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900">Draft SPD Saya</h2>
                         <p class="text-slate-500 text-sm">Dokumen yang masih bisa diedit.</p>
                     </div>
                     <a href="{{ route('spd.create') }}"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm hover:shadow-md">
-                        + Buat SPD Baru
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-[#1C6DD0] text-white rounded-lg hover:bg-[#1653a1] transition font-medium text-sm shadow-sm hover:shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Buat SPD Baru
                     </a>
                 </div>
 
-                <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
+                <!-- Bulk Selection Toolbar (Hidden by default) -->
+                <div id="bulk-toolbar"
+                    class="hidden mb-6 bg-[#FFF8F3] border border-[#1C6DD0]/20 rounded-xl p-4 flex items-center justify-between shadow-sm lg:sticky lg:top-24 z-40 transition-all duration-300">
+                    <div class="flex items-center gap-4">
+                        <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
+                            <span id="selected-count">0</span> Dipilih
+                        </span>
+                        <div class="h-6 w-px bg-slate-300"></div>
+                        <div class="text-sm text-slate-600" id="selection-hint">
+                            Pilih dokumen untuk aksi massal
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <!-- Actions -->
+                        <button type="submit" id="btn-delete-bulk" disabled
+                            class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                            </svg>
+                            Hapus
+                        </button>
+
+                        <!-- Placeholders for Export/Print -->
+                        <button type="button" disabled title="Fitur ini belum tersedia"
+                            class="flex items-center gap-2 px-3 py-2 bg-white text-slate-400 border border-slate-200 rounded-lg cursor-not-allowed text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <path d="M16 13H8"></path>
+                                <path d="M16 17H8"></path>
+                                <path d="M10 9H8"></path>
+                            </svg>
+                            Export Word
+                        </button>
+                        <button type="button" disabled title="Fitur ini belum tersedia"
+                            class="flex items-center gap-2 px-3 py-2 bg-white text-slate-400 border border-slate-200 rounded-lg cursor-not-allowed text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                                </path>
+                                <rect x="6" y="14" width="12" height="8"></rect>
+                            </svg>
+                            Print
+                        </button>
+
+                        <div class="h-6 w-px bg-slate-300 mx-2"></div>
+
+                        <button type="button" onclick="toggleSelectMode()"
+                            class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition font-medium text-sm">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow border border-slate-200">
                     <table class="w-full text-left border-collapse table-fixed" id="draft-table">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
-                                <th class="p-4 w-14 text-center">
-                                    <input type="checkbox" onclick="toggleCheckboxes(this, 'draft-table')"
-                                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <th class="p-4 w-14 text-center select-column hidden transition-all duration-300">
+                                    <input type="checkbox" onclick="toggleAllCheckboxes(this)"
+                                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                 </th>
-                                <th class="p-4 font-semibold text-slate-700 w-14 text-center">No</th>
+                                <th class="p-4 font-semibold text-slate-700 w-16 text-center relative z-20 group">
+                                    <div id="select-trigger-menu"
+                                        class="absolute left-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        <button type="button" onclick="toggleSelectMenu('draft')"
+                                            class="p-1 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="1.5"></circle>
+                                                <circle cx="12" cy="5" r="1.5"></circle>
+                                                <circle cx="12" cy="19" r="1.5"></circle>
+                                            </svg>
+                                        </button>
+                                        <!-- Dropdown -->
+                                        <div id="draft-select-dropdown"
+                                            class="hidden absolute top-0 left-full ml-1 w-36 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50 text-left">
+                                            <button type="button" onclick="activateSelectMode()"
+                                                class="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition whitespace-nowrap">
+                                                Pilih Dokumen
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <span>No</span>
+                                </th>
                                 <th class="p-4 font-semibold text-slate-700 text-center">Maksud / Tujuan</th>
                                 @if(session('role') === 'admin')
-                                    <th class="p-4 font-semibold text-slate-700 w-48 text-center">Oleh</th>
+                                    <th class="p-4 font-semibold text-slate-700 w-40 text-center">Oleh</th>
                                 @endif
-                                <th class="p-4 font-semibold text-slate-700 w-48 text-center">Tanggal Surat</th>
+                                <th class="p-4 font-semibold text-slate-700 w-40 text-center">Tanggal Surat</th>
                                 <th class="p-4 font-semibold text-slate-700 text-center w-32">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse($drafts as $draft)
                                 <tr class="hover:bg-slate-50 transition">
-                                    <td class="p-4 text-center">
-                                        <input type="checkbox" name="ids[]" value="{{ $draft->id }}"
-                                            class="spd-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <td class="p-4 text-center select-column hidden transition-all duration-300">
+                                        <div class="flex justify-center items-center h-full">
+                                            <input type="checkbox" name="ids[]" value="{{ $draft->id }}"
+                                                class="spd-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
+                                        </div>
                                     </td>
                                     <td class="p-4 text-center text-slate-500">{{ $loop->iteration }}</td>
                                     <td class="p-4 text-slate-900 text-center">
@@ -262,7 +341,8 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="p-8 text-center text-slate-500 py-12">
+                                    <td colspan="{{ session('role') === 'admin' ? 5 : 4 }}"
+                                        class="p-8 text-center text-slate-500 py-12">
                                         <div class="flex flex-row items-center justify-center gap-4">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -298,47 +378,72 @@
                     <p class="text-slate-500 text-sm">Dokumen resmi yang siap dicetak atau diekspor.</p>
                 </div>
 
-                <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
+                <div class="bg-white rounded-xl shadow border border-slate-200">
                     <table class="w-full text-left border-collapse table-fixed" id="final-table">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
-                                <th class="p-4 w-14 text-center">
-                                    <input type="checkbox" onclick="toggleCheckboxes(this, 'final-table')"
-                                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <th class="p-4 w-14 text-center select-column hidden transition-all duration-300">
+                                    <input type="checkbox" onclick="toggleAllCheckboxes(this)"
+                                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                 </th>
-                                <th class="p-4 font-semibold text-slate-700 w-14 text-center">No</th>
-                                <th class="p-4 font-semibold text-slate-700 w-48 text-center">Nomor Surat</th>
+                                <th class="p-4 font-semibold text-slate-700 w-16 text-center relative z-20 group">
+                                    <div id="final-select-trigger-menu"
+                                        class="absolute left-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        <button type="button" onclick="toggleSelectMenu('final')"
+                                            class="p-1 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="1.5"></circle>
+                                                <circle cx="12" cy="5" r="1.5"></circle>
+                                                <circle cx="12" cy="19" r="1.5"></circle>
+                                            </svg>
+                                        </button>
+                                        <!-- Dropdown -->
+                                        <div id="final-select-dropdown"
+                                            class="hidden absolute top-0 left-full ml-1 w-36 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50 text-left">
+                                            <button type="button" onclick="activateSelectMode()"
+                                                class="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition whitespace-nowrap">
+                                                Pilih Dokumen
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <span>No</span>
+                                </th>
+                                <th class="p-4 font-semibold text-slate-700 w-32 text-center">Nomor Surat</th>
                                 <th class="p-4 font-semibold text-slate-700 text-center">Maksud / Tujuan</th>
                                 @if(session('role') === 'admin')
-                                    <th class="p-4 font-semibold text-slate-700 w-48 text-center">Oleh</th>
+                                    <th class="p-4 font-semibold text-slate-700 w-40 text-center">Oleh</th>
                                 @endif
-                                <th class="p-4 font-semibold text-slate-700 w-48 text-center">Tanggal Surat</th>
+                                <th class="p-4 font-semibold text-slate-700 w-40 text-center">Tanggal Surat</th>
                                 <th class="p-4 font-semibold text-slate-700 text-center w-48">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse($finals as $final)
                                 <tr class="hover:bg-slate-50 transition">
-                                    <td class="p-4 text-center align-middle">
-                                        <input type="checkbox" name="ids[]" value="{{ $final->id }}"
-                                            class="spd-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <td class="p-4 text-center select-column hidden transition-all duration-300">
+                                        <div class="flex justify-center items-center h-full">
+                                            <input type="checkbox" name="ids[]" value="{{ $final->id }}"
+                                                class="spd-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
+                                        </div>
                                     </td>
-                                    <td class="p-4 text-center text-slate-500 align-middle">{{ $loop->iteration }}</td>
-                                    <td class="p-4 text-slate-900 font-medium text-center align-middle">
+                                    <td class="p-4 text-center text-slate-500">{{ $loop->iteration }}</td>
+                                    <td class="p-4 text-slate-900 font-medium text-center">
                                         {{ $final->nomor_surat ?? '-' }}
                                     </td>
-                                    <td class="p-4 text-slate-600 align-middle text-center">
+                                    <td class="p-4 text-slate-600 text-center">
                                         {{ $final->maksud ?? '(Belum diisi)' }}
                                     </td>
                                     @if(session('role') === 'admin')
-                                        <td class="p-4 text-slate-500 text-sm align-middle text-center">
+                                        <td class="p-4 text-slate-500 text-sm text-center">
                                             {{ $final->creator->name ?? 'Unknown' }}
                                         </td>
                                     @endif
-                                    <td class="p-4 text-slate-600 align-middle text-center">
+                                    <td class="p-4 text-slate-600 text-center">
                                         {{ $final->tanggal_surat ? \Carbon\Carbon::parse($final->tanggal_surat)->locale('id')->isoFormat('D MMMM Y') : '-' }}
                                     </td>
-                                    <td class="p-4 text-center align-middle">
+                                    <td class="p-4 text-center">
                                         <div class="flex justify-center gap-2 items-center">
                                             <a href="{{ route('spd.print.final', ['id' => $final->id]) }}" target="_blank"
                                                 class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 font-medium text-sm transition border border-slate-300">
@@ -373,7 +478,8 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="p-8 text-center text-slate-500 py-12">
+                                    <td colspan="{{ session('role') === 'admin' ? 6 : 5 }}"
+                                        class="p-8 text-center text-slate-500 py-12">
                                         <div class="flex flex-row items-center justify-center gap-4">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -399,26 +505,117 @@
 
         </div>
 
-        {{-- Script for handling checkboxes --}}
+        {{-- Script for handling checkboxes and Selection Mode --}}
         <script>
-            function toggleCheckboxes(source, tableId) {
-                const checkboxes = document.querySelectorAll(`#${tableId} .spd-checkbox`);
-                checkboxes.forEach(cb => cb.checked = source.checked);
-                updateDeleteButton();
-            }
-
-            function updateDeleteButton() {
-                const allCheckboxes = document.querySelectorAll('.spd-checkbox:checked');
-                const btn = document.getElementById('btn-delete-batch');
-                if (allCheckboxes.length > 0) {
-                    btn.classList.remove('hidden');
+            function toggleSelectMenu(type) {
+                const dropdown = document.getElementById(type + '-select-dropdown');
+                if (dropdown.classList.contains('hidden')) {
+                    // Close others first
+                    document.querySelectorAll('[id$="-select-dropdown"]').forEach(el => el.classList.add('hidden'));
+                    dropdown.classList.remove('hidden');
                 } else {
-                    btn.classList.add('hidden');
+                    dropdown.classList.add('hidden');
                 }
             }
 
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('[id$="-select-trigger-menu"]')) {
+                    document.querySelectorAll('[id$="-select-dropdown"]').forEach(el => el.classList.add('hidden'));
+                }
+            });
+
+            function activateSelectMode() {
+                // Close dropdowns
+                document.querySelectorAll('[id$="-select-dropdown"]').forEach(el => el.classList.add('hidden'));
+                toggleSelectMode(true);
+            }
+
+            function toggleSelectMode(forceOn = false) {
+                const defaultHeader = document.getElementById('default-header');
+                const bulkToolbar = document.getElementById('bulk-toolbar');
+                const selectColumns = document.querySelectorAll('.select-column');
+                const checkboxes = document.querySelectorAll('.spd-checkbox');
+                const triggers = document.querySelectorAll('[id$="-select-trigger-menu"]'); // The 3-dots menus
+
+                // Toggle visibility
+                let isHidden = bulkToolbar.classList.contains('hidden');
+
+                // If forceOn is true, we want to ensure we enter mode (even if called differently, usually forceOn is irrelevant if we use isHidden check properly, but helps for specific buttons)
+                if (forceOn || isHidden) {
+                    // Enter Select Mode
+                    defaultHeader.classList.add('hidden'); // Optional: keep header but hide elements? User asked for toolbar replace usually.
+                    // Actually, keeping "Draft SPD Saya" title visible might be nice unless toolbar replaces it fully. 
+                    // Current design replaces it fully based on previous implementation.
+
+                    bulkToolbar.classList.remove('hidden');
+
+                    selectColumns.forEach(el => {
+                        el.classList.remove('hidden');
+                    });
+
+                    // Hide the triggers to avoid clutter
+                    triggers.forEach(el => el.classList.add('hidden'));
+
+                } else {
+                    // Exit Select Mode
+                    defaultHeader.classList.remove('hidden');
+                    bulkToolbar.classList.add('hidden');
+
+                    selectColumns.forEach(el => {
+                        el.classList.add('hidden');
+                    });
+
+                    // Show triggers again
+                    triggers.forEach(el => el.classList.remove('hidden'));
+
+                    // Untick all
+                    checkboxes.forEach(cb => cb.checked = false);
+                    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                    updateSelectionState();
+                }
+            }
+
+            function toggleAllCheckboxes(source) {
+                // Find visible checkboxes (table context matters if separate, but here we just toggle all for simplicity or contextual)
+                // Actually we have two tables. We should probably only toggle checkboxes in the same table.
+                const table = source.closest('table');
+                if (table) {
+                    const checkboxes = table.querySelectorAll('.spd-checkbox');
+                    checkboxes.forEach(cb => cb.checked = source.checked);
+                }
+                updateSelectionState();
+            }
+
+            function updateSelectionState() {
+                const checkedBoxes = document.querySelectorAll('.spd-checkbox:checked');
+                const count = checkedBoxes.length;
+
+                // Update counter
+                const countEl = document.getElementById('selected-count');
+                if (countEl) countEl.innerText = count;
+
+                // Update Hint / Buttons
+                const hintEl = document.getElementById('selection-hint');
+                const btnDelete = document.getElementById('btn-delete-bulk');
+
+                if (count > 0) {
+                    if (hintEl) hintEl.innerText = count + " dokumen siap diproses.";
+                    if (btnDelete) btnDelete.disabled = false;
+                } else {
+                    if (hintEl) hintEl.innerText = "Pilih dokumen untuk aksi massal";
+                    if (btnDelete) btnDelete.disabled = true;
+                }
+            }
+
+            // Attach listeners to all row checkboxes
             document.querySelectorAll('.spd-checkbox').forEach(cb => {
-                cb.addEventListener('change', updateDeleteButton);
+                cb.addEventListener('change', updateSelectionState);
+            });
+
+            // Ensure UI is reset on load
+            document.addEventListener('DOMContentLoaded', () => {
+                updateSelectionState();
             });
         </script>
         </form>
