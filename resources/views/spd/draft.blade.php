@@ -211,21 +211,21 @@
                     </a>
                 </div>
 
-                <!-- Bulk Selection Toolbar (Hidden by default) -->
-                <div id="bulk-toolbar"
-                    class="hidden mb-6 bg-[#FFF8F3] border border-[#1C6DD0]/20 rounded-xl p-4 flex items-center justify-between shadow-sm lg:sticky lg:top-24 z-40 transition-all duration-300">
+                <!-- Bulk Selection Toolbar for Draft (Hidden by default) -->
+                <div id="draft-bulk-toolbar"
+                    class="hidden mb-6 bg-[#FFF8F3] border border-[#1C6DD0]/20 rounded-xl p-4 flex items-center justify-between shadow-sm transition-all duration-300">
                     <div class="flex items-center gap-4">
                         <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
-                            <span id="selected-count">0</span> Dipilih
+                            <span id="draft-selected-count">0</span> Dipilih
                         </span>
                         <div class="h-6 w-px bg-slate-300"></div>
-                        <div class="text-sm text-slate-600" id="selection-hint">
+                        <div class="text-sm text-slate-600" id="draft-selection-hint">
                             Pilih dokumen untuk aksi massal
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
                         <!-- Actions -->
-                        <button type="submit" id="btn-delete-bulk" disabled
+                        <button type="submit" id="draft-btn-delete-bulk" disabled
                             class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -236,52 +236,59 @@
                             </svg>
                             Hapus
                         </button>
-
-                        <!-- Placeholders for Export/Print -->
-                        <button type="button" disabled title="Fitur ini belum tersedia"
-                            class="flex items-center gap-2 px-3 py-2 bg-white text-slate-400 border border-slate-200 rounded-lg cursor-not-allowed text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <path d="M16 13H8"></path>
-                                <path d="M16 17H8"></path>
-                                <path d="M10 9H8"></path>
-                            </svg>
-                            Export Word
-                        </button>
-                        <button type="button" disabled title="Fitur ini belum tersedia"
-                            class="flex items-center gap-2 px-3 py-2 bg-white text-slate-400 border border-slate-200 rounded-lg cursor-not-allowed text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
-                                </path>
-                                <rect x="6" y="14" width="12" height="8"></rect>
-                            </svg>
-                            Print
-                        </button>
-
-                        <div class="h-6 w-px bg-slate-300 mx-2"></div>
-
-                        <button type="button" onclick="toggleSelectMode()"
-                            class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition font-medium text-sm">
+                        <button type="button" onclick="cancelSelectMode('draft')"
+                            class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-sm font-medium">
                             Batal
                         </button>
                     </div>
                 </div>
 
+                <!-- Bulk Selection Toolbar for Draft (Hidden by default) -->
+                <div id="draft-bulk-toolbar"
+                    class="hidden mb-6 bg-[#FFF8F3] border border-[#1C6DD0]/20 rounded-xl p-4 flex items-center justify-between shadow-sm transition-all duration-300">
+                    <div class="flex items-center gap-4">
+                        <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
+                            <span id="draft-selected-count">0</span> Dipilih
+                        </span>
+                        <div class="h-6 w-px bg-slate-300"></div>
+                        <div class="text-sm text-slate-600" id="draft-selection-hint">
+                            Pilih dokumen untuk aksi massal
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <!-- Actions -->
+                        <button type="submit" id="draft-btn-delete-bulk" disabled
+                            class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                            </svg>
+                            Hapus
+                        </button>
+                        <button type="button" onclick="cancelSelectMode('draft')"
+                            class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-sm font-medium">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bulk Selection Toolbar (Hidden by default) -->
+                <!-- Removed Floating Toolbar -->
+
                 <div class="bg-white rounded-xl shadow border border-slate-200">
                     <table class="w-full text-left border-collapse table-fixed" id="draft-table">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
-                                <th class="p-4 w-14 text-center select-column hidden transition-all duration-300">
-                                    <input type="checkbox" onclick="toggleAllCheckboxes(this)"
+                                <th class="p-4 w-14 text-center draft-select-column hidden transition-all duration-300">
+                                    <input type="checkbox" onclick="toggleAllCheckboxes(this, 'draft')"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                 </th>
-                                <th class="p-4 font-semibold text-slate-700 w-16 text-center relative z-20 group">
+                                <th class="p-4 font-semibold text-slate-700 w-20 text-center relative z-20 group">
                                     <div id="select-trigger-menu"
-                                        class="absolute left-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        class="absolute left-1 top-1/2 -translate-y-1/2 transition-opacity duration-200">
                                         <button type="button" onclick="toggleSelectMenu('draft')"
                                             class="p-1 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -295,7 +302,7 @@
                                         <!-- Dropdown -->
                                         <div id="draft-select-dropdown"
                                             class="hidden absolute top-0 left-full ml-1 w-36 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50 text-left">
-                                            <button type="button" onclick="activateSelectMode()"
+                                            <button type="button" onclick="activateSelectMode('draft')"
                                                 class="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition whitespace-nowrap">
                                                 Pilih Dokumen
                                             </button>
@@ -303,33 +310,33 @@
                                     </div>
                                     <span>No</span>
                                 </th>
-                                <th class="p-4 font-semibold text-slate-700 text-center">Maksud / Tujuan</th>
+                                <th class="p-4 font-semibold text-slate-700 text-left">Maksud / Tujuan</th>
                                 @if(session('role') === 'admin')
-                                    <th class="p-4 font-semibold text-slate-700 w-40 text-center">Oleh</th>
+                                    <th class="p-4 font-semibold text-slate-700 w-40 text-left">Oleh</th>
                                 @endif
-                                <th class="p-4 font-semibold text-slate-700 w-40 text-center">Tanggal Surat</th>
+                                <th class="p-4 font-semibold text-slate-700 w-40 text-left">Tanggal Surat</th>
                                 <th class="p-4 font-semibold text-slate-700 text-center w-32">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse($drafts as $draft)
                                 <tr class="hover:bg-slate-50 transition">
-                                    <td class="p-4 text-center select-column hidden transition-all duration-300">
+                                    <td class="p-4 text-center draft-select-column hidden transition-all duration-300">
                                         <div class="flex justify-center items-center h-full">
                                             <input type="checkbox" name="ids[]" value="{{ $draft->id }}"
-                                                class="spd-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
+                                                class="draft-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                         </div>
                                     </td>
                                     <td class="p-4 text-center text-slate-500">{{ $loop->iteration }}</td>
-                                    <td class="p-4 text-slate-900 text-center">
+                                    <td class="p-4 text-slate-900 text-left">
                                         {{ $draft->maksud ?? '(Belum diisi)' }}
                                     </td>
                                     @if(session('role') === 'admin')
-                                        <td class="p-4 text-slate-500 text-sm text-center">
+                                        <td class="p-4 text-slate-500 text-sm text-left">
                                             {{ $draft->creator->name ?? 'Unknown' }}
                                         </td>
                                     @endif
-                                    <td class="p-4 text-slate-600 text-center">
+                                    <td class="p-4 text-slate-600 text-left">
                                         {{ $draft->tanggal_surat ? \Carbon\Carbon::parse($draft->tanggal_surat)->locale('id')->isoFormat('D MMMM Y') : '-' }}
                                     </td>
                                     <td class="p-4 text-center">
@@ -373,22 +380,88 @@
                 </div>
 
                 <!-- FINAL SPD / ARSIP SECTION -->
-                <div class="mb-6">
+                <!-- FINAL SPD HEADER -->
+                <!-- FINAL SPD HEADER -->
+                <div id="final-header" class="mb-6 items-end transition-all duration-300">
                     <h2 class="text-xl font-bold text-slate-900">SPD Final / Arsip</h2>
                     <p class="text-slate-500 text-sm">Dokumen resmi yang siap dicetak atau diekspor.</p>
+                </div>
+
+                <!-- Bulk Selection Toolbar for Final (Hidden by default) -->
+                <div id="final-bulk-toolbar"
+                    class="hidden mb-6 bg-[#FFF8F3] border border-[#1C6DD0]/20 rounded-xl p-4 flex items-center justify-between shadow-sm transition-all duration-300">
+                    <div class="flex items-center gap-4">
+                        <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
+                            <span id="final-selected-count">0</span> Dipilih
+                        </span>
+                        <div class="h-6 w-px bg-slate-300"></div>
+                        <div class="text-sm text-slate-600" id="final-selection-hint">
+                            Pilih dokumen untuk aksi massal
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <!-- Actions -->
+                        <button type="submit" id="final-btn-delete-bulk" disabled
+                            class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                            </svg>
+                            Hapus
+                        </button>
+                        <button type="button" onclick="cancelSelectMode('final')"
+                            class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-sm font-medium">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bulk Selection Toolbar for Final (Hidden by default) -->
+                <div id="final-bulk-toolbar"
+                    class="hidden mb-6 bg-[#FFF8F3] border border-[#1C6DD0]/20 rounded-xl p-4 flex items-center justify-between shadow-sm transition-all duration-300">
+                    <div class="flex items-center gap-4">
+                        <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
+                            <span id="final-selected-count">0</span> Dipilih
+                        </span>
+                        <div class="h-6 w-px bg-slate-300"></div>
+                        <div class="text-sm text-slate-600" id="final-selection-hint">
+                            Pilih dokumen untuk aksi massal
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <!-- Actions -->
+                        <button type="submit" id="final-btn-delete-bulk" disabled
+                            class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                            </svg>
+                            Hapus
+                        </button>
+                        <button type="button" onclick="cancelSelectMode('final')"
+                            class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-sm font-medium">
+                            Batal
+                        </button>
+                    </div>
                 </div>
 
                 <div class="bg-white rounded-xl shadow border border-slate-200">
                     <table class="w-full text-left border-collapse table-fixed" id="final-table">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
-                                <th class="p-4 w-14 text-center select-column hidden transition-all duration-300">
-                                    <input type="checkbox" onclick="toggleAllCheckboxes(this)"
+                                <th class="p-4 w-14 text-center final-select-column hidden transition-all duration-300">
+                                    <input type="checkbox" onclick="toggleAllCheckboxes(this, 'final')"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                 </th>
-                                <th class="p-4 font-semibold text-slate-700 w-16 text-center relative z-20 group">
+                                <th class="p-4 font-semibold text-slate-700 w-20 text-center relative z-20 group">
                                     <div id="final-select-trigger-menu"
-                                        class="absolute left-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        class="absolute left-1 top-1/2 -translate-y-1/2 transition-opacity duration-200">
                                         <button type="button" onclick="toggleSelectMenu('final')"
                                             class="p-1 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -402,7 +475,7 @@
                                         <!-- Dropdown -->
                                         <div id="final-select-dropdown"
                                             class="hidden absolute top-0 left-full ml-1 w-36 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50 text-left">
-                                            <button type="button" onclick="activateSelectMode()"
+                                            <button type="button" onclick="activateSelectMode('final')"
                                                 class="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition whitespace-nowrap">
                                                 Pilih Dokumen
                                             </button>
@@ -410,37 +483,37 @@
                                     </div>
                                     <span>No</span>
                                 </th>
-                                <th class="p-4 font-semibold text-slate-700 w-32 text-center">Nomor Surat</th>
-                                <th class="p-4 font-semibold text-slate-700 text-center">Maksud / Tujuan</th>
+                                <th class="p-4 font-semibold text-slate-700 w-32 text-left">Nomor Surat</th>
+                                <th class="p-4 font-semibold text-slate-700 text-left">Maksud / Tujuan</th>
                                 @if(session('role') === 'admin')
-                                    <th class="p-4 font-semibold text-slate-700 w-40 text-center">Oleh</th>
+                                    <th class="p-4 font-semibold text-slate-700 w-40 text-left">Oleh</th>
                                 @endif
-                                <th class="p-4 font-semibold text-slate-700 w-40 text-center">Tanggal Surat</th>
+                                <th class="p-4 font-semibold text-slate-700 w-40 text-left">Tanggal Surat</th>
                                 <th class="p-4 font-semibold text-slate-700 text-center w-48">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse($finals as $final)
                                 <tr class="hover:bg-slate-50 transition">
-                                    <td class="p-4 text-center select-column hidden transition-all duration-300">
+                                    <td class="p-4 text-center final-select-column hidden transition-all duration-300">
                                         <div class="flex justify-center items-center h-full">
                                             <input type="checkbox" name="ids[]" value="{{ $final->id }}"
-                                                class="spd-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
+                                                class="final-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                         </div>
                                     </td>
                                     <td class="p-4 text-center text-slate-500">{{ $loop->iteration }}</td>
-                                    <td class="p-4 text-slate-900 font-medium text-center">
+                                    <td class="p-4 text-slate-900 font-medium text-left">
                                         {{ $final->nomor_surat ?? '-' }}
                                     </td>
-                                    <td class="p-4 text-slate-600 text-center">
+                                    <td class="p-4 text-slate-600 text-left">
                                         {{ $final->maksud ?? '(Belum diisi)' }}
                                     </td>
                                     @if(session('role') === 'admin')
-                                        <td class="p-4 text-slate-500 text-sm text-center">
+                                        <td class="p-4 text-slate-500 text-sm text-left">
                                             {{ $final->creator->name ?? 'Unknown' }}
                                         </td>
                                     @endif
-                                    <td class="p-4 text-slate-600 text-center">
+                                    <td class="p-4 text-slate-600 text-left">
                                         {{ $final->tanggal_surat ? \Carbon\Carbon::parse($final->tanggal_surat)->locale('id')->isoFormat('D MMMM Y') : '-' }}
                                     </td>
                                     <td class="p-4 text-center">
@@ -525,42 +598,40 @@
                 }
             });
 
-            function activateSelectMode() {
+            function activateSelectMode(type) {
                 // Close dropdowns
                 document.querySelectorAll('[id$="-select-dropdown"]').forEach(el => el.classList.add('hidden'));
-                toggleSelectMode(true);
+                toggleSelectMode(true, type);
             }
 
-            function toggleSelectMode(forceOn = false) {
-                const defaultHeader = document.getElementById('default-header');
-                const bulkToolbar = document.getElementById('bulk-toolbar');
-                const selectColumns = document.querySelectorAll('.select-column');
-                const checkboxes = document.querySelectorAll('.spd-checkbox');
-                const triggers = document.querySelectorAll('[id$="-select-trigger-menu"]'); // The 3-dots menus
+            function cancelSelectMode(type) {
+                toggleSelectMode(false, type);
+            }
 
-                // Toggle visibility
-                let isHidden = bulkToolbar.classList.contains('hidden');
+            function toggleSelectMode(forceOn = false, type = 'draft') {
+                const header = document.getElementById(type === 'draft' ? 'default-header' : 'final-header');
+                const toolbar = document.getElementById(type + '-bulk-toolbar');
+                const selectColumns = document.querySelectorAll('.' + type + '-select-column');
+                const checkboxes = document.querySelectorAll('.' + type + '-checkbox');
+                const triggers = document.querySelectorAll('[id$="-select-trigger-menu"]'); // Common triggers
 
-                // If forceOn is true, we want to ensure we enter mode (even if called differently, usually forceOn is irrelevant if we use isHidden check properly, but helps for specific buttons)
-                if (forceOn || isHidden) {
+                // If forceOn is true, we want to ensure we enter mode
+                if (forceOn) {
                     // Enter Select Mode
-                    defaultHeader.classList.add('hidden'); // Optional: keep header but hide elements? User asked for toolbar replace usually.
-                    // Actually, keeping "Draft SPD Saya" title visible might be nice unless toolbar replaces it fully. 
-                    // Current design replaces it fully based on previous implementation.
-
-                    bulkToolbar.classList.remove('hidden');
+                    if(header) header.classList.add('hidden');
+                    if(toolbar) toolbar.classList.remove('hidden');
 
                     selectColumns.forEach(el => {
                         el.classList.remove('hidden');
                     });
 
-                    // Hide the triggers to avoid clutter
+                    // Hide ALL triggers to avoid clutter/confusion
                     triggers.forEach(el => el.classList.add('hidden'));
 
                 } else {
                     // Exit Select Mode
-                    defaultHeader.classList.remove('hidden');
-                    bulkToolbar.classList.add('hidden');
+                    if(header) header.classList.remove('hidden');
+                    if(toolbar) toolbar.classList.add('hidden');
 
                     selectColumns.forEach(el => {
                         el.classList.add('hidden');
@@ -569,35 +640,38 @@
                     // Show triggers again
                     triggers.forEach(el => el.classList.remove('hidden'));
 
-                    // Untick all
+                    // Untick all in this group
                     checkboxes.forEach(cb => cb.checked = false);
-                    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-                    updateSelectionState();
+                    
+                    // Uncheck select all header logic if needed (simple way)
+                    // document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false); // Global reset might be too aggressive if both active? But only one active at a time usually.
+                    
+                    updateSelectionState(type);
                 }
             }
 
-            function toggleAllCheckboxes(source) {
-                // Find visible checkboxes (table context matters if separate, but here we just toggle all for simplicity or contextual)
-                // Actually we have two tables. We should probably only toggle checkboxes in the same table.
+            function toggleAllCheckboxes(source, type) {
                 const table = source.closest('table');
                 if (table) {
-                    const checkboxes = table.querySelectorAll('.spd-checkbox');
+                    const checkboxes = table.querySelectorAll('.' + type + '-checkbox');
                     checkboxes.forEach(cb => cb.checked = source.checked);
                 }
-                updateSelectionState();
+                updateSelectionState(type);
             }
 
-            function updateSelectionState() {
-                const checkedBoxes = document.querySelectorAll('.spd-checkbox:checked');
+            function updateSelectionState(type) {
+                if(!type) return; 
+
+                const checkedBoxes = document.querySelectorAll('.' + type + '-checkbox:checked');
                 const count = checkedBoxes.length;
 
                 // Update counter
-                const countEl = document.getElementById('selected-count');
+                const countEl = document.getElementById(type + '-selected-count');
                 if (countEl) countEl.innerText = count;
 
                 // Update Hint / Buttons
-                const hintEl = document.getElementById('selection-hint');
-                const btnDelete = document.getElementById('btn-delete-bulk');
+                const hintEl = document.getElementById(type + '-selection-hint');
+                const btnDelete = document.getElementById(type + '-btn-delete-bulk');
 
                 if (count > 0) {
                     if (hintEl) hintEl.innerText = count + " dokumen siap diproses.";
@@ -609,13 +683,12 @@
             }
 
             // Attach listeners to all row checkboxes
-            document.querySelectorAll('.spd-checkbox').forEach(cb => {
-                cb.addEventListener('change', updateSelectionState);
-            });
-
-            // Ensure UI is reset on load
             document.addEventListener('DOMContentLoaded', () => {
-                updateSelectionState();
+                ['draft', 'final'].forEach(type => {
+                     document.querySelectorAll('.' + type + '-checkbox').forEach(cb => {
+                        cb.addEventListener('change', () => updateSelectionState(type));
+                    });
+                });
             });
         </script>
         </form>
