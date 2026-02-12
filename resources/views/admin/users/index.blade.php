@@ -161,11 +161,11 @@
                                         <input type="checkbox" id="select-all" onclick="toggleAllCheckboxes(this)"
                                             class="rounded border-gray-300 text-red-600 focus:ring-red-500 w-5 h-5 cursor-pointer">
                                     </th>
-                                    <th
-                                        class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-24">
-                                        <div class="flex items-center gap-2 group relative">
-                                            <div id="select-trigger-menu"
-                                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                    <th style="padding-left: 80px !important;"
+                                        class="pr-6 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32 relative group">
+                                        <div
+                                            class="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center z-10">
+                                            <div class="relative w-full h-full flex items-center justify-center">
                                                 <button type="button" onclick="toggleSelectMenu()"
                                                     class="p-1 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -178,15 +178,15 @@
                                                 </button>
                                                 <!-- Dropdown -->
                                                 <div id="select-dropdown"
-                                                    class="hidden absolute top-6 left-0 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50 text-left w-32">
+                                                    class="hidden absolute top-0 left-full ml-1 w-36 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50 text-left">
                                                     <button type="button" onclick="toggleSelectMode()"
                                                         class="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-red-600 transition whitespace-nowrap">
                                                         Pilih User
                                                     </button>
                                                 </div>
                                             </div>
-                                            <span>No</span>
                                         </div>
+                                        <span>No</span>
                                     </th>
                                     <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Username
@@ -235,7 +235,7 @@
                                                     onchange="updateSelectionState()">
                                             @endif
                                         </td>
-                                        <td class="px-8 py-5 text-sm text-slate-500">
+                                        <td class="pr-6 py-5 text-sm text-slate-500" style="padding-left: 80px !important;">
                                             {{ $users->firstItem() + $index }}
                                         </td>
                                         <td class="px-8 py-5">
