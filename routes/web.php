@@ -64,4 +64,6 @@ Route::middleware(['simple.auth', \App\Http\Middleware\RoleMiddleware::class . '
     // Let's add Edit just in case for correcting name/role.
     Route::get('/users/{id}/edit', [App\Http\Controllers\AdminUserController::class, 'edit'])->name('admin.users.edit');
     Route::put('/users/{id}', [App\Http\Controllers\AdminUserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{id}', [App\Http\Controllers\AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::post('/users/delete-batch', [App\Http\Controllers\AdminUserController::class, 'bulkDestroy'])->name('admin.users.bulk_destroy');
 });

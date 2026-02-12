@@ -94,4 +94,39 @@ class AdminUserController extends Controller
         $message = ($user->status === 'aktif') ? 'diaktifkan' : 'dinonaktifkan';
         return redirect()->back()->with('success', "User berhasil $message.");
     }
+    public function destroy($id)
+    {
+        // Prevent deleting self
+        if ($id == session('user_id')) {
+            return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun sendiri yang sedang login.');
+        }
+
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada user yang dipilih.');
+        }
+
+        // Filter out self ID
+        $currentUserId = session('user_id');
+        $validIds = array_filter($ids, function ($id) use ($currentUserId) {
+            return $id != $currentUserId;
+        });
+
+        $deletedCount = User::whereIn('id', $validIds)->delete();
+
+        if (in_array($currentUserId, $ids)) {
+            return redirect()->route('admin.users.index')->with('success', "$deletedCount user berhasil dihapus. Akun Anda sendiri dilewati.");
+        }
+
+        return redirect()->route('admin.users.index')->with('success', "$deletedCount user berhasil dihapus.");
+    }
 }

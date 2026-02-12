@@ -114,154 +114,249 @@
                     </a>
                 </div>
 
-                <!-- Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50/50 border-b border-slate-100">
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-16">
-                                    No
-                                </th>
-                                <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Username
-                                </th>
-                                <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama
-                                    Lengkap</th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
-                                    <button type="button" id="roleDropdownBtn"
-                                        onclick="toggleDropdown(event, 'roleDropdown')"
-                                        class="flex items-center gap-1 hover:text-[#1C6DD0] transition-colors focus:outline-none font-semibold uppercase">
-                                        Role
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path d="M6 9l6 6 6-6" />
-                                        </svg>
-                                    </button>
-                                </th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
-                                    <button type="button" id="statusDropdownBtn"
-                                        onclick="toggleDropdown(event, 'statusDropdown')"
-                                        class="flex items-center gap-1 hover:text-[#1C6DD0] transition-colors focus:outline-none font-semibold uppercase">
-                                        Status
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path d="M6 9l6 6 6-6" />
-                                        </svg>
-                                    </button>
-                                </th>
-                                <th
-                                    class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-48 text-center">
-                                    Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            @forelse($users as $index => $item)
-                                <tr class="hover:bg-slate-50/50 transition-colors">
-                                    <td class="px-8 py-5 text-sm text-slate-500">
-                                        {{ $users->firstItem() + $index }}
-                                    </td>
-                                    <td class="px-8 py-5">
-                                        <span
-                                            class="font-mono text-sm text-slate-700 bg-slate-100 px-2 py-1 rounded">{{ $item->username }}</span>
-                                    </td>
-                                    <td class="px-8 py-5">
-                                        <div class="font-semibold text-slate-900">{{ $item->name }}</div>
+                <form action="{{ route('admin.users.bulk_destroy') }}" method="POST" id="bulk-delete-form">
+                    @csrf
 
-                                    </td>
-                                    <td class="px-8 py-5">
-                                        @if($item->role === 'admin')
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-purple-50 text-purple-700 border border-purple-100">
-                                                ADMIN
-                                            </span>
-                                        @else
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
-                                                USER
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="px-8 py-5">
-                                        @if($item->status === 'aktif')
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                                                Aktif
-                                            </span>
-                                        @else
-                                            <span
-                                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white text-red-600 border border-red-600">
-                                                Nonaktif
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="px-8 py-5 text-center flex items-center justify-center gap-2">
-                                        <a href="{{ route('admin.users.edit', $item->id) }}"
-                                            class="p-2 text-slate-400 hover:text-[#1C6DD0] hover:bg-blue-50 rounded-lg transition-all"
-                                            title="Edit">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                            </svg>
-                                        </a>
-                                        @if(session('user_id') != $item->id)
-                                            <form action="{{ route('admin.users.toggle_status', $item->id) }}" method="POST"
-                                                class="inline-block"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin mengubah status user ini?')">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit"
-                                                    class="p-2 {{ $item->status === 'aktif' ? 'text-red-400 hover:text-red-600 hover:bg-red-50' : 'text-green-400 hover:text-green-600 hover:bg-green-50' }} rounded-lg transition-all"
-                                                    title="{{ $item->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                                    @if($item->status === 'aktif')
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
-                                                            fill="none" stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <circle cx="12" cy="12" r="10"></circle>
-                                                            <line x1="15" y1="9" x2="9" y2="15"></line>
-                                                            <line x1="9" y1="9" x2="15" y2="15"></line>
-                                                        </svg>
-                                                    @else
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
-                                                            fill="none" stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                                        </svg>
-                                                    @endif
+                    <!-- Bulk Toolbar -->
+                    <div id="bulk-toolbar"
+                        class="hidden px-6 py-4 bg-red-50 border-b border-red-100 flex items-center justify-between transition-all duration-300">
+                        <div class="flex items-center gap-4">
+                            <span class="bg-red-100 text-red-700 font-bold px-3 py-1 rounded-lg text-sm">
+                                <span id="selected-count">0</span> Dipilih
+                            </span>
+                            <div class="text-sm text-red-600">
+                                Pilih user untuk dihapus massal.
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="submit" id="btn-delete-bulk" disabled
+                                onclick="return confirm('Apakah Anda yakin ingin menghapus ' + document.getElementById('selected-count').innerText + ' user yang dipilih? Tindakan ini tidak dapat dibatalkan.')"
+                                class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path
+                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                    </path>
+                                </svg>
+                                Hapus Dipilih
+                            </button>
+                            <button type="button" onclick="toggleSelectMode()"
+                                class="px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition text-sm font-medium">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/50 border-b border-slate-100">
+                                    <th
+                                        class="px-4 py-5 text-center select-column hidden w-16 transition-all duration-300">
+                                        <input type="checkbox" id="select-all" onclick="toggleAllCheckboxes(this)"
+                                            class="rounded border-gray-300 text-red-600 focus:ring-red-500 w-5 h-5 cursor-pointer">
+                                    </th>
+                                    <th
+                                        class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-24">
+                                        <div class="flex items-center gap-2 group relative">
+                                            <div id="select-trigger-menu"
+                                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                <button type="button" onclick="toggleSelectMenu()"
+                                                    class="p-1 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="1.5"></circle>
+                                                        <circle cx="12" cy="5" r="1.5"></circle>
+                                                        <circle cx="12" cy="19" r="1.5"></circle>
+                                                    </svg>
                                                 </button>
-                                            </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="px-6 py-12 text-center text-slate-500">
-                                        <div class="flex flex-col items-center justify-center">
-                                            <div class="bg-slate-50 p-4 rounded-full mb-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-slate-300"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                                    <circle cx="12" cy="7" r="4"></circle>
-                                                </svg>
+                                                <!-- Dropdown -->
+                                                <div id="select-dropdown"
+                                                    class="hidden absolute top-6 left-0 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50 text-left w-32">
+                                                    <button type="button" onclick="toggleSelectMode()"
+                                                        class="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-red-600 transition whitespace-nowrap">
+                                                        Pilih User
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <p class="font-medium">Belum ada data user</p>
-                                            <p class="text-xs mt-1">Klik tombol tambah untuk mulai membuat akun.</p>
+                                            <span>No</span>
                                         </div>
-                                    </td>
+                                    </th>
+                                    <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        Username
+                                    </th>
+                                    <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        Nama
+                                        Lengkap</th>
+                                    <th
+                                        class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
+                                        <button type="button" id="roleDropdownBtn"
+                                            onclick="toggleDropdown(event, 'roleDropdown')"
+                                            class="flex items-center gap-1 hover:text-[#1C6DD0] transition-colors focus:outline-none font-semibold uppercase">
+                                            Role
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M6 9l6 6 6-6" />
+                                            </svg>
+                                        </button>
+                                    </th>
+                                    <th
+                                        class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32">
+                                        <button type="button" id="statusDropdownBtn"
+                                            onclick="toggleDropdown(event, 'statusDropdown')"
+                                            class="flex items-center gap-1 hover:text-[#1C6DD0] transition-colors focus:outline-none font-semibold uppercase">
+                                            Status
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M6 9l6 6 6-6" />
+                                            </svg>
+                                        </button>
+                                    </th>
+                                    <th
+                                        class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-48 text-center">
+                                        Aksi</th>
                                 </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @forelse($users as $index => $item)
+                                    <tr class="hover:bg-slate-50/50 transition-colors">
+                                        <td class="px-4 py-5 text-center select-column hidden transition-all duration-300">
+                                            @if(session('user_id') != $item->id)
+                                                <input type="checkbox" name="ids[]" value="{{ $item->id }}"
+                                                    class="row-checkbox rounded border-gray-300 text-red-600 focus:ring-red-500 w-5 h-5 cursor-pointer"
+                                                    onchange="updateSelectionState()">
+                                            @endif
+                                        </td>
+                                        <td class="px-8 py-5 text-sm text-slate-500">
+                                            {{ $users->firstItem() + $index }}
+                                        </td>
+                                        <td class="px-8 py-5">
+                                            <span
+                                                class="font-mono text-sm text-slate-700 bg-slate-100 px-2 py-1 rounded">{{ $item->username }}</span>
+                                        </td>
+                                        <td class="px-8 py-5">
+                                            <div class="font-semibold text-slate-900">{{ $item->name }}</div>
+
+                                        </td>
+                                        <td class="px-8 py-5">
+                                            @if($item->role === 'admin')
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-purple-50 text-purple-700 border border-purple-100">
+                                                    ADMIN
+                                                </span>
+                                            @else
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                                                    USER
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="px-8 py-5">
+                                            @if($item->status === 'aktif')
+                                                <span
+                                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                                    Aktif
+                                                </span>
+                                            @else
+                                                <span
+                                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white text-red-600 border border-red-600">
+                                                    Nonaktif
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="px-8 py-5 text-center flex items-center justify-center gap-2">
+                                            <a href="{{ route('admin.users.edit', $item->id) }}"
+                                                class="p-2 text-slate-400 hover:text-[#1C6DD0] hover:bg-blue-50 rounded-lg transition-all"
+                                                title="Edit">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                                                    </path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                                                    </path>
+                                                </svg>
+                                            </a>
+                                            @if(session('user_id') != $item->id)
+                                                <form action="{{ route('admin.users.toggle_status', $item->id) }}" method="POST"
+                                                    class="inline-block"
+                                                    onsubmit="return confirm('Apakah Anda yakin ingin mengubah status user ini?')">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit"
+                                                        class="p-2 {{ $item->status === 'aktif' ? 'text-red-400 hover:text-red-600 hover:bg-red-50' : 'text-green-400 hover:text-green-600 hover:bg-green-50' }} rounded-lg transition-all"
+                                                        title="{{ $item->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                                        @if($item->status === 'aktif')
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <circle cx="12" cy="12" r="10"></circle>
+                                                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                                                            </svg>
+                                                        @else
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                            </svg>
+                                                        @endif
+                                                    </button>
+                                                </form>
+
+                                                <form action="{{ route('admin.users.destroy', $item->id) }}" method="POST"
+                                                    class="inline-block"
+                                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini? Tindakan ini tidak dapat dibatalkan.')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                        title="Hapus Permanen">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                                            <path
+                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                            </path>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <div class="bg-slate-50 p-4 rounded-full mb-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-slate-300"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                </div>
+                                                <p class="font-medium">Belum ada data user</p>
+                                                <p class="text-xs mt-1">Klik tombol tambah untuk mulai membuat akun.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
 
                 <!-- Pagination -->
                 <div class="px-6 py-4 border-t border-slate-100">
@@ -359,6 +454,75 @@
                     }
                 });
             }, true);
+
+            function toggleSelectMenu() {
+                const dropdown = document.getElementById('select-dropdown');
+                if (dropdown) dropdown.classList.toggle('hidden');
+            }
+
+            // Close select menu when clicking outside
+            document.addEventListener('click', function (e) {
+                const menu = document.getElementById('select-dropdown');
+                const trigger = document.getElementById('select-trigger-menu');
+                if (menu && !menu.classList.contains('hidden')) {
+                    if (!trigger.contains(e.target)) {
+                        menu.classList.add('hidden');
+                    }
+                }
+            });
+
+            // Bulk Selection Logic
+            function toggleSelectMode() {
+                const selectColumns = document.querySelectorAll('.select-column');
+                const toolbar = document.getElementById('bulk-toolbar');
+                const menu = document.getElementById('select-dropdown');
+
+                // Hide menu if open
+                if (menu) menu.classList.add('hidden');
+
+                let isHidden = true;
+                if (selectColumns.length > 0) {
+                    isHidden = selectColumns[0].classList.contains('hidden');
+                }
+
+                if (isHidden) {
+                    // Show checkboxes
+                    selectColumns.forEach(el => el.classList.remove('hidden'));
+                    toolbar.classList.remove('hidden');
+                } else {
+                    // Hide checkboxes
+                    selectColumns.forEach(el => el.classList.add('hidden'));
+                    toolbar.classList.add('hidden');
+
+                    // Uncheck all
+                    document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+                    const selectAll = document.getElementById('select-all');
+                    if (selectAll) selectAll.checked = false;
+
+                    updateSelectionState();
+                }
+            }
+
+            function toggleAllCheckboxes(source) {
+                const checkboxes = document.querySelectorAll('.row-checkbox');
+                checkboxes.forEach(cb => cb.checked = source.checked);
+                updateSelectionState();
+            }
+
+            function updateSelectionState() {
+                const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+                const count = checkedBoxes.length;
+                const countEl = document.getElementById('selected-count');
+                const btnDelete = document.getElementById('btn-delete-bulk');
+
+                if (countEl) countEl.innerText = count;
+
+                if (count > 0) {
+                    btnDelete.disabled = false;
+                } else {
+                    btnDelete.disabled = true;
+                }
+            }
         </script>
     </div>
 </body>
