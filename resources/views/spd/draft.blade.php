@@ -372,7 +372,8 @@
                     <div class="flex items-center gap-2">
                         <!-- Actions -->
                         <!-- Print Bulk -->
-                        <button type="submit" formaction="{{ route('spd.bulk_print') }}" formtarget="_blank"
+                        <button type="submit" id="final-btn-print-bulk" disabled
+                            formaction="{{ route('spd.bulk_print') }}" formtarget="_blank"
                             class="flex items-center gap-2 px-3 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -384,7 +385,7 @@
                             Cetak
                         </button>
                         <!-- Word Bulk -->
-                        <button type="button" onclick="downloadSelectedWord()"
+                        <button type="button" id="final-btn-word-bulk" disabled onclick="downloadSelectedWord()"
                             class="flex items-center gap-2 px-3 py-2 bg-white text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -643,13 +644,19 @@
                 // Update Hint / Buttons
                 const hintEl = document.getElementById(type + '-selection-hint');
                 const btnDelete = document.getElementById(type + '-btn-delete-bulk');
+                const btnPrint = document.getElementById(type + '-btn-print-bulk');
+                const btnWord = document.getElementById(type + '-btn-word-bulk');
 
                 if (count > 0) {
                     if (hintEl) hintEl.innerText = count + " dokumen siap diproses.";
                     if (btnDelete) btnDelete.disabled = false;
+                    if (btnPrint) btnPrint.disabled = false;
+                    if (btnWord) btnWord.disabled = false;
                 } else {
                     if (hintEl) hintEl.innerText = "Pilih dokumen untuk aksi massal";
                     if (btnDelete) btnDelete.disabled = true;
+                    if (btnPrint) btnPrint.disabled = true;
+                    if (btnWord) btnWord.disabled = true;
                 }
             }
 
@@ -684,13 +691,13 @@
                         iframe.style.display = 'none';
                         iframe.src = "{{ url('/spd/export-word') }}/" + id;
                         document.body.appendChild(iframe);
-                        
+
                         // Clean up iframe after a while
                         setTimeout(() => {
                             document.body.removeChild(iframe);
                         }, 60000); // 1 minute cleanup
                     }, delay);
-                    
+
                     delay += 1000; // 1 second delay between each
                 });
             }

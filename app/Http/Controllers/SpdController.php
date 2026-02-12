@@ -530,7 +530,7 @@ class SpdController extends Controller
         return response()
             ->view('spd.word', $data)
             ->header('Content-Type', 'application/vnd.ms-word')
-            ->header('Content-Disposition', 'attachment; filename="SPT_SPD_FINAL.doc"')
+            ->header('Content-Disposition', 'attachment; filename="SPD.doc"')
             ->header('Pragma', 'no-cache')
             ->header('Expires', '0');
     }
