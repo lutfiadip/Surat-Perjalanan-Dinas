@@ -188,8 +188,7 @@
                 });
             </script>
 
-            <form action="{{ route('spd.bulk_destroy') }}" method="POST" id="bulk-delete-form"
-                onsubmit="return confirm('Apakah Anda yakin ingin menghapus item yang dipilih?')">
+            <form action="{{ route('spd.bulk_destroy') }}" method="POST" id="bulk-delete-form">
                 @csrf
 
 
@@ -226,6 +225,7 @@
                     <div class="flex items-center gap-2">
                         <!-- Actions -->
                         <button type="submit" id="draft-btn-delete-bulk" disabled
+                            onclick="return confirm('Apakah Anda yakin ingin menghapus draft yang dipilih?')"
                             class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -243,37 +243,7 @@
                     </div>
                 </div>
 
-                <!-- Bulk Selection Toolbar for Draft (Hidden by default) -->
-                <div id="draft-bulk-toolbar"
-                    class="hidden mb-6 bg-[#FFF8F3] border border-[#1C6DD0]/20 rounded-xl p-4 flex items-center justify-between shadow-sm transition-all duration-300">
-                    <div class="flex items-center gap-4">
-                        <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
-                            <span id="draft-selected-count">0</span> Dipilih
-                        </span>
-                        <div class="h-6 w-px bg-slate-300"></div>
-                        <div class="text-sm text-slate-600" id="draft-selection-hint">
-                            Pilih dokumen untuk aksi massal
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <!-- Actions -->
-                        <button type="submit" id="draft-btn-delete-bulk" disabled
-                            class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path
-                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                </path>
-                            </svg>
-                            Hapus
-                        </button>
-                        <button type="button" onclick="cancelSelectMode('draft')"
-                            class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-sm font-medium">
-                            Batal
-                        </button>
-                    </div>
-                </div>
+
 
                 <!-- Bulk Selection Toolbar (Hidden by default) -->
                 <!-- Removed Floating Toolbar -->
@@ -286,9 +256,9 @@
                                     <input type="checkbox" onclick="toggleAllCheckboxes(this, 'draft')"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                 </th>
-                                <th class="p-4 font-semibold text-slate-700 w-20 text-center relative z-20 group">
-                                    <div id="select-trigger-menu"
-                                        class="absolute left-1 top-1/2 -translate-y-1/2 transition-opacity duration-200">
+                                <th class="p-4 font-semibold text-slate-700 w-24 text-center relative z-20 group">
+                                    <div id="draft-select-trigger-menu"
+                                        class="absolute left-2 top-1/2 -translate-y-1/2 transition-opacity duration-200">
                                         <button type="button" onclick="toggleSelectMenu('draft')"
                                             class="p-1 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -401,7 +371,34 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <!-- Actions -->
+                        <!-- Print Bulk -->
+                        <button type="submit" formaction="{{ route('spd.bulk_print') }}" formtarget="_blank"
+                            class="flex items-center gap-2 px-3 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                                </path>
+                                <rect x="6" y="14" width="12" height="8"></rect>
+                            </svg>
+                            Cetak
+                        </button>
+                        <!-- Word Bulk -->
+                        <button type="button" onclick="downloadSelectedWord()"
+                            class="flex items-center gap-2 px-3 py-2 bg-white text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <path d="M16 13H8"></path>
+                                <path d="M16 17H8"></path>
+                                <path d="M10 9H8"></path>
+                            </svg>
+                            Word
+                        </button>
+
                         <button type="submit" id="final-btn-delete-bulk" disabled
+                            onclick="return confirm('Apakah Anda yakin ingin menghapus dokumen yang dipilih?')"
                             class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -419,37 +416,7 @@
                     </div>
                 </div>
 
-                <!-- Bulk Selection Toolbar for Final (Hidden by default) -->
-                <div id="final-bulk-toolbar"
-                    class="hidden mb-6 bg-[#FFF8F3] border border-[#1C6DD0]/20 rounded-xl p-4 flex items-center justify-between shadow-sm transition-all duration-300">
-                    <div class="flex items-center gap-4">
-                        <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
-                            <span id="final-selected-count">0</span> Dipilih
-                        </span>
-                        <div class="h-6 w-px bg-slate-300"></div>
-                        <div class="text-sm text-slate-600" id="final-selection-hint">
-                            Pilih dokumen untuk aksi massal
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <!-- Actions -->
-                        <button type="submit" id="final-btn-delete-bulk" disabled
-                            class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path
-                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                </path>
-                            </svg>
-                            Hapus
-                        </button>
-                        <button type="button" onclick="cancelSelectMode('final')"
-                            class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-sm font-medium">
-                            Batal
-                        </button>
-                    </div>
-                </div>
+
 
                 <div class="bg-white rounded-xl shadow border border-slate-200">
                     <table class="w-full text-left border-collapse table-fixed" id="final-table">
@@ -459,9 +426,9 @@
                                     <input type="checkbox" onclick="toggleAllCheckboxes(this, 'final')"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                 </th>
-                                <th class="p-4 font-semibold text-slate-700 w-20 text-center relative z-20 group">
+                                <th class="p-4 font-semibold text-slate-700 w-24 text-center relative z-20 group">
                                     <div id="final-select-trigger-menu"
-                                        class="absolute left-1 top-1/2 -translate-y-1/2 transition-opacity duration-200">
+                                        class="absolute left-2 top-1/2 -translate-y-1/2 transition-opacity duration-200">
                                         <button type="button" onclick="toggleSelectMenu('final')"
                                             class="p-1 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -599,6 +566,10 @@
             });
 
             function activateSelectMode(type) {
+                // Ensure other mode is off
+                const other = type === 'draft' ? 'final' : 'draft';
+                toggleSelectMode(false, other);
+
                 // Close dropdowns
                 document.querySelectorAll('[id$="-select-dropdown"]').forEach(el => el.classList.add('hidden'));
                 toggleSelectMode(true, type);
@@ -618,8 +589,8 @@
                 // If forceOn is true, we want to ensure we enter mode
                 if (forceOn) {
                     // Enter Select Mode
-                    if(header) header.classList.add('hidden');
-                    if(toolbar) toolbar.classList.remove('hidden');
+                    if (header) header.classList.add('hidden');
+                    if (toolbar) toolbar.classList.remove('hidden');
 
                     selectColumns.forEach(el => {
                         el.classList.remove('hidden');
@@ -630,8 +601,8 @@
 
                 } else {
                     // Exit Select Mode
-                    if(header) header.classList.remove('hidden');
-                    if(toolbar) toolbar.classList.add('hidden');
+                    if (header) header.classList.remove('hidden');
+                    if (toolbar) toolbar.classList.add('hidden');
 
                     selectColumns.forEach(el => {
                         el.classList.add('hidden');
@@ -642,10 +613,10 @@
 
                     // Untick all in this group
                     checkboxes.forEach(cb => cb.checked = false);
-                    
+
                     // Uncheck select all header logic if needed (simple way)
                     // document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false); // Global reset might be too aggressive if both active? But only one active at a time usually.
-                    
+
                     updateSelectionState(type);
                 }
             }
@@ -660,7 +631,7 @@
             }
 
             function updateSelectionState(type) {
-                if(!type) return; 
+                if (!type) return;
 
                 const checkedBoxes = document.querySelectorAll('.' + type + '-checkbox:checked');
                 const count = checkedBoxes.length;
@@ -685,11 +656,44 @@
             // Attach listeners to all row checkboxes
             document.addEventListener('DOMContentLoaded', () => {
                 ['draft', 'final'].forEach(type => {
-                     document.querySelectorAll('.' + type + '-checkbox').forEach(cb => {
+                    document.querySelectorAll('.' + type + '-checkbox').forEach(cb => {
                         cb.addEventListener('change', () => updateSelectionState(type));
                     });
                 });
             });
+
+            function downloadSelectedWord() {
+                const checkedBoxes = document.querySelectorAll('.final-checkbox:checked');
+                if (checkedBoxes.length === 0) {
+                    alert('Pilih minimal satu dokumen.');
+                    return;
+                }
+
+                // Show instruction if more than 1
+                if (checkedBoxes.length > 1) {
+                    // alert('Browser Anda mungkin akan meminta izin untuk mendownload beberapa file. Silakan klik "Allow" jika muncul.');
+                }
+
+                let delay = 0;
+                checkedBoxes.forEach((cb, index) => {
+                    const id = cb.value;
+                    // Use timeout to stagger downloads
+                    setTimeout(() => {
+                        // Create a hidden iframe to trigger download without navigation
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = "{{ url('/spd/export-word') }}/" + id;
+                        document.body.appendChild(iframe);
+                        
+                        // Clean up iframe after a while
+                        setTimeout(() => {
+                            document.body.removeChild(iframe);
+                        }, 60000); // 1 minute cleanup
+                    }, delay);
+                    
+                    delay += 1000; // 1 second delay between each
+                });
+            }
         </script>
         </form>
 

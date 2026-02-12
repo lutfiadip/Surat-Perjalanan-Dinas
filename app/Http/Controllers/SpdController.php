@@ -748,6 +748,36 @@ class SpdController extends Controller
         return redirect()->route('spd.draft')->with('success', "$count dokumen berhasil dihapus.");
     }
 
+    public function bulkPrint(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada dokumen yang dipilih untuk dicetak.');
+        }
+
+        // Validate IDs
+        $query = Spd::whereIn('id', $ids);
+        if (session('role') !== 'admin') {
+            $query->where('created_by', session('user_id'));
+        }
+        $spds = $query->get();
+
+        if ($spds->isEmpty()) {
+            return redirect()->back()->with('error', 'Dokumen tidak ditemukan atau Anda tidak memiliki akses.');
+        }
+
+        // Use prepareDataFromModel to build payloads
+        $payloads = [];
+        foreach ($spds as $spd) {
+            $payloads[] = $this->prepareDataFromModel($spd->id);
+        }
+
+        return view('spd.print_bulk', compact('payloads'));
+    }
+
+
+
     private function formatNameCustom($name)
     {
         // "Huruf pertama tiap kata besar selanjutnya kecil" ONLY for the Name part (before comma)

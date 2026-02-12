@@ -29,6 +29,8 @@ Route::middleware(['simple.auth'])->group(function () {
     Route::post('/spd/delete-batch', [SpdController::class, 'bulkDestroy'])->name('spd.bulk_destroy');
     Route::post('/spd/print', [SpdController::class, 'print'])->name('spd.print');
     Route::post('/spd/export-word', [SpdController::class, 'exportWord'])->name('spd.export_word');
+    Route::post('/spd/print-bulk', [SpdController::class, 'bulkPrint'])->name('spd.bulk_print');
+
 });
 
 // Admin Routes

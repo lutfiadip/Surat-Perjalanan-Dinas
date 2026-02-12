@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Cetak SPD</title>
+    <title>Cetak SPD Massal</title>
     <style>
         @page {
             size: A4;
@@ -202,8 +202,9 @@
 </head>
 
 <body>
-
-    @include('spd.partials.print_content')
+    @foreach ($payloads as $payload)
+        @include('spd.partials.print_content', $payload)
+    @endforeach
 
     <script>
         window.print();
