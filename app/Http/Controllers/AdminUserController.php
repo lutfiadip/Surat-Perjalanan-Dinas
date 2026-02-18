@@ -102,9 +102,16 @@ class AdminUserController extends Controller
         }
 
         $user = User::findOrFail($id);
-        $user->delete();
 
-        return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
+        try {
+            $user->delete();
+            return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->route('admin.users.index')->with('error', 'User ini tidak dapat dihapus karena masih memiliki data terkait (SPD, dll).');
+            }
+            return redirect()->route('admin.users.index')->with('error', 'Terjadi kesalahan saat menghapus user: ' . $e->getMessage());
+        }
     }
 
     public function bulkDestroy(Request $request)
@@ -121,12 +128,19 @@ class AdminUserController extends Controller
             return $id != $currentUserId;
         });
 
-        $deletedCount = User::whereIn('id', $validIds)->delete();
+        try {
+            $deletedCount = User::whereIn('id', $validIds)->delete();
 
-        if (in_array($currentUserId, $ids)) {
-            return redirect()->route('admin.users.index')->with('success', "$deletedCount user berhasil dihapus. Akun Anda sendiri dilewati.");
+            if (in_array($currentUserId, $ids)) {
+                return redirect()->route('admin.users.index')->with('success', "$deletedCount user berhasil dihapus. Akun Anda sendiri dilewati.");
+            }
+
+            return redirect()->route('admin.users.index')->with('success', "$deletedCount user berhasil dihapus.");
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->route('admin.users.index')->with('error', 'Beberapa user tidak dapat dihapus karena masih memiliki data terkait (SPD, dll).');
+            }
+            return redirect()->route('admin.users.index')->with('error', 'Terjadi kesalahan saat menghapus user: ' . $e->getMessage());
         }
-
-        return redirect()->route('admin.users.index')->with('success', "$deletedCount user berhasil dihapus.");
     }
 }
