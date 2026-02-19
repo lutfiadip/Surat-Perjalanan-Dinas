@@ -212,10 +212,12 @@
 
                                             <!-- Dropdown -->
                                             <div id="select-dropdown"
-                                                class="hidden absolute top-8 left-0 min-w-max bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50">
+                                                style="width: max-content; min-width: max-content;"
+                                                class="hidden absolute top-8 left-0 w-auto bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50">
 
                                                 <button type="button" onclick="toggleSelectMode()"
-                                                    class="inline-flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-red-600 transition whitespace-nowrap">
+                                                    style="white-space: nowrap;"
+                                                    class="inline-flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-red-600 transition">
                                                     Pilih User
                                                 </button>
 
