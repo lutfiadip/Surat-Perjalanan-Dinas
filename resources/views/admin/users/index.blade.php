@@ -156,11 +156,11 @@
                     class="hidden px-6 py-4 bg-[#FFF8F3] border-b border-[#1C6DD0]/20 flex items-center justify-between transition-all duration-300">
                     <div class="flex items-center gap-4">
                         <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
-                            <span id="selected-count">0</span> Dipilih
+                            <span id="selected-count">0</span> dipilih
                         </span>
                         <div class="h-6 w-px bg-slate-300"></div>
                         <div class="text-sm text-slate-600">
-                            Pilih user untuk dihapus massal.
+                            Pilih user untuk dihapus.
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
