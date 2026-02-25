@@ -9,13 +9,23 @@ class AdminPenandatanganController extends Controller
 {
     public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
+
         $query = Penandatangan::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('nip', 'like', "%{$search}%");
+            });
+        }
 
         if ($request->has('status') && in_array($request->status, ['0', '1'])) {
             $query->where('status_aktif', $request->status);
         }
 
-        $penandatangan = $query->orderBy('nama')->paginate(10)->withQueryString();
+        $penandatangan = $query->orderBy('nama')->paginate($perPage)->withQueryString();
         return view('admin.penandatangan.index', compact('penandatangan'));
     }
 
