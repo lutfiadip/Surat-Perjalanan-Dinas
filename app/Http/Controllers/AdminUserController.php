@@ -10,7 +10,17 @@ class AdminUserController extends Controller
 {
     public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
+
         $query = User::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%");
+            });
+        }
 
         if ($request->has('role') && in_array($request->role, ['admin', 'user'])) {
             $query->where('role', $request->role);
@@ -20,7 +30,7 @@ class AdminUserController extends Controller
             $query->where('status', $request->status);
         }
 
-        $users = $query->orderBy('name')->paginate(10)->withQueryString();
+        $users = $query->orderBy('name')->paginate($perPage)->withQueryString();
         return view('admin.users.index', compact('users'));
     }
 

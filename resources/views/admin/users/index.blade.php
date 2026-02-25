@@ -138,15 +138,40 @@
                 <div
                     class="px-6 py-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <h2 class="text-lg font-bold text-slate-900">Daftar Pengguna Aplikasi</h2>
-                    <a href="{{ route('admin.users.create') }}"
-                        class="inline-flex items-center justify-center gap-2 bg-[#1C6DD0] hover:bg-[#155AB6] text-white text-sm font-semibold py-2 px-4 rounded-xl transition-colors shadow-lg shadow-blue-500/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        Tambah User
-                    </a>
+
+                    <div class="flex items-center gap-4 flex-1 justify-end">
+                        <form method="GET" action="{{ route('admin.users.index') }}" class="flex items-center gap-2">
+                            @if(request('per_page'))
+                                <input type="hidden" name="per_page" value="{{ request('per_page') }}">
+                            @endif
+
+                            <div class="relative w-64">
+                                <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none"
+                                    style="padding-left: 0.7rem;">
+                                    <svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                </div>
+                                <input type="text" name="search" value="{{ request('search') }}"
+                                    style="padding-left: 2rem"
+                                    class="block w-full pr-3 py-2 border border-slate-200 rounded-xl leading-5 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] sm:text-xs transition-colors"
+                                    placeholder="Cari nama / username...">
+                            </div>
+                        </form>
+
+                        <a href="{{ route('admin.users.create') }}"
+                            class="inline-flex items-center justify-center gap-2 bg-[#1C6DD0] hover:bg-[#155AB6] text-white text-sm font-semibold py-2 px-4 rounded-xl transition-colors shadow-lg shadow-blue-500/20 whitespace-nowrap">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Tambah User
+                        </a>
+                    </div>
                 </div>
 
 
@@ -156,11 +181,11 @@
                     class="hidden px-6 py-4 bg-[#FFF8F3] border-b border-[#1C6DD0]/20 flex items-center justify-between transition-all duration-300">
                     <div class="flex items-center gap-4">
                         <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
-                            <span id="selected-count">0</span> dipilih
+                            <span id="selected-count">0</span> Dipilih
                         </span>
                         <div class="h-6 w-px bg-slate-300"></div>
                         <div class="text-sm text-slate-600">
-                            Pilih user untuk dihapus.
+                            Pilih user untuk dihapus massal.
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
@@ -367,7 +392,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                                    <td colspan="7" class="px-6 py-12 text-center text-slate-500">
                                         <div class="flex flex-col items-center justify-center">
                                             <div class="bg-slate-50 p-4 rounded-full mb-3">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-slate-300"
@@ -389,8 +414,36 @@
 
 
                 <!-- Pagination -->
-                <div class="px-6 py-4 border-t border-slate-100">
-                    {{ $users->links() }}
+                <div
+                    class="px-6 py-4 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex flex-col sm:flex-row items-center gap-4 text-sm text-slate-500">
+                        <span>
+                            Showing
+                            <span class="font-medium text-slate-900">{{ $users->firstItem() }}</span>
+                            to
+                            <span class="font-medium text-slate-900">{{ $users->lastItem() }}</span>
+                            of
+                            <span class="font-medium text-slate-900">{{ $users->total() }}</span>
+                            results
+                        </span>
+
+                        <form method="GET" action="{{ route('admin.users.index') }}" class="flex items-center gap-2">
+                            <span class="hidden sm:inline text-slate-300">|</span>
+                            <span>Tampilkan</span>
+                            <select name="per_page" onchange="this.form.submit()"
+                                class="bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#1C6DD0] focus:border-[#1C6DD0] block p-2 py-1">
+                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                            </select>
+                            <span>data</span>
+                        </form>
+                    </div>
+
+                    <div class="w-full md:w-auto">
+                        {{ $users->appends(['per_page' => request('per_page')])->links('vendor.pagination.admin-links') }}
+                    </div>
                 </div>
             </div>
         </main>
