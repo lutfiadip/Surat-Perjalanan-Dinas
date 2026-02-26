@@ -44,6 +44,8 @@ Route::middleware(['simple.auth', \App\Http\Middleware\RoleMiddleware::class . '
     Route::get('/pegawai/{id}/edit', [App\Http\Controllers\AdminPegawaiController::class, 'edit'])->name('admin.pegawai.edit');
     Route::put('/pegawai/{id}', [App\Http\Controllers\AdminPegawaiController::class, 'update'])->name('admin.pegawai.update');
     Route::patch('/pegawai/{id}/toggle-status', [App\Http\Controllers\AdminPegawaiController::class, 'toggleStatus'])->name('admin.pegawai.toggle_status');
+    Route::delete('/pegawai/{id}', [App\Http\Controllers\AdminPegawaiController::class, 'destroy'])->name('admin.pegawai.destroy');
+    Route::post('/pegawai/delete-batch', [App\Http\Controllers\AdminPegawaiController::class, 'bulkDestroy'])->name('admin.pegawai.bulk_destroy');
 
     // Penandatangan
     Route::get('/penandatangan', [App\Http\Controllers\AdminPenandatanganController::class, 'index'])->name('admin.penandatangan.index');

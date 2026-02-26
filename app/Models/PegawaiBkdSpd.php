@@ -26,4 +26,9 @@ class PegawaiBkdSpd extends Model
 
     // Disable timestamps if the table doesn't have them, usually legacy tables don't
     public $timestamps = false;
+
+    public function spds()
+    {
+        return $this->belongsToMany(Spd::class, 'spd_pegawai', 'pegawai_id', 'spd_id');
+    }
 }

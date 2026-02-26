@@ -25,7 +25,7 @@ class AdminPegawaiController extends Controller
             $query->where('status_aktif', $request->status);
         }
 
-        $pegawai = $query->orderBy('nama')->paginate($perPage)->withQueryString();
+        $pegawai = $query->withCount('spds')->orderBy('nama')->paginate($perPage)->withQueryString();
         return view('admin.pegawai.index', compact('pegawai'));
     }
 
@@ -80,4 +80,40 @@ class AdminPegawaiController extends Controller
         $message = $pegawai->status_aktif ? 'diaktifkan' : 'dinonaktifkan';
         return redirect()->back()->with('success', "Pegawai berhasil $message.");
     }
+
+    public function destroy($id)
+    {
+        $pegawai = PegawaiBkdSpd::findOrFail($id);
+
+        try {
+            $pegawai->delete();
+            return redirect()->route('admin.pegawai.index')->with('success', 'Data Pegawai berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->route('admin.pegawai.index')->with('error', 'Pegawai ini tidak dapat dihapus karena masih memiliki data terkait (SPD, dll).');
+            }
+            return redirect()->route('admin.pegawai.index')->with('error', 'Terjadi kesalahan saat menghapus pegawai: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada pegawai yang dipilih.');
+        }
+
+        try {
+            $deletedCount = PegawaiBkdSpd::whereIn('id', $ids)->delete();
+
+            return redirect()->route('admin.pegawai.index')->with('success', "$deletedCount pegawai berhasil dihapus.");
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->route('admin.pegawai.index')->with('error', 'Beberapa pegawai tidak dapat dihapus karena masih memiliki data terkait (SPD, dll).');
+            }
+            return redirect()->route('admin.pegawai.index')->with('error', 'Terjadi kesalahan saat menghapus pegawai: ' . $e->getMessage());
+        }
+    }
 }
+
