@@ -499,7 +499,7 @@
                                     data-variant="{{ $signer->variant_ttd ?? 'normal' }}"
                                     data-jenis="{{ $signer->jenis }}"
                                     {{ (isset($draft) && $draft->penandatangan_id == $signer->id) ? 'selected' : '' }}>
-                                    {{ $signer->jabatan }} - {{ $signer->nama }} ({{ strtoupper($signer->variant_ttd ?? 'normal') }})
+                                    {{ $signer->jabatan }} - {{ $signer->nama }}{{ ($signer->variant_ttd && strtolower($signer->variant_ttd) !== 'normal') ? ' (' . strtoupper($signer->variant_ttd) . ')' : '' }}
                                 </option>
                             @endforeach
                         </select>
