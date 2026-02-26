@@ -108,7 +108,8 @@
                     <h2 class="text-lg font-bold text-slate-900">Daftar Penandatangan</h2>
 
                     <div class="flex items-center gap-4 flex-1 justify-end">
-                        <form method="GET" action="{{ route('admin.penandatangan.index') }}" class="flex items-center gap-2">
+                        <form method="GET" action="{{ route('admin.penandatangan.index') }}"
+                            class="flex items-center gap-2">
                             @if(request('per_page'))
                                 <input type="hidden" name="per_page" value="{{ request('per_page') }}">
                             @endif
@@ -142,14 +143,79 @@
                     </div>
                 </div>
 
+                <!-- Bulk Toolbar -->
+                <div id="bulk-toolbar"
+                    class="hidden px-6 py-4 bg-[#FFF8F3] border-b border-[#1C6DD0]/20 flex items-center justify-between transition-all duration-300">
+                    <div class="flex items-center gap-4">
+                        <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
+                            <span id="selected-count">0</span> dipilih
+                        </span>
+                        <div class="h-6 w-px bg-slate-300"></div>
+                        <div class="text-sm text-slate-600">
+                            Pilih penandatangan untuk dihapus.
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="btn-delete-bulk" disabled onclick="submitBulkDelete()"
+                            class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                            </svg>
+                            Hapus
+                        </button>
+                        <button type="button" onclick="toggleSelectMode()"
+                            class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-sm font-medium">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Table -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-50/50 border-b border-slate-100">
+                                <th class="px-4 py-4 text-center select-column hidden w-16 transition-all duration-300">
+                                    <input type="checkbox" id="select-all" onclick="toggleAllCheckboxes(this)"
+                                        class="rounded border-gray-300 text-red-600 focus:ring-red-500 w-5 h-5 cursor-pointer">
+                                </th>
                                 <th
-                                    class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-12">
-                                    No
+                                    class="px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-24 text-center relative group">
+                                    <div class="flex items-center justify-start gap-2 pl-7">
+                                        <!-- 3 dot trigger -->
+                                        <div class="relative">
+                                            <button type="button" onclick="toggleSelectMenu()"
+                                                class="p-1 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1.5"></circle>
+                                                    <circle cx="12" cy="5" r="1.5"></circle>
+                                                    <circle cx="12" cy="19" r="1.5"></circle>
+                                                </svg>
+                                            </button>
+
+                                            <!-- Dropdown -->
+                                            <div id="select-dropdown"
+                                                style="width: max-content; min-width: max-content;"
+                                                class="hidden absolute top-8 left-0 w-auto bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50">
+
+                                                <button type="button" onclick="toggleSelectMode()"
+                                                    style="white-space: nowrap;"
+                                                    class="inline-flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-red-600 transition">
+                                                    Pilih Penandatangan
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                        <span>No</span>
+                                    </div>
                                 </th>
                                 <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama
                                     /
@@ -183,8 +249,17 @@
                         <tbody class="divide-y divide-slate-100">
                             @forelse($penandatangan as $index => $item)
                                 <tr class="hover:bg-slate-50/50 transition-colors">
-                                    <td class="px-6 py-4 text-sm text-slate-500">
-                                        {{ $penandatangan->firstItem() + $index }}
+                                    <td class="px-4 py-4 text-center select-column hidden transition-all duration-300">
+                                        <input type="checkbox" name="ids[]" value="{{ $item->id }}"
+                                            data-has-spd="{{ $item->spds_count > 0 ? 'true' : 'false' }}"
+                                            class="row-checkbox rounded border-gray-300 text-red-600 focus:ring-red-500 w-5 h-5 cursor-pointer"
+                                            onchange="updateSelectionState()">
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-slate-500 w-24">
+                                        <div class="flex items-center justify-start gap-2 pl-6">
+                                            <div class="w-6 h-6 shrink-0"></div>
+                                            <span>{{ $penandatangan->firstItem() + $index }}</span>
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="font-semibold text-slate-900">{{ $item->nama }}</div>
@@ -261,7 +336,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-6 py-12 text-center text-slate-500">
+                                    <td colspan="8" class="px-6 py-12 text-center text-slate-500">
                                         <div class="flex flex-col items-center justify-center">
                                             <div class="bg-slate-50 p-4 rounded-full mb-3">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-slate-300"
@@ -299,7 +374,8 @@
                             results
                         </span>
 
-                        <form method="GET" action="{{ route('admin.penandatangan.index') }}" class="flex items-center gap-2">
+                        <form method="GET" action="{{ route('admin.penandatangan.index') }}"
+                            class="flex items-center gap-2">
                             <span class="hidden sm:inline text-slate-300">|</span>
                             <span>Tampilkan</span>
                             <select name="per_page" onchange="this.form.submit()"
@@ -375,6 +451,119 @@
                     dropdown.classList.add('hidden');
                 }
             }, true);
+
+            function toggleSelectMenu() {
+                const dropdown = document.getElementById('select-dropdown');
+                if (dropdown) dropdown.classList.toggle('hidden');
+            }
+
+            // Close select menu when clicking outside
+            document.addEventListener('click', function (e) {
+                const menu = document.getElementById('select-dropdown');
+                const trigger = document.querySelector('button[onclick="toggleSelectMenu()"]');
+                if (menu && !menu.classList.contains('hidden')) {
+                    if (trigger && !trigger.contains(e.target)) {
+                        menu.classList.add('hidden');
+                    }
+                }
+            });
+
+            // Bulk Selection Logic
+            function toggleSelectMode() {
+                const selectColumns = document.querySelectorAll('.select-column');
+                const toolbar = document.getElementById('bulk-toolbar');
+                const menu = document.getElementById('select-dropdown');
+
+                // Hide menu if open
+                if (menu) menu.classList.add('hidden');
+
+                let isHidden = true;
+                if (selectColumns.length > 0) {
+                    isHidden = selectColumns[0].classList.contains('hidden');
+                }
+
+                if (isHidden) {
+                    // Show checkboxes
+                    selectColumns.forEach(el => el.classList.remove('hidden'));
+                    toolbar.classList.remove('hidden');
+                } else {
+                    // Hide checkboxes
+                    selectColumns.forEach(el => el.classList.add('hidden'));
+                    toolbar.classList.add('hidden');
+
+                    // Uncheck all
+                    document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+                    const selectAll = document.getElementById('select-all');
+                    if (selectAll) selectAll.checked = false;
+
+                    updateSelectionState();
+                }
+            }
+
+            function toggleAllCheckboxes(source) {
+                const checkboxes = document.querySelectorAll('.row-checkbox');
+                checkboxes.forEach(cb => cb.checked = source.checked);
+                updateSelectionState();
+            }
+
+            function updateSelectionState() {
+                const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+                const count = checkedBoxes.length;
+                const countEl = document.getElementById('selected-count');
+                const btnDelete = document.getElementById('btn-delete-bulk');
+
+                if (countEl) countEl.innerText = count;
+
+                if (count > 0) {
+                    btnDelete.disabled = false;
+                } else {
+                    btnDelete.disabled = true;
+                }
+            }
+            function submitBulkDelete() {
+                const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+                const count = checkedBoxes.length;
+
+                if (count === 0) return;
+
+                let hasSpd = false;
+                checkedBoxes.forEach(box => {
+                    if (box.dataset.hasSpd === 'true') {
+                        hasSpd = true;
+                    }
+                });
+
+                let message = 'Apakah Anda yakin ingin menghapus ' + count + ' penandatangan yang dipilih? Tindakan ini tidak dapat dibatalkan.';
+
+                if (hasSpd) {
+                    message = 'PEMBERITAHUAN:\nAda penandatangan yang dipilih sedang memiliki referensi ke data SPD.\n\nJika dilanjutkan, penghapusan penandatangan ini mungkin ditolak oleh sistem untuk menjaga keutuhan data SPD, atau data SPD terkait akan ikut terpengaruh.\n\nApakah Anda tetap yakin ingin mencoba menghapus ' + count + ' penandatangan yang dipilih?';
+                }
+
+                if (!confirm(message)) {
+                    return;
+                }
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ route('admin.penandatangan.bulk_destroy') }}";
+
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = "{{ csrf_token() }}";
+                form.appendChild(csrfToken);
+
+                checkedBoxes.forEach(box => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = box.value;
+                    form.appendChild(input);
+                });
+
+                document.body.appendChild(form);
+                form.submit();
+            }
         </script>
     </div>
 </body>

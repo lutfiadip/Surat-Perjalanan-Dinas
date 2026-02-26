@@ -25,7 +25,7 @@ class AdminPenandatanganController extends Controller
             $query->where('status_aktif', $request->status);
         }
 
-        $penandatangan = $query->orderBy('nama')->paginate($perPage)->withQueryString();
+        $penandatangan = $query->withCount('spds')->orderBy('nama')->paginate($perPage)->withQueryString();
         return view('admin.penandatangan.index', compact('penandatangan'));
     }
 
@@ -81,5 +81,40 @@ class AdminPenandatanganController extends Controller
 
         $message = $penandatangan->status_aktif ? 'diaktifkan' : 'dinonaktifkan';
         return redirect()->back()->with('success', "Penandatangan berhasil $message.");
+    }
+
+    public function destroy($id)
+    {
+        $penandatangan = Penandatangan::findOrFail($id);
+
+        try {
+            $penandatangan->delete();
+            return redirect()->route('admin.penandatangan.index')->with('success', 'Data Penandatangan berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->route('admin.penandatangan.index')->with('error', 'Penandatangan ini tidak dapat dihapus karena masih memiliki data terkait (SPD, dll).');
+            }
+            return redirect()->route('admin.penandatangan.index')->with('error', 'Terjadi kesalahan saat menghapus penandatangan: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada penandatangan yang dipilih.');
+        }
+
+        try {
+            $deletedCount = Penandatangan::whereIn('id', $ids)->delete();
+
+            return redirect()->route('admin.penandatangan.index')->with('success', "$deletedCount penandatangan berhasil dihapus.");
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->route('admin.penandatangan.index')->with('error', 'Beberapa penandatangan tidak dapat dihapus karena masih memiliki data terkait (SPD, dll).');
+            }
+            return redirect()->route('admin.penandatangan.index')->with('error', 'Terjadi kesalahan saat menghapus penandatangan: ' . $e->getMessage());
+        }
     }
 }

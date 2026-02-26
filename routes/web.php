@@ -54,6 +54,8 @@ Route::middleware(['simple.auth', \App\Http\Middleware\RoleMiddleware::class . '
     Route::get('/penandatangan/{id}/edit', [App\Http\Controllers\AdminPenandatanganController::class, 'edit'])->name('admin.penandatangan.edit');
     Route::put('/penandatangan/{id}', [App\Http\Controllers\AdminPenandatanganController::class, 'update'])->name('admin.penandatangan.update');
     Route::patch('/penandatangan/{id}/toggle-status', [App\Http\Controllers\AdminPenandatanganController::class, 'toggleStatus'])->name('admin.penandatangan.toggle_status');
+    Route::delete('/penandatangan/{id}', [App\Http\Controllers\AdminPenandatanganController::class, 'destroy'])->name('admin.penandatangan.destroy');
+    Route::post('/penandatangan/delete-batch', [App\Http\Controllers\AdminPenandatanganController::class, 'bulkDestroy'])->name('admin.penandatangan.bulk_destroy');
 
     // Users
     Route::get('/users', [App\Http\Controllers\AdminUserController::class, 'index'])->name('admin.users.index');

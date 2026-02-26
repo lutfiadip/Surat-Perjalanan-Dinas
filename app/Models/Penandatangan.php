@@ -24,4 +24,9 @@ class Penandatangan extends Model
     protected $casts = [
         'status_aktif' => 'boolean',
     ];
+
+    public function spds()
+    {
+        return $this->hasMany(Spd::class, 'penandatangan_id');
+    }
 }
