@@ -499,7 +499,19 @@
                                     data-variant="{{ $signer->variant_ttd ?? 'normal' }}"
                                     data-jenis="{{ $signer->jenis }}"
                                     {{ (isset($draft) && $draft->penandatangan_id == $signer->id) ? 'selected' : '' }}>
-                                    {{ $signer->jabatan }} - {{ $signer->nama }}{{ ($signer->variant_ttd && strtolower($signer->variant_ttd) !== 'normal') ? ' (' . strtoupper($signer->variant_ttd) . ')' : '' }}
+                                    @php
+                                        $variantSuffix = '';
+                                        if ($signer->variant_ttd && strtolower($signer->variant_ttd) !== 'normal') {
+                                            $jenisText = '';
+                                            if ($signer->jenis && strtolower($signer->jenis) === 'kepala') {
+                                                $jenisText = ' Kepala Badan';
+                                            } elseif ($signer->jenis && strtolower($signer->jenis) === 'sekretaris') {
+                                                $jenisText = ' Sekretaris';
+                                            }
+                                            $variantSuffix = ' (' . strtoupper($signer->variant_ttd) . $jenisText . ')';
+                                        }
+                                    @endphp
+                                    {{ $signer->jabatan }} - {{ $signer->nama }}{{ $variantSuffix }}
                                 </option>
                             @endforeach
                         </select>
