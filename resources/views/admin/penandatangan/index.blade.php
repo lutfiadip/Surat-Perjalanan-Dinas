@@ -54,10 +54,9 @@
             <!-- Alerts -->
             <!-- Floating Notification Container -->
             <div
-                class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] w-full max-w-lg px-4 pointer-events-none">
+                class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] w-full max-w-lg px-4 pointer-events-none flex flex-col gap-2">
                 @if(session('success'))
-                    <div id="flash-message"
-                        class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl flex items-center justify-between gap-2 shadow-lg transition-all duration-500 pointer-events-auto"
+                    <div class="flash-message mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl flex items-center justify-between gap-2 shadow-lg transition-all duration-500 pointer-events-auto"
                         role="alert">
                         <div class="flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
@@ -67,7 +66,7 @@
                             </svg>
                             <span class="font-medium">{{ session('success') }}</span>
                         </div>
-                        <button onclick="closeFlashMessage()"
+                        <button onclick="this.closest('.flash-message').style.display='none'"
                             class="text-green-500 hover:text-green-700 focus:outline-none rounded-full p-1 hover:bg-green-100 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -76,18 +75,40 @@
                             </svg>
                         </button>
                     </div>
-                    <script>
-                        function closeFlashMessage() {
-                            const flash = document.getElementById('flash-message');
-                            if (flash) {
-                                flash.style.opacity = '0';
-                                flash.style.transform = 'translateY(-20px)';
-                                setTimeout(() => flash.remove(), 500);
-                            }
-                        }
-                        setTimeout(closeFlashMessage, 3000); // Auto dismiss after 3 seconds
-                    </script>
                 @endif
+
+                @if(session('error'))
+                    <div class="flash-message mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center justify-between gap-2 shadow-lg transition-all duration-500 pointer-events-auto"
+                        role="alert">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span class="font-medium text-sm leading-snug">{!! nl2br(e(session('error'))) !!}</span>
+                        </div>
+                        <button onclick="this.closest('.flash-message').style.display='none'"
+                            class="text-red-500 hover:text-red-700 focus:outline-none rounded-full p-1 hover:bg-red-100 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                @endif
+                <script>
+                    setTimeout(() => {
+                        document.querySelectorAll('.flash-message').forEach(el => {
+                            el.style.opacity = '0';
+                            el.style.transform = 'translateY(-20px)';
+                            setTimeout(() => el.remove(), 500);
+                        });
+                    }, 5000); // Auto dismiss after 5 seconds
+                </script>
             </div>
 
             <div class="mb-6">
