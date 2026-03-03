@@ -45,7 +45,7 @@
                     <div class="relative" id="user-menu-container">
                         <button onclick="toggleUserMenu()"
                             class="flex items-center gap-2 text-sm font-semibold text-slate-900 border border-slate-200 rounded-full px-3 py-1 hover:bg-slate-50 transition focus:outline-none bg-white/50 backdrop-blur-sm">
-                            Halo, <span class="text-[#1C6DD0]">{{ session('name') }}</span>
+                            Halo, <span class="text-[#1C6DD0]">{{ session('name') ?? ($user->name ?? 'User') }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="h-4 w-4 text-slate-500">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -54,12 +54,13 @@
                         <!-- Dropdown Menu -->
                         <div id="user-menu"
                             class="hidden absolute right-0 mt-2 w-48 origin-top-right rounded-xl bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 transition-all duration-200 ease-out transform opacity-0 scale-95"
-                            style="display: none;">
+                            style="transition: opacity 0.2s ease-out, transform 0.2s ease-out; display: none;">
                             <div class="px-4 py-2 border-b border-gray-100 mb-1">
                                 <p class="text-xs text-slate-500">Masuk sebagai</p>
-                                <p class="text-sm font-semibold text-slate-900 truncate">{{ session('name') }}</p>
+                                <p class="text-sm font-semibold text-slate-900 truncate">
+                                    {{ session('name') ?? ($user->name ?? 'User') }}</p>
                             </div>
-                            @if(session('role') === 'admin')
+                            @if(session('role') === 'admin' && !request()->routeIs('admin.dashboard'))
                                 <a href="{{ route('admin.dashboard') }}"
                                     class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -70,17 +71,20 @@
                                     Admin Dashboard
                                 </a>
                             @endif
-                            <a href="{{ route('spd.draft') }}"
-                                class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                    stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                </svg>
-                                Dokumen Saya
-                            </a>
+                            @if(!request()->routeIs('spd.draft') && !request()->routeIs('spd.index'))
+                                <a href="{{ route('spd.draft') }}"
+                                    class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                        stroke="currentColor" class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                    </svg>
+                                    Dokumen Saya
+                                </a>
+                            @endif
                             <a href="{{ route('logout') }}"
-                                class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
+                                class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
+                                onclick="event.preventDefault(); document.getElementById('logout-form-spd').submit();">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                     stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -88,6 +92,9 @@
                                 </svg>
                                 Logout
                             </a>
+                            <form id="logout-form-spd" action="{{ route('logout') }}" method="GET" class="hidden">
+                                @csrf
+                            </form>
                         </div>
                     </div>
                     <script>
