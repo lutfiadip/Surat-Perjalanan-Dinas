@@ -381,10 +381,11 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                <button type="button" id="btn-clear-pegawai-utama" class="btn btn-danger" onclick="$('select[name=\'pegawai_utama\']').val('').trigger('change');" style="display: none; width: 50px; padding: 0; flex-shrink: 0; align-items: center; justify-content: center;" title="Kosongkan Pegawai Utama">X</button>
                             </div>
                         </div>
                         <button type="button" id="btn-add-pegawai" onclick="addPegawai()" class="btn"
-                            style="width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">
+                            style="display: none; width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">
                             + Tambah Pengikut
                         </button>
                         <p class="multi-select-note" style="margin-top: 10px;">Pegawai pertama adalah Pegawai Utama,
@@ -566,7 +567,25 @@
                 width: '100%'
             }).on('change', function () {
                 updatePreview();
+                if ($(this).attr('name') === 'pegawai_utama') {
+                    if ($(this).val()) {
+                        $('#btn-add-pegawai').show();
+                        $('#btn-clear-pegawai-utama').css('display', 'flex');
+                    } else {
+                        $('#btn-add-pegawai').hide();
+                        $('#btn-clear-pegawai-utama').hide();
+                    }
+                }
             });
+
+            // Initial visibility for Tambah Pengikut
+            if ($('select[name="pegawai_utama"]').val()) {
+                $('#btn-add-pegawai').show();
+                $('#btn-clear-pegawai-utama').css('display', 'flex');
+            } else {
+                $('#btn-add-pegawai').hide();
+                $('#btn-clear-pegawai-utama').hide();
+            }
 
             // Populate Pengikut
             if (Array.isArray(existingPengikuts) && existingPengikuts.length > 0) {
