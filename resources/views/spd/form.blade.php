@@ -102,6 +102,19 @@
             /* Important for padding */
         }
 
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #999;
+        }
+
+        .form-group select:invalid {
+            color: #999;
+        }
+
+        .form-group select option {
+            color: var(--text-color);
+        }
+
 
 
         .form-group textarea {
@@ -489,8 +502,9 @@
                     
                     <div class="form-group">
                         <label>Penandatangan Surat</label>
-                        <select name="penandatangan" class="form-control"
+                        <select name="penandatangan" class="form-control" required
                             style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
+                            <option value="" disabled {{ !isset($draft) || empty($draft->penandatangan_id) ? 'selected' : '' }}>-- Pilih Penandatangan --</option>
                             @foreach($signatories as $signer)
                                 <option value="{{ $signer->id }}" 
                                     data-nama="{{ $signer->nama }}"
