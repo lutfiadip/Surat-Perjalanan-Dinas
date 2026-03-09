@@ -476,12 +476,12 @@
                                     <th class="p-4 font-semibold text-slate-700 w-40 text-left">Oleh</th>
                                 @endif
                                 <th class="p-4 font-semibold text-slate-700 w-40 text-left">Tanggal Surat</th>
-                                <th class="p-4 font-semibold text-slate-700 text-center w-48">Aksi</th>
+                                <th class="p-4 font-semibold text-slate-700 text-center w-56">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse($finals as $final)
-                                <tr class="hover:bg-slate-50 transition">
+                                <tr class="hover:bg-slate-50 transition border-b border-slate-100/50">
                                     <td class="p-4 text-center final-select-column hidden transition-all duration-300">
                                         <div class="flex justify-center items-center h-full">
                                             <input type="checkbox" name="ids[]" value="{{ $final->id }}"
@@ -505,6 +505,16 @@
                                     </td>
                                     <td class="p-4 text-center">
                                         <div class="flex justify-center gap-2 items-center">
+                                            <button type="button" onclick="toggleDetail('detail-{{ $final->id }}', this)"
+                                                class="inline-flex items-center justify-center w-8 h-8 bg-slate-100 text-slate-500 rounded-lg hover:bg-slate-200 hover:text-slate-700 transition"
+                                                title="Lihat Detail">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="transform transition-transform duration-200">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                            </button>
                                             <a href="{{ route('spd.print.final', ['id' => $final->id]) }}" target="_blank"
                                                 class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 font-medium text-sm transition border border-slate-300">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -533,6 +543,67 @@
                                                 </svg>
                                                 Word
                                             </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Expandable Detail Row -->
+                                <tr id="detail-{{ $final->id }}" class="hidden bg-slate-50/50 border-b border-slate-200">
+                                    <td colspan="{{ session('role') === 'admin' ? 7 : 6 }}" class="p-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
+                                            <!-- Pegawai Ditugaskan -->
+                                            <div class="flex flex-col space-y-2">
+                                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                                    Pegawai Ditugaskan</h4>
+                                                @php
+                                                    $pegawaiUtama = $final->pegawais->where('pivot.peran', 'utama')->first();
+                                                    $pengikuts = $final->pegawais->where('pivot.peran', 'pengikut');
+                                                @endphp
+                                                <ul class="text-sm text-slate-700 space-y-2">
+                                                    @if($pegawaiUtama)
+                                                        <li class="flex flex-col">
+                                                            <span
+                                                                class="font-semibold text-slate-900">{{ $pegawaiUtama->nama }}</span>
+                                                            <span class="text-xs text-slate-500">NIP. {{ $pegawaiUtama->nip }}
+                                                                (Pegawai Utama)</span>
+                                                        </li>
+                                                    @endif
+                                                    @foreach($pengikuts as $pengikut)
+                                                        <li class="flex flex-col">
+                                                            <span
+                                                                class="font-medium text-slate-800">{{ $pengikut->nama }}</span>
+                                                            <span class="text-xs text-slate-500">NIP. {{ $pengikut->nip }}
+                                                                (Pengikut)</span>
+                                                        </li>
+                                                    @endforeach
+                                                    @if(!$pegawaiUtama && $pengikuts->isEmpty())
+                                                        <li class="text-slate-500 italic">Tidak ada data pegawai.</li>
+                                                    @endif
+                                                </ul>
+                                            </div>
+
+                                            <!-- Tempat Tujuan -->
+                                            <div class="flex flex-col space-y-2">
+                                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tempat
+                                                    Tujuan</h4>
+                                                <p class="text-sm text-slate-700 whitespace-pre-line">
+                                                    {{ $final->tempat ?? '-' }}</p>
+                                            </div>
+
+                                            <!-- Tanggal Pelaksanaan -->
+                                            <div class="flex flex-col space-y-2">
+                                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                                    Tanggal Pelaksanaan</h4>
+                                                <div class="text-sm text-slate-700">
+                                                    <div class="grid grid-cols-[100px_auto] gap-1">
+                                                        <span class="text-slate-500">Berangkat:</span>
+                                                        <span>{{ $final->tgl_berangkat ? \Carbon\Carbon::parse($final->tgl_berangkat)->locale('id')->isoFormat('D MMMM Y') : '-' }}</span>
+                                                        <span class="text-slate-500">Kembali:</span>
+                                                        <span>{{ $final->tgl_kembali ? \Carbon\Carbon::parse($final->tgl_kembali)->locale('id')->isoFormat('D MMMM Y') : '-' }}</span>
+                                                        <span class="text-slate-500">Lama (Hari):</span>
+                                                        <span>{{ $final->lama_perjalanan ?? '-' }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -719,6 +790,25 @@
 
                     delay += 1000; // 1 second delay between each
                 });
+            }
+
+            function toggleDetail(detailId, btn) {
+                const detailRow = document.getElementById(detailId);
+                const icon = btn.querySelector('svg');
+
+                if (detailRow.classList.contains('hidden')) {
+                    detailRow.classList.remove('hidden');
+                    // Rotate icon up
+                    icon.classList.add('rotate-180');
+                    btn.classList.add('bg-slate-200', 'text-slate-700');
+                    btn.classList.remove('bg-slate-100', 'text-slate-500');
+                } else {
+                    detailRow.classList.add('hidden');
+                    // Reset icon rotation
+                    icon.classList.remove('rotate-180');
+                    btn.classList.remove('bg-slate-200', 'text-slate-700');
+                    btn.classList.add('bg-slate-100', 'text-slate-500');
+                }
             }
         </script>
         </form>

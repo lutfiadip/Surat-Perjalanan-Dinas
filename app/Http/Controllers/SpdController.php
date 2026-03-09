@@ -200,7 +200,7 @@ class SpdController extends Controller
         // DRAFTS
         $draftsQuery = Spd::where('status', 'draft')->orderBy('id', 'desc')->with('creator');
         // FINALS (Arsip)
-        $finalsQuery = Spd::where('status', 'final')->orderBy('id', 'desc')->with('creator');
+        $finalsQuery = Spd::where('status', 'final')->orderBy('id', 'desc')->with(['creator', 'pegawais']);
 
         if (session('role') !== 'admin') {
             $draftsQuery->where('created_by', $userId);
