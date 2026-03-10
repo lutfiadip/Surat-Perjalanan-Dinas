@@ -585,8 +585,7 @@
                                             <div class="flex flex-col space-y-2">
                                                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tempat
                                                     Tujuan</h4>
-                                                <p class="text-sm text-slate-700 whitespace-pre-line">
-                                                    {{ $final->tempat ?? '-' }}</p>
+                                                <p class="text-sm text-slate-700 whitespace-pre-line">{{ trim($final->tempat ?? '-') }}</p>
                                             </div>
 
                                             <!-- Tanggal Pelaksanaan -->
