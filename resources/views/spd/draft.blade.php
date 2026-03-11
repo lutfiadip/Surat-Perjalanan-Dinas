@@ -268,7 +268,7 @@
                 <!-- Removed Floating Toolbar -->
 
                 <div class="bg-white rounded-xl shadow border border-slate-200">
-                    <table class="w-full text-left border-collapse table-fixed" id="draft-table">
+                    <table class="w-full text-left border-collapse" id="draft-table">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
                                 <th class="p-4 w-14 text-center draft-select-column hidden transition-all duration-300">
@@ -439,7 +439,7 @@
 
 
                 <div class="bg-white rounded-xl shadow border border-slate-200">
-                    <table class="w-full text-left border-collapse table-fixed" id="final-table">
+                    <table class="w-full text-left border-collapse" id="final-table">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
                                 <th class="p-4 w-14 text-center final-select-column hidden transition-all duration-300">
@@ -585,7 +585,8 @@
                                             <div class="flex flex-col space-y-2">
                                                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tempat
                                                     Tujuan</h4>
-                                                <p class="text-sm text-slate-700 whitespace-pre-line">{{ trim($final->tempat ?? '-') }}</p>
+                                                <p class="text-sm text-slate-700 whitespace-pre-line">
+                                                    {{ trim($final->tempat ?? '-') }}</p>
                                             </div>
 
                                             <!-- Tanggal Pelaksanaan -->
