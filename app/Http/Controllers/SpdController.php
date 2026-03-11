@@ -12,7 +12,7 @@ class SpdController extends Controller
     public function create(Request $request)
     {
         // Fetch active Pegawai only
-        $pegawais = PegawaiBkdSpd::where('status_aktif', true)->get();
+        $pegawais = PegawaiBkdSpd::where('status_aktif', true)->orderBy('nama', 'asc')->get();
         // Fetch active signatories from database (Kepala & Sekretaris)
         $signatories = Penandatangan::whereIn('jenis', ['kepala', 'sekretaris'])->where('status_aktif', 1)->get();
 
@@ -52,7 +52,7 @@ class SpdController extends Controller
     public function edit($id)
     {
         // 1. Ambil data pegawais untuk dropdown (ACTIVE ONLY)
-        $pegawais = PegawaiBkdSpd::where('status_aktif', true)->get();
+        $pegawais = PegawaiBkdSpd::where('status_aktif', true)->orderBy('nama', 'asc')->get();
 
         // 2. Definisi signatories (sama seperti create)
         // Fetch active signatories from database (Kepala & Sekretaris)
