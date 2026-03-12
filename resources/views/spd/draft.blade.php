@@ -547,7 +547,7 @@
                                     </td>
                                 </tr>
                                 <!-- Expandable Detail Row -->
-                                <tr id="detail-{{ $final->id }}" class="hidden bg-slate-50/50 border-b border-slate-200">
+                                <tr id="detail-{{ $final->id }}" class="hidden bg-slate-50/50 border-t border-b border-slate-200">
                                     <td colspan="{{ session('role') === 'admin' ? 7 : 6 }}" class="p-4">
                                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
                                             <!-- Pegawai Ditugaskan -->

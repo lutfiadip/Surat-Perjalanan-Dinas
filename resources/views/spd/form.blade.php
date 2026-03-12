@@ -84,7 +84,7 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             font-weight: 500;
             color: var(--text-color);
         }
@@ -115,6 +115,10 @@
             color: var(--text-color);
         }
 
+        .form-group select {
+            background-color: #f1f5f9;
+        }
+
 
 
         .form-group textarea {
@@ -126,7 +130,26 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 4px rgba(28, 109, 208, 0.1);
+        }
+
+        /* Fix for Select2 to match regular inputs */
+        .select2-container .select2-selection--single,
+        .select2-container .select2-selection--multiple {
+            min-height: 42px;
+            padding: 4px;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 0.5rem !important;
+            background-color: #f1f5f9 !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 32px;
+            color: var(--text-color);
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px;
         }
 
         .grid {
