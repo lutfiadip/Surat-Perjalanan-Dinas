@@ -78,6 +78,29 @@
             /* Left side */
         }
 
+        .form-section h3 {
+            margin-top: 0;
+        }
+
+        /* Utility classes for section cards and separators */
+        .bg-white { background-color: var(--input-bg); }
+        .p-6 { padding: 1.5rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .border { border: 1px solid var(--border-color); }
+        .border-slate-200 { border-color: var(--border-color); }
+        .border-slate-100 { border-color: #f1f5f9; }
+        .shadow-sm { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .pb-2 { padding-bottom: 0.5rem; }
+        .border-b { border-bottom: 1px solid var(--border-color); }
+        .text-lg { font-size: 1.125rem; }
+        .font-bold { font-weight: 700; }
+        .text-slate-800 { color: var(--text-color); }
+        .text-slate-500 { color: var(--text-muted); }
+        .text-sm { font-size: 0.875rem; }
+
         .form-group {
             margin-bottom: 1rem;
         }
@@ -898,7 +921,7 @@
 
                     // 1. POPULATE PAGE 1 LIST
                     const itemHtml1 = `
-                    <div style="display: flex; margin-bottom: 0px;">
+                    <div style="display: flex; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
                         <div style="width: 20px; flex-shrink: 0;">${index}.</div>
                         <div style="flex: 1;">
                             <div style="display: flex;">
