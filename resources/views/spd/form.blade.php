@@ -548,34 +548,43 @@
                     
                     <div class="form-group">
                         <label>Penandatangan Surat</label>
-                        <select name="penandatangan" class="form-control" required
-                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.375rem;">
-                            <option value="" disabled {{ !isset($draft) || empty($draft->penandatangan_id) ? 'selected' : '' }}>-- Pilih Penandatangan --</option>
-                            @foreach($signatories as $signer)
-                                <option value="{{ $signer->id }}" 
-                                    data-nama="{{ $signer->nama }}"
-                                    data-nip="{{ $signer->nip }}"
-                                    data-pangkat="{{ $signer->pangkat }}"
-                                    data-jabatan="{{ $signer->jabatan }}"
-                                    data-variant="{{ $signer->variant_ttd ?? 'normal' }}"
-                                    data-jenis="{{ $signer->jenis }}"
-                                    {{ (isset($draft) && $draft->penandatangan_id == $signer->id) ? 'selected' : '' }}>
-                                    @php
-                                        $variantSuffix = '';
-                                        if ($signer->variant_ttd && strtolower($signer->variant_ttd) !== 'normal') {
-                                            $jenisText = '';
-                                            if ($signer->jenis && strtolower($signer->jenis) === 'kepala') {
-                                                $jenisText = ' Kepala Badan';
-                                            } elseif ($signer->jenis && strtolower($signer->jenis) === 'sekretaris') {
-                                                $jenisText = ' Sekretaris';
+                        <div style="position: relative;">
+                            <select name="penandatangan" class="form-control" required
+                                style="width: 100%; padding: 0.75rem; padding-right: 2.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem; appearance: none; background-color: transparent; position: relative; z-index: 10;"
+                                onfocus="this.nextElementSibling.style.transform='translateY(-50%) rotate(180deg)'" 
+                                onblur="this.nextElementSibling.style.transform='translateY(-50%) rotate(0deg)'"
+                                onchange="this.nextElementSibling.style.transform='translateY(-50%) rotate(0deg)'; this.blur();">
+                                <option value="" disabled {{ !isset($draft) || empty($draft->penandatangan_id) ? 'selected' : '' }}>-- Pilih Penandatangan --</option>
+                                @foreach($signatories as $signer)
+                                    <option value="{{ $signer->id }}" 
+                                        data-nama="{{ $signer->nama }}"
+                                        data-nip="{{ $signer->nip }}"
+                                        data-pangkat="{{ $signer->pangkat }}"
+                                        data-jabatan="{{ $signer->jabatan }}"
+                                        data-variant="{{ $signer->variant_ttd ?? 'normal' }}"
+                                        data-jenis="{{ $signer->jenis }}"
+                                        {{ (isset($draft) && $draft->penandatangan_id == $signer->id) ? 'selected' : '' }}>
+                                        @php
+                                            $variantSuffix = '';
+                                            if ($signer->variant_ttd && strtolower($signer->variant_ttd) !== 'normal') {
+                                                $jenisText = '';
+                                                if ($signer->jenis && strtolower($signer->jenis) === 'kepala') {
+                                                    $jenisText = ' Kepala Badan';
+                                                } elseif ($signer->jenis && strtolower($signer->jenis) === 'sekretaris') {
+                                                    $jenisText = ' Sekretaris';
+                                                }
+                                                $variantSuffix = ' (' . strtoupper($signer->variant_ttd) . $jenisText . ')';
                                             }
-                                            $variantSuffix = ' (' . strtoupper($signer->variant_ttd) . $jenisText . ')';
-                                        }
-                                    @endphp
-                                    {{ $signer->jabatan }} - {{ $signer->nama }}{{ $variantSuffix }}
-                                </option>
-                            @endforeach
-                        </select>
+                                        @endphp
+                                        {{ $signer->jabatan }} - {{ $signer->nama }}{{ $variantSuffix }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="#888" stroke="none" 
+                                style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); transition: transform 0.2s ease; pointer-events: none; z-index: 1;">
+                                <polygon points="4,8 20,8 12,17"></polygon>
+                            </svg>
+                        </div>
                     </div>
                 </div>
 
