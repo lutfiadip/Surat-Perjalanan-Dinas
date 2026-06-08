@@ -410,13 +410,13 @@
                     <div class="form-group">
                         <label>Dasar Surat (Untuk "Berdasarkan")</label>
                         <textarea name="dasar_surat" rows="2"
-                            placeholder="Contoh: Surat dari... Nomor: ... perihal ...">{{ old('dasar_surat', $draft->dasar_surat ?? 'Surat dari Badan Pengelola Pendapatan Daerah Provinsi Jawa Tengah Nomor: 100.2.2.3/599/BAPENDA/2025 perihal Rekonsiliasi Opsen Pajak Daerah.') }}</textarea>
+                            placeholder="Contoh: Surat dari... Nomor: ... perihal ...">{{ old('dasar_surat', $draft->dasar_surat ?? '') }}</textarea>
                     </div>
 
                     <div class="form-group">
                         <label>Untuk (Maksud Perjalanan Dinas)</label>
                         <textarea name="maksud" rows="2" required
-                            placeholder="Contoh: Menghadiri Rekonsiliasi Opsen Pajak Daerah">{{ old('maksud', $draft->maksud ?? 'Menghadiri Rekonsiliasi Opsen Pajak Daerah') }}</textarea>
+                            placeholder="Contoh: Menghadiri Rekonsiliasi Opsen Pajak Daerah">{{ old('maksud', $draft->maksud ?? '') }}</textarea>
                     </div>
                 </div>
 
@@ -471,7 +471,7 @@
 
                     <div class="form-group">
                         <label>Tempat Kegiatan</label>
-                        <textarea name="tempat" rows="2" required>{{ old('tempat', $draft->tempat ?? "Bank Jateng KCU Surakarta.\nJl. Slamet Riyadi No 20 Surakarta") }}</textarea>
+                        <textarea name="tempat" rows="2" required placeholder="Contoh: Bank Jateng KCU Surakarta. Jl. Slamet Riyadi No 20 Surakarta">{{ old('tempat', $draft->tempat ?? '') }}</textarea>
                     </div>
                 </div>
 
@@ -488,18 +488,18 @@
                     <div class="grid">
                         <div class="form-group">
                             <label>Alat Angkut</label>
-                            <input type="text" name="alat_angkut" value="{{ old('alat_angkut', $draft->alat_angkut ?? 'Kendaraan Dinas') }}" required>
+                            <input type="text" name="alat_angkut" placeholder="Contoh: Kendaraan Dinas" value="{{ old('alat_angkut', $draft->alat_angkut ?? '') }}" required>
                         </div>
                         <div class="form-group">
                             <label>Lama Perjalanan (Hari)</label>
-                            <input type="number" id="lama_perjalanan" name="lama_perjalanan" value="{{ old('lama_perjalanan', $draft->lama_perjalanan ?? '1') }}" min="1" required
+                            <input type="number" id="lama_perjalanan" name="lama_perjalanan" placeholder="Contoh: 1" value="{{ old('lama_perjalanan', $draft->lama_perjalanan ?? '') }}" min="1" required
                                 oninput="calculateReturnDate()">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label>Tempat Berangkat</label>
-                        <input type="text" name="tempat_berangkat" value="{{ old('tempat_berangkat', $draft->tempat_berangkat ?? 'BKD Karanganyar') }}" required>
+                        <input type="text" name="tempat_berangkat" placeholder="Contoh: BKD Karanganyar" value="{{ old('tempat_berangkat', $draft->tempat_berangkat ?? '') }}" required>
                     </div>
 
                     <div class="grid">
@@ -523,7 +523,7 @@
                     <div class="grid">
                         <div class="form-group">
                             <label>Pembebanan Anggaran (SKPD)</label>
-                            <input type="text" name="anggaran_skpd" value="{{ old('anggaran_skpd', $draft->anggaran_skpd ?? 'Badan Keuangan Daerah') }}" required>
+                            <input type="text" name="anggaran_skpd" placeholder="Contoh: Badan Keuangan Daerah" value="{{ old('anggaran_skpd', $draft->anggaran_skpd ?? '') }}" required>
                         </div>
                         <div class="form-group">
                             <label>Kode Rekening</label>
