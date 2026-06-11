@@ -601,6 +601,8 @@
                                                         <span>{{ $final->tgl_kembali ? \Carbon\Carbon::parse($final->tgl_kembali)->locale('id')->isoFormat('D MMMM Y') : '-' }}</span>
                                                         <span class="text-slate-500">Lama (Hari):</span>
                                                         <span>{{ $final->lama_perjalanan ?? '-' }}</span>
+                                                        <span class="text-slate-500">Dibuat:</span>
+                                                        <span>{{ $final->created_at ? \Carbon\Carbon::parse($final->created_at)->format('d/m/y, H.i') : '-' }}</span>
                                                     </div>
                                                 </div>
                                             </div>
