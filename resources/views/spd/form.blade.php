@@ -712,7 +712,7 @@
             // --- PAGE 1: SURAT TUGAS ---
             $('#preview-nomor').text(nomor);
             // Process Dasar Surat with special justification for "Nomor:" splitting
-            let dasarHtml = '<div style="text-align: justify; text-align-last: justify;">' +
+            let dasarHtml = '<div style="text-align: justify; text-align-last: left;">' +
                 dasar.replace('Nomor:', '</div><div style="text-align: justify; text-align-last: left;">Nomor:') +
                 '</div>';
             $('#preview-dasar-container').html(dasarHtml);
@@ -755,16 +755,13 @@
 
             const signerNamePage1 = toTitleCase(signer.nama_title);
 
-            // 1. Plt/Plh (Left Aligned)
-            if (variant === 'plt' || variant === 'plh') {
-                const prefix = variant === 'plt' ? 'Plt.' : 'Plh.';
-                
-                // Determine Jabatan Text based on Jenis
-                let jabatanText = signer.jabatan;
-                if (signer.jenis && signer.jenis.toLowerCase() === 'kepala') {
-                    jabatanText = 'Kepala Badan Keuangan Daerah';
-                } else if (signer.jenis && signer.jenis.toLowerCase() === 'sekretaris') {
-                    jabatanText = 'Sekretaris';
+            // 1. Plt/Plh or Sekretaris layout
+            if (isSekretaris) {
+                let prefix = '';
+                if (variant === 'plt') {
+                    prefix = 'Plt. ';
+                } else if (variant === 'plh') {
+                    prefix = 'Plh. ';
                 }
 
                 signHtml = `
@@ -777,40 +774,10 @@
                         <td style="border: none; padding: 0;">${tglSurat}</td>
                     </tr>
                      <tr>
-                        <td style="vertical-align: top; border: none; padding: 0;">${prefix}</td>
-                        <td style="vertical-align: top; border: none; padding: 0;">
-                            ${jabatanText}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="height: 60px; border: none;"></td>
-                    </tr>
-                    <tr>
-                        <td style="border: none; padding: 0;"></td>
-                        <td style="vertical-align: top; border: none; padding: 0;">
-                            ${signerNamePage1}<br>
-                            ${signer.pangkat}<br>
-                            NIP. ${signer.nip}
-                        </td>
-                    </tr>
-                </table>`;
-            }
-            // 2. Sekretaris + Normal (Left Aligned a.n.)
-            else if (isSekretaris && variant === 'normal') {
-                 signHtml = `
-                <table style="width: 100%; border: none; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt;">
-                     <tr>
-                        <td colspan="2" style="height: 10px; border: none;"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 30px; border: none; padding: 0;"></td>
-                        <td style="border: none; padding: 0;">${tglSurat}</td>
-                    </tr>
-                     <tr>
                         <td style="vertical-align: top; border: none; padding: 0;">a.n.</td>
                         <td style="vertical-align: top; border: none; padding: 0;">
                             Kepala Badan Keuangan Daerah<br>
-                            Sekretaris
+                            ${prefix}Sekretaris
                         </td>
                     </tr>
                     <tr>
@@ -825,11 +792,16 @@
                         </td>
                     </tr>
                 </table>`;
-            }
-            // 3. Normal (Left Aligned - was Center)
-            else {
-                // Determine Jabatan Text based on Jenis for Normal
-                let jabatanText = signer.jabatan;
+            } else {
+                // Kepala or Kabid
+                let prefix = '';
+                if (variant === 'plt') {
+                    prefix = 'Plt.';
+                } else if (variant === 'plh') {
+                    prefix = 'Plh.';
+                }
+
+                let jabatanText = signer.jabatan || '';
                 if (signer.jenis && signer.jenis.toLowerCase() === 'kepala') {
                     jabatanText = 'Kepala Badan Keuangan Daerah';
                 }
@@ -844,7 +816,7 @@
                         <td style="border: none; padding: 0;">${tglSurat}</td>
                     </tr>
                      <tr>
-                        <td style="vertical-align: top; border: none; padding: 0;"></td>
+                        <td style="vertical-align: top; border: none; padding: 0;">${prefix}</td>
                         <td style="vertical-align: top; border: none; padding: 0;">
                             ${jabatanText}
                         </td>
@@ -930,7 +902,7 @@
 
                     // 1. POPULATE PAGE 1 LIST
                     const itemHtml1 = `
-                    <div style="display: flex; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
+                    <div style="display: flex; margin-bottom: 15px;">
                         <div style="width: 20px; flex-shrink: 0;">${index}.</div>
                         <div style="flex: 1;">
                             <div style="display: flex;">

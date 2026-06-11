@@ -25,7 +25,7 @@
             <div class="label-col" style="width: 100px;">Berdasarkan</div>
             <div class="colon-col">:</div>
             <div class="value-col">
-                <div style="text-align: justify; text-align-last: justify;">
+                <div style="text-align: justify; text-align-last: left;">
                     {!! str_replace('Nomor:', '</div><div style="text-align: justify; text-align-last: left;">Nomor:', $data['dasar_surat']) !!}
                 </div>
             </div>

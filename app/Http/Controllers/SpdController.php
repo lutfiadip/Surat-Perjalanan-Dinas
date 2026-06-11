@@ -13,8 +13,8 @@ class SpdController extends Controller
     {
         // Fetch active Pegawai only
         $pegawais = PegawaiBkdSpd::where('status_aktif', true)->orderBy('nama', 'asc')->get();
-        // Fetch active signatories from database (Kepala & Sekretaris)
-        $signatories = Penandatangan::whereIn('jenis', ['kepala', 'sekretaris'])->where('status_aktif', 1)->get();
+        // Fetch active signatories from database (Kepala, Sekretaris & Kabid)
+        $signatories = Penandatangan::whereIn('jenis', ['kepala', 'sekretaris', 'kabid'])->where('status_aktif', 1)->get();
 
         $draft = null;
         $pegawaiUtama = null;
@@ -55,8 +55,8 @@ class SpdController extends Controller
         $pegawais = PegawaiBkdSpd::where('status_aktif', true)->orderBy('nama', 'asc')->get();
 
         // 2. Definisi signatories (sama seperti create)
-        // Fetch active signatories from database (Kepala & Sekretaris)
-        $signatories = Penandatangan::whereIn('jenis', ['kepala', 'sekretaris'])->where('status_aktif', 1)->get();
+        // Fetch active signatories from database (Kepala, Sekretaris & Kabid)
+        $signatories = Penandatangan::whereIn('jenis', ['kepala', 'sekretaris', 'kabid'])->where('status_aktif', 1)->get();
 
         // 3. Ambil Draft SPD berdasarkan ID & Session User
         // Admin access all, User only own
@@ -124,6 +124,7 @@ class SpdController extends Controller
                         'pangkat' => $signerModel->pangkat,
                         'jabatan' => $signerModel->jabatan,
                         'jenis' => $signerModel->jenis,
+                        'variant_ttd' => $signerModel->variant_ttd ?? 'normal',
                     ]);
                 }
             }
@@ -297,68 +298,7 @@ class SpdController extends Controller
         // 3. a.n. Sekretaris (Normal)
         // 4. Normal (Center)
 
-        // Pre-calculate Title Case Name for Page 1
-        $signerNamePage1 = $this->formatNameCustom($signatory['nama']);
-
-        if ($variant === 'plt') {
-            // Determine Jabatan Text based on Jenis for Plt
-            $jabatanText = $signer->jabatan;
-            if ($jenis === 'kepala') {
-                $jabatanText = 'Kepala Badan Keuangan Daerah';
-            } elseif ($jenis === 'sekretaris') {
-                $jabatanText = 'Sekretaris';
-            }
-
-            // Plt. Layout
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;">Plt.</td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signer->pangkat . '<br>NIP. ' . $signer->nip . '</td></tr>
-            </table>';
-        } elseif ($variant === 'plh') {
-            // Determine Jabatan Text based on Jenis for Plh
-            $jabatanText = $signer->jabatan;
-            if ($jenis === 'kepala') {
-                $jabatanText = 'Kepala Badan Keuangan Daerah';
-            } elseif ($jenis === 'sekretaris') {
-                $jabatanText = 'Sekretaris';
-            }
-
-            // Plh. Layout
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;">Plh.</td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signer->pangkat . '<br>NIP. ' . $signer->nip . '</td></tr>
-            </table>';
-        } elseif ($isSekretaris && $variant === 'normal') {
-            // a.n. Sekretaris Layout (Left Aligned)
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;">a.n.</td><td style="vertical-align: top; border: none; padding: 0;">Kepala Badan Keuangan Daerah<br>Sekretaris</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signer->pangkat . '<br>NIP. ' . $signer->nip . '</td></tr>
-            </table>';
-        } else {
-            // Normal Layout (Left Aligned - was Center)
-            // User Request: If jenis is Kepala, ignore input string and force "Kepala Badan Keuangan Daerah"
-            $jabatanText = $signer->jabatan;
-            if ($jenis === 'kepala') {
-                $jabatanText = 'Kepala Badan Keuangan Daerah';
-            }
-
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signer->pangkat . '<br>NIP. ' . $signer->nip . '</td></tr>
-            </table>';
-        }
+        $signatory['full_signature_page1'] = $this->generateSignatureHtml($variant, $jenis, $signer->jabatan, $signer->nama, $signer->pangkat, $signer->nip, $tgl);
 
         // PPTK / Pejabat Pelaksana Teknis Kegiatan (Usually Kasubbag Umum as per template)
         // For dynamic signature in SPD Part I ("Berangkat dari...")
@@ -438,68 +378,7 @@ class SpdController extends Controller
         $jenis = strtolower($signer->jenis);
         $isSekretaris = $jenis === 'sekretaris';
 
-        // Pre-calculate Title Case Name for Page 1
-        $signerNamePage1 = $this->formatNameCustom($signatory['nama']);
-
-        if ($variant === 'plt') {
-            // Determine Jabatan Text based on Jenis for Plt
-            $jabatanText = $signer->jabatan;
-            if ($jenis === 'kepala') {
-                $jabatanText = 'Kepala Badan Keuangan Daerah';
-            } elseif ($jenis === 'sekretaris') {
-                $jabatanText = 'Sekretaris';
-            }
-
-            // Plt. Layout (Left Aligned)
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;">Plt.</td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
-            </table>';
-        } elseif ($variant === 'plh') {
-            // Determine Jabatan Text based on Jenis for Plh
-            $jabatanText = $signer->jabatan;
-            if ($jenis === 'kepala') {
-                $jabatanText = 'Kepala Badan Keuangan Daerah';
-            } elseif ($jenis === 'sekretaris') {
-                $jabatanText = 'Sekretaris';
-            }
-
-            // Plh. Layout (Left Aligned)
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;">Plh.</td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
-            </table>';
-        } elseif ($isSekretaris && $variant === 'normal') {
-            // a.n. Sekretaris Layout (Left Aligned)
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;">a.n.</td><td style="vertical-align: top; border: none; padding: 0;">Kepala Badan Keuangan Daerah<br>Sekretaris</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
-            </table>';
-        } else {
-            // Normal Layout (Left Aligned - was Center)
-            // User Request: If jenis is Kepala, ignore input string and force "Kepala Badan Keuangan Daerah"
-            $jabatanText = $signer->jabatan;
-            if ($jenis === 'kepala') {
-                $jabatanText = 'Kepala Badan Keuangan Daerah';
-            }
-
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
-            </table>';
-        }
+        $signatory['full_signature_page1'] = $this->generateSignatureHtml($variant, $jenis, $signer->jabatan, $signer->nama, $signer->pangkat, $signer->nip, $tgl);
 
         // PPTK (Dynamic from DB)
         $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
@@ -581,6 +460,7 @@ class SpdController extends Controller
 
         // 5. Signatory
         $signatorySnapshot = $spd->signatory_snapshot ? json_decode($spd->signatory_snapshot, true) : null;
+        $signer = null;
 
         if ($signatorySnapshot) {
             $signatory = [
@@ -588,10 +468,10 @@ class SpdController extends Controller
                 'nip' => $signatorySnapshot['nip'],
                 'pangkat' => $signatorySnapshot['pangkat'],
                 'jabatan' => $signatorySnapshot['jabatan'],
+                'jenis' => $signatorySnapshot['jenis'] ?? 'kepala',
+                'variant_ttd' => $signatorySnapshot['variant_ttd'] ?? 'normal',
                 'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
             ];
-            // Determine layout based on 'jabatan' or 'jenis' from snapshot
-            $isSekretaris = stripos($signatory['jabatan'], 'Sekretaris') !== false;
         } else {
             // Fallback to Relationship (Old behavior / Backward Compatibility)
             $signer = $spd->penandatangan;
@@ -604,82 +484,22 @@ class SpdController extends Controller
                 'nip' => $signer->nip,
                 'pangkat' => $signer->pangkat,
                 'jabatan' => $signer->jabatan,
+                'jenis' => $signer->jenis ?? 'kepala',
+                'variant_ttd' => $signer->variant_ttd ?? 'normal',
                 'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
             ];
-            $isSekretaris = stripos($signer->jabatan, 'Sekretaris') !== false;
         }
 
         // 5. Signatory Processing (with fallback to 'jenis' check)
-        $variant = $signatory['variant_ttd'] ?? ($signer->variant_ttd ?? 'normal');
-        $jenis = strtolower($signatory['jenis'] ?? ($signer->jenis ?? 'kepala'));
-        $jabatan = $signatory['jabatan'] ?? ($signer->jabatan ?? '');
+        $variant = $signatory['variant_ttd'];
+        $jenis = strtolower($signatory['jenis']);
+        $jabatan = $signatory['jabatan'];
 
         $isSekretaris = $jenis === 'sekretaris';
 
         $tgl = $data['tanggal_surat'] ?? now()->locale('id')->isoFormat('D MMMM Y');
 
-        // STRICT RENDERING LOGIC ORDER (Mirrors print/exportWord)
-        // Pre-calculate Title Case Name for Page 1
-        $signerNamePage1 = $this->formatNameCustom($signatory['nama']);
-
-        if ($variant === 'plt') {
-            // Determine Jabatan Text based on Jenis for Plt
-            $jabatanText = $signatory['jabatan'];
-            if ($jenis === 'kepala') {
-                $jabatanText = 'Kepala Badan Keuangan Daerah';
-            } elseif ($jenis === 'sekretaris') {
-                $jabatanText = 'Sekretaris';
-            }
-
-            // Plt. Layout
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;">Plt.</td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
-            </table>';
-        } elseif ($variant === 'plh') {
-            // Determine Jabatan Text based on Jenis for Plh
-            $jabatanText = $signatory['jabatan'];
-            if ($jenis === 'kepala') {
-                $jabatanText = 'Kepala Badan Keuangan Daerah';
-            } elseif ($jenis === 'sekretaris') {
-                $jabatanText = 'Sekretaris';
-            }
-
-            // Plh. Layout
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;">Plh.</td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
-            </table>';
-        } elseif ($isSekretaris && $variant === 'normal') {
-            // a.n. Sekretaris Layout
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;">a.n.</td><td style="vertical-align: top; border: none; padding: 0;">Kepala Badan Keuangan Daerah<br>Sekretaris</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signatory['nama'] . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
-            </table>';
-        } else {
-            // Normal Layout (Left Aligned - was Center)
-            // User Request: If jenis is Kepala, ignore input string and force "Kepala Badan Keuangan Daerah"
-            $jabatanText = $signatory['jabatan'];
-            if ($jenis === 'kepala') {
-                $jabatanText = 'Kepala Badan Keuangan Daerah';
-            }
-            $signatory['full_signature_page1'] = '<table style="width: 100%; border: none; border-collapse: collapse;">
-                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
-                <tr><td style="vertical-align: top; border: none; padding: 0;"></td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
-                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
-                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $signatory['pangkat'] . '<br>NIP. ' . $signatory['nip'] . '</td></tr>
-            </table>';
-        }
+        $signatory['full_signature_page1'] = $this->generateSignatureHtml($variant, $jenis, $signatory['jabatan'], $signatory['nama'], $signatory['pangkat'], $signatory['nip'], $tgl);
 
         // 6. PPTK (Snapshot or Dynamic)
         $pptkSnapshot = $spd->pptk_snapshot ? json_decode($spd->pptk_snapshot, true) : null;
@@ -777,6 +597,55 @@ class SpdController extends Controller
     }
 
 
+
+    private function generateSignatureHtml($variant, $jenis, $jabatan, $nama, $pangkat, $nip, $tgl)
+    {
+        $isSekretaris = strtolower($jenis) === 'sekretaris';
+        $signerNamePage1 = $this->formatNameCustom($nama);
+
+        if ($isSekretaris) {
+            // All Sekretaris signatures (normal, plt, plh) have "a.n. Kepala Badan Keuangan Daerah"
+            // Left Column (Column 1): "a.n."
+            // Right Column (Column 2): "Kepala Badan Keuangan Daerah<br>[Plt. / Plh.] Sekretaris"
+            $prefix = '';
+            if ($variant === 'plt') {
+                $prefix = 'Plt. ';
+            } elseif ($variant === 'plh') {
+                $prefix = 'Plh. ';
+            }
+
+            return '<table style="width: 100%; border: none; border-collapse: collapse;">
+                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;">a.n.</td><td style="vertical-align: top; border: none; padding: 0;">Kepala Badan Keuangan Daerah<br>' . $prefix . 'Sekretaris</td></tr>
+                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $pangkat . '<br>NIP. ' . $nip . '</td></tr>
+            </table>';
+        } else {
+            // Kepala or Kabid (direct layout, no a.n.)
+            // If jenis is Kepala, we force the text "Kepala Badan Keuangan Daerah".
+            // If jenis is Kabid (or anything else), we use the database $jabatan.
+            $jabatanText = $jabatan;
+            if (strtolower($jenis) === 'kepala') {
+                $jabatanText = 'Kepala Badan Keuangan Daerah';
+            }
+
+            $prefix = '';
+            if ($variant === 'plt') {
+                $prefix = 'Plt.';
+            } elseif ($variant === 'plh') {
+                $prefix = 'Plh.';
+            }
+
+            return '<table style="width: 100%; border: none; border-collapse: collapse;">
+                <tr><td colspan="2" style="height: 20px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="border: none; padding: 0;">' . $tgl . '</td></tr>
+                <tr><td style="vertical-align: top; border: none; padding: 0;">' . $prefix . '</td><td style="vertical-align: top; border: none; padding: 0;">' . $jabatanText . '</td></tr>
+                <tr><td colspan="2" style="height: 70px; border: none;">&nbsp;</td></tr>
+                <tr><td style="width: 30px; border: none; padding: 0;">&nbsp;</td><td style="vertical-align: top; border: none; padding: 0;">' . $signerNamePage1 . '<br>' . $pangkat . '<br>NIP. ' . $nip . '</td></tr>
+            </table>';
+        }
+    }
 
     private function formatNameCustom($name)
     {

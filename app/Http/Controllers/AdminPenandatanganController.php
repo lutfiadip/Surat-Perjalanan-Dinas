@@ -42,7 +42,7 @@ class AdminPenandatanganController extends Controller
             'nip' => 'nullable|string',
             'pangkat' => 'nullable|string|max:50',
             'jabatan' => 'required|string|max:100',
-            'jenis' => 'required|in:kepala,pptk,bendahara,sekretaris,kasubbag', // Adjust based on known types
+            'jenis' => 'required|in:kepala,pptk,bendahara,sekretaris,kasubbag,kabid', // Adjust based on known types
             'variant_ttd' => 'in:normal,plt,plh',
         ]);
 
@@ -72,7 +72,7 @@ class AdminPenandatanganController extends Controller
             'nip' => 'nullable|string',
             'pangkat' => 'nullable|string|max:50',
             'jabatan' => 'required|string|max:100',
-            'jenis' => 'required|in:kepala,pptk,bendahara,sekretaris,kasubbag',
+            'jenis' => 'required|in:kepala,pptk,bendahara,sekretaris,kasubbag,kabid',
             'variant_ttd' => 'in:normal,plt,plh',
         ]);
 

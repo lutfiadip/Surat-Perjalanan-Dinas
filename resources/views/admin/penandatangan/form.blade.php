@@ -141,6 +141,16 @@
                         <!-- Jabatan -->
                         <div>
                             <label for="jabatan" class="block text-sm font-semibold text-slate-900 mb-2">Jabatan</label>
+                            <div id="kabid-warning" class="hidden mb-3 bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-xl flex items-start gap-3 shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5 flex-shrink-0 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                <div class="text-xs font-medium leading-relaxed">
+                                    PENTING: Harap menuliskan nama jabatan secara lengkap (contoh: <strong>Kepala Bidang Anggaran</strong>, bukan disingkat seperti <em>Kabid. Anggaran</em>) karena tulisan ini akan tercantum langsung pada surat tugas.
+                                </div>
+                            </div>
                             <input type="text" name="jabatan" id="jabatan"
                                 value="{{ old('jabatan', $penandatangan->jabatan ?? '') }}" required
                                 class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm placeholder-slate-400 py-3 px-4"
@@ -185,6 +195,7 @@
                                         {{ isset($hasActivePptk) && $hasActivePptk ? '- (Sudah ada PPTK yang aktif)' : '' }}
                                     </option>
                                     <option value="sekretaris" {{ (old('jenis', $penandatangan->jenis ?? '') == 'sekretaris') ? 'selected' : '' }}>Sekretaris</option>
+                                    <option value="kabid" {{ (old('jenis', $penandatangan->jenis ?? '') == 'kabid') ? 'selected' : '' }}>Kepala Bidang (Kabid)</option>
 
                                 </select>
                                 <div
@@ -248,6 +259,25 @@
         </div>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const jenisSelect = document.getElementById('jenis');
+            const warningEl = document.getElementById('kabid-warning');
+
+            if (jenisSelect && warningEl) {
+                function toggleWarning() {
+                    if (jenisSelect.value === 'kabid') {
+                        warningEl.classList.remove('hidden');
+                    } else {
+                        warningEl.classList.add('hidden');
+                    }
+                }
+
+                jenisSelect.addEventListener('change', toggleWarning);
+                toggleWarning(); // Run initially in case of edit or validation errors
+            }
+        });
+    </script>
 </body>
 
 </html>
