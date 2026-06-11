@@ -46,8 +46,9 @@
                         <button onclick="toggleUserMenu()"
                             class="flex items-center gap-2 text-sm font-semibold text-slate-900 border border-slate-200 rounded-full px-3 py-1 hover:bg-slate-50 transition focus:outline-none bg-white/50 backdrop-blur-sm">
                             Halo, <span class="text-[#1C6DD0]">{{ session('name') ?? ($user->name ?? 'User') }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" class="h-4 w-4 text-slate-500">
+                            <svg id="user-menu-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="2" stroke="currentColor"
+                                class="h-4 w-4 text-slate-500 transition-transform duration-200">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                             </svg>
                         </button>
@@ -112,9 +113,11 @@
                     <script>
                         function toggleUserMenu() {
                             const menu = document.getElementById('user-menu');
+                            const chevron = document.getElementById('user-menu-chevron');
                             if (menu.style.display === 'none' || menu.classList.contains('hidden')) {
                                 menu.classList.remove('hidden');
                                 menu.style.display = 'block';
+                                if (chevron) chevron.classList.add('rotate-180');
                                 setTimeout(() => {
                                     menu.classList.remove('opacity-0', 'scale-95');
                                     menu.classList.add('opacity-100', 'scale-100');
@@ -122,6 +125,7 @@
                             } else {
                                 menu.classList.remove('opacity-100', 'scale-100');
                                 menu.classList.add('opacity-0', 'scale-95');
+                                if (chevron) chevron.classList.remove('rotate-180');
                                 setTimeout(() => {
                                     menu.classList.add('hidden');
                                     menu.style.display = 'none';
@@ -131,9 +135,11 @@
                         document.addEventListener('click', function (event) {
                             const container = document.getElementById('user-menu-container');
                             const menu = document.getElementById('user-menu');
+                            const chevron = document.getElementById('user-menu-chevron');
                             if (!container.contains(event.target) && menu.style.display !== 'none') {
                                 menu.classList.remove('opacity-100', 'scale-100');
                                 menu.classList.add('opacity-0', 'scale-95');
+                                if (chevron) chevron.classList.remove('rotate-180');
                                 setTimeout(() => {
                                     menu.classList.add('hidden');
                                     menu.style.display = 'none';
@@ -207,10 +213,9 @@
                 });
             </script>
 
-            <form action="{{ route('spd.bulk_destroy') }}" method="POST" id="bulk-delete-form">
+            <!-- Form 1: Draft Bulk Actions (POST) -->
+            <form action="{{ route('spd.bulk_destroy') }}" method="POST" id="draft-bulk-form">
                 @csrf
-
-
 
                 <!-- Default Header -->
                 <div id="default-header" class="mb-6 flex justify-between items-end transition-all duration-300">
@@ -242,7 +247,6 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <!-- Actions -->
                         <button type="submit" id="draft-btn-delete-bulk" disabled
                             onclick="return confirm('Apakah Anda yakin ingin menghapus draft yang dipilih?')"
                             class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
@@ -261,11 +265,6 @@
                         </button>
                     </div>
                 </div>
-
-
-
-                <!-- Bulk Selection Toolbar (Hidden by default) -->
-                <!-- Removed Floating Toolbar -->
 
                 <div class="bg-white rounded-xl shadow border border-slate-200">
                     <table class="w-full text-left border-collapse" id="draft-table">
@@ -362,83 +361,175 @@
                         </tbody>
                     </table>
                 </div>
+            </form>
 
-                <!-- Divider -->
-                <div class="py-8">
-                    <div class="w-full border-t border-slate-200"></div>
-                </div>
+            <!-- Divider -->
+            <div class="py-8">
+                <div class="w-full border-t border-slate-200"></div>
+            </div>
 
-                <!-- FINAL SPD / ARSIP SECTION -->
-                <!-- FINAL SPD HEADER -->
-                <!-- FINAL SPD HEADER -->
-                <div id="final-header" class="mb-6 items-end transition-all duration-300">
-                    <h2 class="text-xl font-bold text-slate-900">SPD Final / Arsip</h2>
-                    <p class="text-slate-500 text-sm">Dokumen resmi yang siap dicetak atau diekspor.</p>
-                </div>
+            <!-- FINAL SPD / ARSIP SECTION -->
+            <!-- FINAL SPD HEADER -->
+            <div id="final-header" class="mb-6 items-end transition-all duration-300">
+                <h2 class="text-xl font-bold text-slate-900">SPD Final / Arsip</h2>
+                <p class="text-slate-500 text-sm">Dokumen resmi yang siap dicetak atau diekspor.</p>
+            </div>
 
-                <!-- Bulk Selection Toolbar for Final (Hidden by default) -->
-                <div id="final-bulk-toolbar"
-                    class="hidden mb-6 bg-[#FFF8F3] border border-[#1C6DD0]/20 rounded-xl p-4 flex items-center justify-between shadow-sm transition-all duration-300">
-                    <div class="flex items-center gap-4">
-                        <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
-                            <span id="final-selected-count">0</span> Dipilih
-                        </span>
-                        <div class="h-6 w-px bg-slate-300"></div>
-                        <div class="text-sm text-slate-600" id="final-selection-hint">
-                            Pilih dokumen untuk aksi massal
+            <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
+                <!-- Filter Form (GET) - Embedded inside card -->
+                <form action="{{ route('spd.draft') }}" method="GET"
+                    class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="w-full md:w-2/5 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            placeholder="Cari nomor surat, maksud, tempat, pegawai..."
+                            class="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg text-sm bg-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0]">
+                    </div>
+
+                    <div class="w-full md:w-3/5 flex flex-col sm:flex-row gap-3 items-center justify-end">
+                        <div class="w-full sm:w-44 relative group">
+                            <select name="bulan"
+                                class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer">
+                                <option value="">Semua Bulan</option>
+                                @php
+                                    $months = [
+                                        '01' => 'Januari',
+                                        '02' => 'Februari',
+                                        '03' => 'Maret',
+                                        '04' => 'April',
+                                        '05' => 'Mei',
+                                        '06' => 'Juni',
+                                        '07' => 'Juli',
+                                        '08' => 'Agustus',
+                                        '09' => 'September',
+                                        '10' => 'Oktober',
+                                        '11' => 'November',
+                                        '12' => 'Desember'
+                                    ];
+                                @endphp
+                                @foreach($months as $num => $name)
+                                    <option value="{{ $num }}" {{ request('bulan') == $num ? 'selected' : '' }}>{{ $name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 group-focus-within:rotate-180"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="w-full sm:w-36 relative group">
+                            <select name="tahun"
+                                class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer">
+                                <option value="">Semua Tahun</option>
+                                @foreach($years as $y)
+                                    <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                @endforeach
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 group-focus-within:rotate-180"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="w-full sm:w-auto flex gap-2 justify-end">
+                            <button type="submit"
+                                class="px-4 py-2 bg-[#1C6DD0] hover:bg-[#1653a1] text-white text-sm font-medium rounded-lg transition shadow-sm hover:shadow">
+                                Filter
+                            </button>
+                            @if(request('search') || request('bulan') || request('tahun'))
+                                <a href="{{ route('spd.draft') }}"
+                                    class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition border border-slate-200">
+                                    Reset
+                                </a>
+                            @endif
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <!-- Actions -->
-                        <!-- Print Bulk -->
-                        <button type="submit" id="final-btn-print-bulk" disabled
-                            formaction="{{ route('spd.bulk_print') }}" formtarget="_blank"
-                            class="flex items-center gap-2 px-3 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
-                                </path>
-                                <rect x="6" y="14" width="12" height="8"></rect>
-                            </svg>
-                            Cetak
-                        </button>
-                        <!-- Word Bulk -->
-                        <button type="button" id="final-btn-word-bulk" disabled onclick="downloadSelectedWord()"
-                            class="flex items-center gap-2 px-3 py-2 bg-white text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <path d="M16 13H8"></path>
-                                <path d="M16 17H8"></path>
-                                <path d="M10 9H8"></path>
-                            </svg>
-                            Word
-                        </button>
+                </form>
 
-                        <button type="submit" id="final-btn-delete-bulk" disabled
-                            onclick="return confirm('Apakah Anda yakin ingin menghapus dokumen yang dipilih?')"
-                            class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path
-                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                </path>
-                            </svg>
-                            Hapus
-                        </button>
-                        <button type="button" onclick="cancelSelectMode('final')"
-                            class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-sm font-medium">
-                            Batal
-                        </button>
+                <!-- Form 2: Final Bulk Form (POST) -->
+                <form action="{{ route('spd.bulk_destroy') }}" method="POST" id="final-bulk-form">
+                    @csrf
+
+                    <!-- Bulk Selection Toolbar for Final (Hidden by default) -->
+                    <div id="final-bulk-toolbar"
+                        class="hidden mb-6 bg-[#FFF8F3] border-b border-[#1C6DD0]/20 p-4 flex items-center justify-between shadow-sm transition-all duration-300">
+                        <div class="flex items-center gap-4">
+                            <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-sm">
+                                <span id="final-selected-count">0</span> Dipilih
+                            </span>
+                            <div class="h-6 w-px bg-slate-300"></div>
+                            <div class="text-sm text-slate-600" id="final-selection-hint">
+                                Pilih dokumen untuk aksi massal
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <!-- Actions -->
+                            <!-- Print Bulk -->
+                            <button type="submit" id="final-btn-print-bulk" disabled
+                                formaction="{{ route('spd.bulk_print') }}" formtarget="_blank"
+                                class="flex items-center gap-2 px-3 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                    <path
+                                        d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                                    </path>
+                                    <rect x="6" y="14" width="12" height="8"></rect>
+                                </svg>
+                                Cetak
+                            </button>
+                            <!-- Word Bulk -->
+                            <button type="button" id="final-btn-word-bulk" disabled onclick="downloadSelectedWord()"
+                                class="flex items-center gap-2 px-3 py-2 bg-white text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z">
+                                    </path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <path d="M16 13H8"></path>
+                                    <path d="M16 17H8"></path>
+                                    <path d="M10 9H8"></path>
+                                </svg>
+                                Word
+                            </button>
+
+                            <button type="submit" id="final-btn-delete-bulk" disabled
+                                onclick="return confirm('Apakah Anda yakin ingin menghapus dokumen yang dipilih?')"
+                                class="flex items-center gap-2 px-3 py-2 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path
+                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                    </path>
+                                </svg>
+                                Hapus
+                            </button>
+                            <button type="button" onclick="cancelSelectMode('final')"
+                                class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition text-sm font-medium">
+                                Batal
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-
-
-                <div class="bg-white rounded-xl shadow border border-slate-200">
                     <table class="w-full text-left border-collapse" id="final-table">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
@@ -547,7 +638,8 @@
                                     </td>
                                 </tr>
                                 <!-- Expandable Detail Row -->
-                                <tr id="detail-{{ $final->id }}" class="hidden bg-slate-50/50 border-t border-b border-slate-200">
+                                <tr id="detail-{{ $final->id }}"
+                                    class="hidden bg-slate-50/50 border-t border-b border-slate-200">
                                     <td colspan="{{ session('role') === 'admin' ? 7 : 6 }}" class="p-4">
                                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
                                             <!-- Pegawai Ditugaskan -->
@@ -586,7 +678,8 @@
                                                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tempat
                                                     Tujuan</h4>
                                                 <p class="text-sm text-slate-700 whitespace-pre-line">
-                                                    {{ trim($final->tempat ?? '-') }}</p>
+                                                    {{ trim($final->tempat ?? '-') }}
+                                                </p>
                                             </div>
 
                                             <!-- Tanggal Pelaksanaan -->
@@ -634,7 +727,8 @@
                             @endforelse
                         </tbody>
                     </table>
-                </div>
+                </form>
+            </div>
 
         </div>
 
@@ -679,9 +773,7 @@
                 const checkboxes = document.querySelectorAll('.' + type + '-checkbox');
                 const triggers = document.querySelectorAll('[id$="-select-trigger-menu"]'); // Common triggers
 
-                // If forceOn is true, we want to ensure we enter mode
                 if (forceOn) {
-                    // Enter Select Mode
                     if (header) header.classList.add('hidden');
                     if (toolbar) toolbar.classList.remove('hidden');
 
@@ -689,11 +781,9 @@
                         el.classList.remove('hidden');
                     });
 
-                    // Hide ALL triggers to avoid clutter/confusion
                     triggers.forEach(el => el.classList.add('hidden'));
 
                 } else {
-                    // Exit Select Mode
                     if (header) header.classList.remove('hidden');
                     if (toolbar) toolbar.classList.add('hidden');
 
@@ -701,14 +791,10 @@
                         el.classList.add('hidden');
                     });
 
-                    // Show triggers again
                     triggers.forEach(el => el.classList.remove('hidden'));
 
                     // Untick all in this group
                     checkboxes.forEach(cb => cb.checked = false);
-
-                    // Uncheck select all header logic if needed (simple way)
-                    // document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false); // Global reset might be too aggressive if both active? But only one active at a time usually.
 
                     updateSelectionState(type);
                 }
@@ -768,11 +854,6 @@
                     return;
                 }
 
-                // Show instruction if more than 1
-                if (checkedBoxes.length > 1) {
-                    // alert('Browser Anda mungkin akan meminta izin untuk mendownload beberapa file. Silakan klik "Allow" jika muncul.');
-                }
-
                 let delay = 0;
                 checkedBoxes.forEach((cb, index) => {
                     const id = cb.value;
@@ -813,7 +894,6 @@
                 }
             }
         </script>
-        </form>
 
         <footer class="mt-auto py-6 text-center text-sm text-slate-500 relative z-50">
             &copy; 2026 Badan Keuangan Daerah. All rights reserved.

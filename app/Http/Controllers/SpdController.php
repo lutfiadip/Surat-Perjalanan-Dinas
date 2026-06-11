@@ -194,12 +194,13 @@ class SpdController extends Controller
         return redirect()->route('spd.draft')->with('success', $message);
     }
 
-    public function draft()
+    public function draft(Request $request)
     {
         $userId = session('user_id');
 
         // DRAFTS
         $draftsQuery = Spd::where('status', 'draft')->orderBy('id', 'desc')->with('creator');
+        
         // FINALS (Arsip)
         $finalsQuery = Spd::where('status', 'final')->orderBy('id', 'desc')->with(['creator', 'pegawais']);
 
@@ -208,10 +209,33 @@ class SpdController extends Controller
             $finalsQuery->where('created_by', $userId);
         }
 
+        // Apply filters only to final SPD list
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $finalsQuery->where(function ($q) use ($search) {
+                $q->where('nomor_surat', 'like', "%{$search}%")
+                  ->orWhere('maksud', 'like', "%{$search}%")
+                  ->orWhere('tempat', 'like', "%{$search}%")
+                  ->orWhereHas('pegawais', function ($qPeg) use ($search) {
+                      $qPeg->where('nama', 'like', "%{$search}%")
+                           ->orWhere('nip', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->filled('bulan')) {
+            $finalsQuery->whereMonth('tanggal_surat', $request->input('bulan'));
+        }
+
+        if ($request->filled('tahun')) {
+            $finalsQuery->whereYear('tanggal_surat', $request->input('tahun'));
+        }
+
         $drafts = $draftsQuery->get();
         $finals = $finalsQuery->get();
+        $years = range(date('Y') + 1, 2024);
 
-        return view('spd.draft', compact('drafts', 'finals'));
+        return view('spd.draft', compact('drafts', 'finals', 'years'));
     }
 
     public function print(Request $request)
