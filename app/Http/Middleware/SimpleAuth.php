@@ -31,6 +31,8 @@ class SimpleAuth
             if ($user && $user->status !== 'nonaktif') {
                 // Restore session
                 Session::put('user_id', $user->id);
+                Session::put('role', $user->role);
+                Session::put('name', $user->name);
                 return $next($request);
             }
         }
