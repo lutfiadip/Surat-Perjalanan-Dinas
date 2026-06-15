@@ -12,7 +12,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        DB::statement("ALTER TABLE penandatangan ADD COLUMN variant_ttd ENUM('normal', 'plt', 'plh') NOT NULL DEFAULT 'normal' AFTER jenis");
+        if (!Schema::hasColumn('penandatangan', 'variant_ttd')) {
+            DB::statement("ALTER TABLE penandatangan ADD COLUMN variant_ttd ENUM('normal', 'plt', 'plh') NOT NULL DEFAULT 'normal' AFTER jenis");
+        }
     }
 
     /**

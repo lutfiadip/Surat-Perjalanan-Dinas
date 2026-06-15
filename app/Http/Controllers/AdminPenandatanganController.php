@@ -31,7 +31,7 @@ class AdminPenandatanganController extends Controller
 
     public function create()
     {
-        $hasActivePptk = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->exists();
+        $hasActivePptk = false;
         return view('admin.penandatangan.form', compact('hasActivePptk'));
     }
 
@@ -46,12 +46,7 @@ class AdminPenandatanganController extends Controller
             'variant_ttd' => 'in:normal,plt,plh',
         ]);
 
-        if ($request->jenis === 'pptk') {
-            $existingPptk = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->exists();
-            if ($existingPptk) {
-                return redirect()->back()->withInput()->with('error', 'Penandatangan jenis PPTK sudah ada dan masih aktif. Silakan nonaktifkan atau hapus pengguna PPTK yang lama agar bisa digantikan yang baru.');
-            }
-        }
+        // PPTK restrictions removed
 
         Penandatangan::create($request->all() + ['status_aktif' => 1]);
 
@@ -61,7 +56,7 @@ class AdminPenandatanganController extends Controller
     public function edit($id)
     {
         $penandatangan = Penandatangan::findOrFail($id);
-        $hasActivePptk = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->where('id', '!=', $id)->exists();
+        $hasActivePptk = false;
         return view('admin.penandatangan.form', compact('penandatangan', 'hasActivePptk'));
     }
 
@@ -76,12 +71,7 @@ class AdminPenandatanganController extends Controller
             'variant_ttd' => 'in:normal,plt,plh',
         ]);
 
-        if ($request->jenis === 'pptk') {
-            $existingPptk = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->where('id', '!=', $id)->exists();
-            if ($existingPptk) {
-                return redirect()->back()->withInput()->with('error', 'Penandatangan jenis PPTK sudah ada dan masih aktif. Silakan nonaktifkan atau hapus pengguna PPTK yang lama agar bisa digantikan yang baru.');
-            }
-        }
+        // PPTK restrictions removed
 
         $penandatangan = Penandatangan::findOrFail($id);
         $penandatangan->update($request->all());
@@ -93,12 +83,7 @@ class AdminPenandatanganController extends Controller
     {
         $penandatangan = Penandatangan::findOrFail($id);
 
-        if (!$penandatangan->status_aktif && $penandatangan->jenis === 'pptk') {
-            $existingPptk = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->exists();
-            if ($existingPptk) {
-                return redirect()->back()->with('error', 'Tidak dapat mengaktifkan PPTK ini karena sudah ada PPTK lain yang aktif. Silakan nonaktifkan pengguna PPTK yang lama agar bisa digantikan yang baru.');
-            }
-        }
+        // PPTK restrictions removed
 
         $penandatangan->status_aktif = !$penandatangan->status_aktif;
         $penandatangan->save();

@@ -436,7 +436,7 @@
                     <tr>
                         <td></td>
                         <td colspan="3" style="padding-left: 10px; vertical-align: top;">
-                            <div>Kepala Sub Bagian Umum,</div>
+                            <div>{{ $pptk['jabatan'] ?? 'Kepala Sub Bagian Umum' }},</div>
                             <div>Selaku Pejabat Pelaksana Teknis Kegiatan</div>
                             <div>Sekretariat</div>
                             <br><br><br>

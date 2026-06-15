@@ -15,6 +15,8 @@ class SpdController extends Controller
         $pegawais = PegawaiBkdSpd::where('status_aktif', true)->orderBy('nama', 'asc')->get();
         // Fetch active signatories from database (Kepala, Sekretaris & Kabid)
         $signatories = Penandatangan::whereIn('jenis', ['kepala', 'sekretaris', 'kabid'])->where('status_aktif', 1)->get();
+        // Fetch active PPTK signatories
+        $pptks = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->get();
 
         $draft = null;
         $pegawaiUtama = null;
@@ -46,7 +48,7 @@ class SpdController extends Controller
             'jabatan' => $pptkModel ? $pptkModel->jabatan : 'Kepala Sub Bagian Umum',
         ];
 
-        return view('spd.form', compact('pegawais', 'signatories', 'draft', 'pegawaiUtama', 'pengikuts', 'pptk'));
+        return view('spd.form', compact('pegawais', 'signatories', 'pptks', 'draft', 'pegawaiUtama', 'pengikuts', 'pptk'));
     }
 
     public function edit($id)
@@ -57,6 +59,8 @@ class SpdController extends Controller
         // 2. Definisi signatories (sama seperti create)
         // Fetch active signatories from database (Kepala, Sekretaris & Kabid)
         $signatories = Penandatangan::whereIn('jenis', ['kepala', 'sekretaris', 'kabid'])->where('status_aktif', 1)->get();
+        // Fetch active PPTK signatories
+        $pptks = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->get();
 
         // 3. Ambil Draft SPD berdasarkan ID & Session User
         // Admin access all, User only own
@@ -73,7 +77,7 @@ class SpdController extends Controller
         $pengikuts = $draft->pegawais->where('pivot.peran', 'pengikut')->values();
 
         // Fetch PPTK for preview
-        $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
+        $pptkModel = $draft->pptk ?? Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
         $pptk = [
             'nama' => $pptkModel ? $pptkModel->nama : '.......................',
             'nip' => $pptkModel ? $pptkModel->nip : '.......................',
@@ -81,7 +85,7 @@ class SpdController extends Controller
         ];
 
         // 5. Return view yang sama (form.blade.php sudah support edit mode)
-        return view('spd.form', compact('pegawais', 'signatories', 'draft', 'pegawaiUtama', 'pengikuts', 'pptk'));
+        return view('spd.form', compact('pegawais', 'signatories', 'pptks', 'draft', 'pegawaiUtama', 'pengikuts', 'pptk'));
     }
 
     public function store(Request $request)
@@ -90,10 +94,10 @@ class SpdController extends Controller
         $userId = session('user_id');
 
         // Common Data
-        // Common Data
-        $data = $request->except('_token', 'pegawai_ids', 'pegawai_utama', 'pengikut', 'action', 'penandatangan');
+        $data = $request->except('_token', 'pegawai_ids', 'pegawai_utama', 'pengikut', 'action', 'penandatangan', 'pptk_id');
         $data['created_by'] = $userId;
         $data['penandatangan_id'] = $request->input('penandatangan');
+        $data['pptk_id'] = $request->input('pptk_id');
 
         // Validation Rules
         if ($action === 'final') {
@@ -106,6 +110,8 @@ class SpdController extends Controller
                 'tempat_berangkat' => 'required',
                 'tempat' => 'required', // Tempat Tujuan
                 'anggaran_skpd' => 'required',
+                'penandatangan' => 'required|exists:penandatangan,id',
+                'pptk_id' => 'required|exists:penandatangan,id',
             ]);
             $data['status'] = 'final';
 
@@ -130,13 +136,16 @@ class SpdController extends Controller
             }
 
             // 2. PPTK Snapshot
-            $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
-            if ($pptkModel) {
-                $data['pptk_snapshot'] = json_encode([
-                    'nama' => $pptkModel->nama,
-                    'nip' => $pptkModel->nip,
-                    'jabatan' => $pptkModel->jabatan,
-                ]);
+            $pptkId = $request->input('pptk_id');
+            if ($pptkId) {
+                $pptkModel = Penandatangan::find($pptkId);
+                if ($pptkModel) {
+                    $data['pptk_snapshot'] = json_encode([
+                        'nama' => $pptkModel->nama,
+                        'nip' => $pptkModel->nip,
+                        'jabatan' => $pptkModel->jabatan,
+                    ]);
+                }
             }
 
         } else {
@@ -326,8 +335,12 @@ class SpdController extends Controller
 
         // PPTK / Pejabat Pelaksana Teknis Kegiatan (Usually Kasubbag Umum as per template)
         // For dynamic signature in SPD Part I ("Berangkat dari...")
-        // PPTK (Dynamic from DB)
-        $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
+        // PPTK / Pejabat Pelaksana Teknis Kegiatan
+        $pptkId = $request->input('pptk_id');
+        $pptkModel = Penandatangan::find($pptkId);
+        if (!$pptkModel) {
+            $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
+        }
         $pptk = [
             'nama' => $pptkModel ? $pptkModel->nama : '.......................', // Fallback if missing
             'nip' => $pptkModel ? $pptkModel->nip : '.......................',
@@ -416,8 +429,12 @@ class SpdController extends Controller
 
         $signatory['full_signature_page1'] = $this->generateSignatureHtml($variant, $jenis, $signer->jabatan, $signer->nama, $signer->pangkat, $signer->nip, $tgl);
 
-        // PPTK (Dynamic from DB)
-        $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
+        // PPTK / Pejabat Pelaksana Teknis Kegiatan
+        $pptkId = $request->input('pptk_id');
+        $pptkModel = Penandatangan::find($pptkId);
+        if (!$pptkModel) {
+            $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
+        }
         $pptk = [
             'nama' => $pptkModel ? $pptkModel->nama : '.......................', // Fallback if missing
             'nip' => $pptkModel ? $pptkModel->nip : '.......................',
@@ -558,7 +575,7 @@ class SpdController extends Controller
                 'jabatan' => $pptkSnapshot['jabatan'],
             ];
         } else {
-            $pptkModel = Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
+            $pptkModel = $spd->pptk ?? Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
             $pptk = [
                 'nama' => $pptkModel ? $pptkModel->nama : '.......................',
                 'nip' => $pptkModel ? $pptkModel->nip : '.......................',

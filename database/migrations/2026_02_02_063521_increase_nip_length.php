@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('pegawai_bkd_spd', function (Blueprint $table) {
+        Schema::table('pegawaibkd_spd', function (Blueprint $table) {
             $table->string('nip', 255)->nullable()->change();
         });
 
@@ -24,7 +24,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('pegawai_bkd_spd', function (Blueprint $table) {
+        Schema::table('pegawaibkd_spd', function (Blueprint $table) {
             $table->string('nip', 20)->nullable()->change();
         });
 

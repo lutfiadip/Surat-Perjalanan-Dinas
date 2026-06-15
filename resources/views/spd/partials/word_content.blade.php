@@ -59,7 +59,7 @@ if (file_exists($path)) {
                 <div class="center" style="margin-bottom: 0px;">Kepala Badan Keuangan Daerah</div>
 
                 <!-- BERDASARKAN -->
-                <table style="margin-bottom: 30px;">
+                <table style="width: 100%; margin-bottom: 30px;">
                     <tr>
                         <td style="width: 100px; vertical-align: top;">Berdasarkan</td>
                         <td style="width: 20px; text-align: center; vertical-align: top;">:</td>
@@ -72,7 +72,7 @@ if (file_exists($path)) {
                 <div class="center" style="margin: 15px 0 25px 0;">memberikan perintah</div>
 
                 <!-- KEPADA -->
-                <table style="margin-bottom: 0px;">
+                <table style="width: 100%; margin-bottom: 0px;">
                     <tr>
                         <td style="width: 60px;">Kepada</td>
                         <td style="width: 20px; text-align: center;">:</td>
@@ -118,7 +118,7 @@ if (file_exists($path)) {
 
                 <!-- UNTUK -->
                 <!-- UNTUK -->
-                <table style="margin-bottom: 10px;">
+                <table style="width: 100%; margin-bottom: 10px;">
                     <tr>
                         <td style="width: 60px;">Untuk</td>
                         <td style="width: 20px; text-align: center;">:</td>
@@ -660,7 +660,7 @@ if (file_exists($path)) {
                         <td></td>
                         <td colspan="3"
                             style="padding: 0px 0px 0px 10px; margin: 0px; text-align: left; vertical-align: top; mso-padding-alt: 0pt 0pt 0pt 10pt; text-indent: 0px;">
-                            Kepala Sub Bagian Umum,<br>Selaku Pejabat Pelaksana Teknis
+                            {{ $pptk['jabatan'] ?? 'Kepala Sub Bagian Umum' }},<br>Selaku Pejabat Pelaksana Teknis
                             Kegiatan<br>Sekretariat<br><br><br><br><span
                                 style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">({{ $pptk['nama'] }})</span><br>NIP.
                             {{ $pptk['nip'] }}

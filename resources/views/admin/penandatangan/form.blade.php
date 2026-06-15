@@ -165,35 +165,13 @@
                             <label for="jenis" class="block text-sm font-semibold text-slate-900 mb-2">Jenis
                                 Penandatangan</label>
 
-                            @if(isset($hasActivePptk) && $hasActivePptk)
-                                <div class="mb-3 bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-xl flex items-start gap-3"
-                                    role="alert">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5 flex-shrink-0"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                    </svg>
-                                    <div>
-                                        <p class="text-xs font-medium leading-relaxed">
-                                            Penandatangan jenis PPTK sudah ada dan masih aktif. Silakan
-                                            <strong>nonaktifkan</strong> atau <strong>hapus</strong> penandatangan PPTK yang
-                                            lama agar bisa digantikan yang baru.
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
-
                             <div class="relative">
                                 <select name="jenis" id="jenis" required
                                     class="w-full rounded-xl border-slate-200 focus:border-[#1C6DD0] focus:ring-[#1C6DD0] shadow-sm text-sm py-3 px-4 appearance-none">
                                     <option value="" disabled {{ !isset($penandatangan) ? 'selected' : '' }}>Pilih
                                         jenis...</option>
                                     <option value="kepala" {{ (old('jenis', $penandatangan->jenis ?? '') == 'kepala') ? 'selected' : '' }}>Kepala (Tanda Tangan Utama)</option>
-                                    <option value="pptk" {{ (old('jenis', $penandatangan->jenis ?? '') == 'pptk') ? 'selected' : '' }} {{ isset($hasActivePptk) && $hasActivePptk ? 'disabled' : '' }}>PPTK (Pejabat Pelaksana Teknis Kegiatan)
-                                        {{ isset($hasActivePptk) && $hasActivePptk ? '- (Sudah ada PPTK yang aktif)' : '' }}
-                                    </option>
+                                    <option value="pptk" {{ (old('jenis', $penandatangan->jenis ?? '') == 'pptk') ? 'selected' : '' }}>PPTK (Pejabat Pelaksana Teknis Kegiatan)</option>
                                     <option value="sekretaris" {{ (old('jenis', $penandatangan->jenis ?? '') == 'sekretaris') ? 'selected' : '' }}>Sekretaris</option>
                                     <option value="kabid" {{ (old('jenis', $penandatangan->jenis ?? '') == 'kabid') ? 'selected' : '' }}>Kepala Bidang (Kabid)</option>
 

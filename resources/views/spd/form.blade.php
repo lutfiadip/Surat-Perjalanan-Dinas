@@ -546,8 +546,34 @@
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
                     <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4">8. Pengesahan Surat</h3>
                     
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label>Pilih PPTK</label>
+                        <div style="position: relative;">
+                            <select name="pptk_id" class="form-control" required
+                                style="width: 100%; padding: 0.75rem; padding-right: 2.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem; appearance: none; background-color: transparent; position: relative; z-index: 10;"
+                                onfocus="this.nextElementSibling.style.transform='translateY(-50%) rotate(180deg)'" 
+                                onblur="this.nextElementSibling.style.transform='translateY(-50%) rotate(0deg)'"
+                                onchange="this.nextElementSibling.style.transform='translateY(-50%) rotate(0deg)'; this.blur();">
+                                <option value="" disabled {{ !isset($draft) || empty($draft->pptk_id) ? 'selected' : '' }}>-- Pilih PPTK --</option>
+                                @foreach($pptks as $pptkSigner)
+                                    <option value="{{ $pptkSigner->id }}" 
+                                        data-nama="{{ $pptkSigner->nama }}"
+                                        data-nip="{{ $pptkSigner->nip }}"
+                                        data-jabatan="{{ $pptkSigner->jabatan }}"
+                                        {{ (isset($draft) && $draft->pptk_id == $pptkSigner->id) ? 'selected' : '' }}>
+                                        {{ $pptkSigner->jabatan }} - {{ $pptkSigner->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="#888" stroke="none" 
+                                style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); transition: transform 0.2s ease; pointer-events: none; z-index: 1;">
+                                <polygon points="4,8 20,8 12,17"></polygon>
+                            </svg>
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label>Penandatangan Surat</label>
+                        <label>Penandatangan Surat (SPT)</label>
                         <div style="position: relative;">
                             <select name="penandatangan" class="form-control" required
                                 style="width: 100%; padding: 0.75rem; padding-right: 2.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem; appearance: none; background-color: transparent; position: relative; z-index: 10;"
@@ -611,6 +637,7 @@
 
     <script>
         const signatories = @json($signatories);
+        const pptks = @json($pptks ?? []);
         const existingPengikuts = @json($pengikuts ?? []);
 
         $(document).ready(function () {
@@ -704,6 +731,15 @@
                 jabatan: selectedSigner.data('jabatan') || '',
                 variant: selectedSigner.data('variant') || 'normal',
                 jenis: selectedSigner.data('jenis') || ''
+            };
+
+            // Get PPTK Data from Selected Option
+            const pptkSelect = $('[name="pptk_id"]');
+            const selectedPptk = pptkSelect.find('option:selected');
+            const pptk = {
+                nama: selectedPptk.data('nama') || '.......................',
+                nip: selectedPptk.data('nip') || '.......................',
+                jabatan: selectedPptk.data('jabatan') || 'Kepala Sub Bagian Umum',
             };
             
             // Allow Title Case logic if needed, but for now use raw name from DB
@@ -868,6 +904,11 @@
             // Signatory Page 3
             $('#preview-visum-sign-nama').text(kepalaSigner.nama);
             $('#preview-visum-sign-nip').text(kepalaSigner.nip);
+
+            // PPTK Page 3
+            $('#preview-visum-pptk-nama').text(pptk.nama);
+            $('#preview-visum-pptk-nip').text(pptk.nip);
+            $('#preview-visum-pptk-jabatan').text(pptk.jabatan);
 
 
             // Update Pegawai Lists (Both Page 1 & 2)
