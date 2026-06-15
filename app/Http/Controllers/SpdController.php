@@ -334,7 +334,19 @@ class SpdController extends Controller
             'jabatan' => $pptkModel ? $pptkModel->jabatan : 'Kepala Sub Bagian Umum',
         ];
 
-        return view('spd.print', compact('selectedPegawais', 'data', 'signatory', 'pptk'));
+        // Fetch active Kepala for Pengguna Anggaran (PA) on SPD Page 2 and 3
+        $kepalaModel = Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->first()
+            ?? Penandatangan::where('jenis', 'kepala')->first();
+
+        $pa = [
+            'nama' => $kepalaModel ? $kepalaModel->nama : '.......................',
+            'nip' => $kepalaModel ? $kepalaModel->nip : '.......................',
+            'pangkat' => $kepalaModel ? $kepalaModel->pangkat : '.......................',
+            'jabatan' => $kepalaModel ? $kepalaModel->jabatan : 'Kepala Badan Keuangan Daerah',
+            'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
+        ];
+
+        return view('spd.print', compact('selectedPegawais', 'data', 'signatory', 'pptk', 'pa'));
     }
 
     public function exportWord(Request $request)
@@ -412,8 +424,20 @@ class SpdController extends Controller
             'jabatan' => $pptkModel ? $pptkModel->jabatan : 'Kepala Sub Bagian Umum',
         ];
 
+        // Fetch active Kepala for Pengguna Anggaran (PA) on SPD Page 2 and 3
+        $kepalaModel = Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->first()
+            ?? Penandatangan::where('jenis', 'kepala')->first();
+
+        $pa = [
+            'nama' => $kepalaModel ? $kepalaModel->nama : '.......................',
+            'nip' => $kepalaModel ? $kepalaModel->nip : '.......................',
+            'pangkat' => $kepalaModel ? $kepalaModel->pangkat : '.......................',
+            'jabatan' => $kepalaModel ? $kepalaModel->jabatan : 'Kepala Badan Keuangan Daerah',
+            'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
+        ];
+
         return response()
-            ->view('spd.word', compact('selectedPegawais', 'data', 'signatory', 'pptk'))
+            ->view('spd.word', compact('selectedPegawais', 'data', 'signatory', 'pptk', 'pa'))
             ->header('Content-Type', 'application/vnd.ms-word')
             ->header('Content-Disposition', 'attachment; filename="SPT_SPD.doc"')
             ->header('Pragma', 'no-cache')
@@ -542,7 +566,19 @@ class SpdController extends Controller
             ];
         }
 
-        return compact('selectedPegawais', 'data', 'signatory', 'pptk');
+        // Fetch active Kepala for Pengguna Anggaran (PA) on SPD Page 2 and 3
+        $kepalaModel = Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->first()
+            ?? Penandatangan::where('jenis', 'kepala')->first();
+
+        $pa = [
+            'nama' => $kepalaModel ? $kepalaModel->nama : '.......................',
+            'nip' => $kepalaModel ? $kepalaModel->nip : '.......................',
+            'pangkat' => $kepalaModel ? $kepalaModel->pangkat : '.......................',
+            'jabatan' => $kepalaModel ? $kepalaModel->jabatan : 'Kepala Badan Keuangan Daerah',
+            'jabatan_head_page3' => 'Kepala Badan Keuangan Daerah',
+        ];
+
+        return compact('selectedPegawais', 'data', 'signatory', 'pptk', 'pa');
     }
 
     public function destroy($id)

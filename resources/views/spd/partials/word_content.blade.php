@@ -266,7 +266,7 @@ if (file_exists($path)) {
                             / Kuasa
                             Pengguna Anggaran</td>
                         <td class="border" style="padding: 5px; vertical-align: top; width: 56%;">
-                            {{ $signatory['nama'] }}
+                            {{ $pa['nama'] }}
                         </td>
                     </tr>
                     <tr>
@@ -594,8 +594,8 @@ if (file_exists($path)) {
                             <div>Tanggal {{ $data['tanggal_surat'] }}</div>
                             <div>Pengguna Anggaran / Kuasa Pengguna Anggaran,</div>
                             <br><br><br><br>
-                            <div>({{ $signatory['nama'] }})</div>
-                            <div>NIP. {{ $signatory['nip'] }}</div>
+                            <div>({{ $pa['nama'] }})</div>
+                            <div>NIP. {{ $pa['nip'] }}</div>
                         </td>
                     </tr>
                 </table>
@@ -719,12 +719,12 @@ if (file_exists($path)) {
         <tr>
             <td class="border" style="vertical-align: top;"></td>
             <td class="border" style="padding: 2px 2px 2px 5px; vertical-align: top;">
-                <div>{!! $signatory['jabatan_head_page3'] !!}</div>
+                <div>{!! $pa['jabatan_head_page3'] !!}</div>
                 <br><br><br>
                 <div style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">
-                    ({{ $signatory['nama'] }})
+                    ({{ $pa['nama'] }})
                 </div>
-                <div>NIP. {{ $signatory['nip'] }}</div>
+                <div>NIP. {{ $pa['nip'] }}</div>
             </td>
         </tr>
 

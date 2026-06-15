@@ -176,7 +176,7 @@
                     Anggaran /
                     Kuasa Pengguna Anggaran</td>
                 <td style="vertical-align: top; border: 1px solid black; padding: 5px; width: 60%;">
-                    {{ $signatory['nama'] }}
+                    {{ $pa['nama'] }}
                 </td>
             </tr>
             <tr>
@@ -383,8 +383,8 @@
                 Tanggal {{ $data['tanggal_surat'] }}<br>
                 Pengguna Anggaran / Kuasa Pengguna Anggaran,
             </div>
-            <div>({{ $signatory['nama'] }})</div>
-            <div>NIP. {{ $signatory['nip'] }}</div>
+            <div>({{ $pa['nama'] }})</div>
+            <div>NIP. {{ $pa['nip'] }}</div>
         </div>
     </div>
 </div>
@@ -509,12 +509,12 @@
             <td style="border: 1px solid black; vertical-align: top;"></td>
             <td style="border: 1px solid black; vertical-align: top; padding: 2px 2px 2px 5px; height: 88px;">
                 <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>{!! $signatory['jabatan_head_page3'] !!}</div>
+                    <div>{!! $pa['jabatan_head_page3'] !!}</div>
                     <div>
                         <div style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">
-                            ({{ $signatory['nama'] }})
+                            ({{ $pa['nama'] }})
                         </div>
-                        <div>NIP. {{ $signatory['nip'] }}</div>
+                        <div>NIP. {{ $pa['nip'] }}</div>
                     </div>
                 </div>
             </td>

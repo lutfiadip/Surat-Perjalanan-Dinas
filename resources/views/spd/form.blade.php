@@ -853,10 +853,11 @@
 
             $('#preview-spd-tgl-surat').text(tglSurat);
 
-            // Signatory Page 2
-            $('#preview-spd-sign-nama').text(signer.nama); // Pengguna Anggaran
-            $('#preview-spd-sign-nama-2').text(signer.nama); // Bottom signature
-            $('#preview-spd-sign-nip-2').text(signer.nip);
+            // Signatory Page 2 (PA remains Kepala Badan Keuangan Daerah)
+            const kepalaSigner = signatories.find(s => s.jenis && s.jenis.toLowerCase() === 'kepala') || signer;
+            $('#preview-spd-sign-nama').text(kepalaSigner.nama); // Pengguna Anggaran
+            $('#preview-spd-sign-nama-2').text(kepalaSigner.nama); // Bottom signature
+            $('#preview-spd-sign-nip-2').text(kepalaSigner.nip);
 
             // --- PAGE 3: VISUM ---
             $('#preview-visum-berangkat').text(berangkat);
@@ -865,8 +866,8 @@
             $('#preview-visum-tgl-kembali').text(tglKembali);
 
             // Signatory Page 3
-            $('#preview-visum-sign-nama').text(signer.nama);
-            $('#preview-visum-sign-nip').text(signer.nip);
+            $('#preview-visum-sign-nama').text(kepalaSigner.nama);
+            $('#preview-visum-sign-nip').text(kepalaSigner.nip);
 
 
             // Update Pegawai Lists (Both Page 1 & 2)
