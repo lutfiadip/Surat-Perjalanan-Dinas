@@ -211,7 +211,31 @@ class SpdController extends Controller
         $draftsQuery = Spd::where('status', 'draft')->orderBy('id', 'desc')->with('creator');
         
         // FINALS (Arsip)
-        $finalsQuery = Spd::where('status', 'final')->orderBy('id', 'desc')->with(['creator', 'pegawais']);
+        $finalsQuery = Spd::where('status', 'final')->with(['creator', 'pegawais']);
+
+        // Dynamic Sorting for Finals
+        $sortBy = $request->input('sort_by', 'latest');
+        switch ($sortBy) {
+            case 'tanggal_surat_desc':
+                $finalsQuery->orderBy('tanggal_surat', 'desc');
+                break;
+            case 'tanggal_surat_asc':
+                $finalsQuery->orderBy('tanggal_surat', 'asc');
+                break;
+            case 'tgl_berangkat_desc':
+                $finalsQuery->orderBy('tgl_berangkat', 'desc');
+                break;
+            case 'tgl_berangkat_asc':
+                $finalsQuery->orderBy('tgl_berangkat', 'asc');
+                break;
+            case 'maksud_asc':
+                $finalsQuery->orderBy('maksud', 'asc');
+                break;
+            case 'latest':
+            default:
+                $finalsQuery->orderBy('id', 'desc');
+                break;
+        }
 
         if (session('role') !== 'admin') {
             $draftsQuery->where('created_by', $userId);
@@ -241,7 +265,11 @@ class SpdController extends Controller
         }
 
         $drafts = $draftsQuery->get();
-        $finals = $finalsQuery->get();
+        
+        $perPage = $request->input('per_page', 10);
+        $perPage = in_array($perPage, [10, 25, 50, 100]) ? (int)$perPage : 10;
+        $finals = $finalsQuery->paginate($perPage)->withQueryString();
+
         $years = range(date('Y') + 1, 2024);
 
         return view('spd.draft', compact('drafts', 'finals', 'years'));

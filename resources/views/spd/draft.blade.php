@@ -377,83 +377,116 @@
 
             <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
                 <!-- Filter Form (GET) - Embedded inside card -->
-                <form action="{{ route('spd.draft') }}" method="GET"
-                    class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <div class="w-full md:w-2/5 relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                <form action="{{ route('spd.draft') }}" method="GET" id="filter-form"
+                    class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row gap-4 items-stretch md:items-end justify-between">
+                    <input type="hidden" name="per_page" id="per-page-input" value="{{ request('per_page', 10) }}">
+                    <div class="w-full md:w-1/4 flex flex-col gap-1.5">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cari Dokumen</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input type="text" name="search" value="{{ request('search') }}"
+                                placeholder="Cari nomor surat, maksud, dll..."
+                                class="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg text-sm bg-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] h-[38px]">
                         </div>
-                        <input type="text" name="search" value="{{ request('search') }}"
-                            placeholder="Cari nomor surat, maksud, tempat, pegawai..."
-                            class="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg text-sm bg-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0]">
                     </div>
 
-                    <div class="w-full md:w-3/5 flex flex-col sm:flex-row gap-3 items-center justify-end">
-                        <div class="w-full sm:w-44 relative group">
-                            <select name="bulan"
-                                class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer">
-                                <option value="">Semua Bulan</option>
-                                @php
-                                    $months = [
-                                        '01' => 'Januari',
-                                        '02' => 'Februari',
-                                        '03' => 'Maret',
-                                        '04' => 'April',
-                                        '05' => 'Mei',
-                                        '06' => 'Juni',
-                                        '07' => 'Juli',
-                                        '08' => 'Agustus',
-                                        '09' => 'September',
-                                        '10' => 'Oktober',
-                                        '11' => 'November',
-                                        '12' => 'Desember'
-                                    ];
-                                @endphp
-                                @foreach($months as $num => $name)
-                                    <option value="{{ $num }}" {{ request('bulan') == $num ? 'selected' : '' }}>{{ $name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 group-focus-within:rotate-180"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                </svg>
+                    <div class="w-full md:w-3/4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-end justify-end">
+                        <div class="w-full sm:w-44 flex flex-col gap-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Bulan</label>
+                            <div class="relative group">
+                                <select name="bulan"
+                                    class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px]">
+                                    <option value="">Semua Bulan</option>
+                                    @php
+                                        $months = [
+                                            '01' => 'Januari',
+                                            '02' => 'Februari',
+                                            '03' => 'Maret',
+                                            '04' => 'April',
+                                            '05' => 'Mei',
+                                            '06' => 'Juni',
+                                            '07' => 'Juli',
+                                            '08' => 'Agustus',
+                                            '09' => 'September',
+                                            '10' => 'Oktober',
+                                            '11' => 'November',
+                                            '12' => 'Desember'
+                                        ];
+                                    @endphp
+                                    @foreach($months as $num => $name)
+                                        <option value="{{ $num }}" {{ request('bulan') == $num ? 'selected' : '' }}>{{ $name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 group-focus-within:rotate-180"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="w-full sm:w-36 relative group">
-                            <select name="tahun"
-                                class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer">
-                                <option value="">Semua Tahun</option>
-                                @foreach($years as $y)
-                                    <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>{{ $y }}</option>
-                                @endforeach
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 group-focus-within:rotate-180"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                </svg>
+                        <div class="w-full sm:w-36 flex flex-col gap-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tahun</label>
+                            <div class="relative group">
+                                <select name="tahun"
+                                    class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px]">
+                                    <option value="">Semua Tahun</option>
+                                    @foreach($years as $y)
+                                        <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 group-focus-within:rotate-180"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full sm:w-52 flex flex-col gap-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Urutkan</label>
+                            <div class="relative group">
+                                <select name="sort_by"
+                                    class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px]">
+                                    <option value="latest" {{ request('sort_by') == 'latest' || !request('sort_by') ? 'selected' : '' }}>Terbaru</option>
+                                    <option value="tanggal_surat_desc" {{ request('sort_by') == 'tanggal_surat_desc' ? 'selected' : '' }}>Tanggal Surat (Terbaru)</option>
+                                    <option value="tanggal_surat_asc" {{ request('sort_by') == 'tanggal_surat_asc' ? 'selected' : '' }}>Tanggal Surat (Terlama)</option>
+                                    <option value="tgl_berangkat_desc" {{ request('sort_by') == 'tgl_berangkat_desc' ? 'selected' : '' }}>Tgl Berangkat (Terbaru)</option>
+                                    <option value="tgl_berangkat_asc" {{ request('sort_by') == 'tgl_berangkat_asc' ? 'selected' : '' }}>Tgl Berangkat (Terdekat)</option>
+                                    <option value="maksud_asc" {{ request('sort_by') == 'maksud_asc' ? 'selected' : '' }}>Maksud/Tujuan (A-Z)</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 group-focus-within:rotate-180"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                </div>
                             </div>
                         </div>
 
                         <div class="w-full sm:w-auto flex gap-2 justify-end">
                             <button type="submit"
-                                class="px-4 py-2 bg-[#1C6DD0] hover:bg-[#1653a1] text-white text-sm font-medium rounded-lg transition shadow-sm hover:shadow">
+                                class="px-4 py-2 bg-[#1C6DD0] hover:bg-[#1653a1] text-white text-sm font-medium rounded-lg transition shadow-sm hover:shadow h-[38px] flex items-center justify-center">
                                 Filter
                             </button>
-                            @if(request('search') || request('bulan') || request('tahun'))
+                            @if(request('search') || request('bulan') || request('tahun') || (request('sort_by') && request('sort_by') !== 'latest'))
                                 <a href="{{ route('spd.draft') }}"
-                                    class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition border border-slate-200">
+                                    class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition border border-slate-200 h-[38px] flex items-center justify-center">
                                     Reset
                                 </a>
                             @endif
@@ -728,6 +761,100 @@
                         </tbody>
                     </table>
                 </form>
+
+                <!-- Pagination Footer -->
+                @if ($finals->total() > 0)
+                    <div class="flex flex-col md:flex-row gap-4 items-center justify-between p-4 border-t border-slate-200 bg-slate-50/20">
+                        <!-- Left: Pagination page links -->
+                        <div>
+                            @if ($finals->hasPages())
+                                <div class="flex items-center gap-1">
+                                    {{-- Previous Page Link --}}
+                                    @if ($finals->onFirstPage())
+                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                        </span>
+                                    @else
+                                        <a href="{{ $finals->previousPageUrl() }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-[#1C6DD0] transition">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                        </a>
+                                    @endif
+
+                                    {{-- Page Numbers --}}
+                                    @php
+                                        $start = max(1, $finals->currentPage() - 2);
+                                        $end = min($finals->lastPage(), $finals->currentPage() + 2);
+                                    @endphp
+
+                                    @if ($start > 1)
+                                        <a href="{{ $finals->url(1) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-[#1C6DD0] transition">1</a>
+                                        @if ($start > 2)
+                                            <span class="inline-flex items-center justify-center w-8 h-8 text-slate-400">...</span>
+                                        @endif
+                                    @endif
+
+                                    @foreach (range($start, $end) as $i)
+                                        @if ($i == $finals->currentPage())
+                                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 text-slate-800 font-semibold">
+                                                {{ $i }}
+                                            </span>
+                                        @else
+                                            <a href="{{ $finals->url($i) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-[#1C6DD0] transition">
+                                                {{ $i }}
+                                            </a>
+                                        @endif
+                                    @endforeach
+
+                                    @if ($end < $finals->lastPage())
+                                        @if ($end < $finals->lastPage() - 1)
+                                            <span class="inline-flex items-center justify-center w-8 h-8 text-slate-400">...</span>
+                                        @endif
+                                        <a href="{{ $finals->url($finals->lastPage()) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-[#1C6DD0] transition">{{ $finals->lastPage() }}</a>
+                                    @endif
+
+                                    {{-- Next Page Link --}}
+                                    @if ($finals->hasMorePages())
+                                        <a href="{{ $finals->nextPageUrl() }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-[#1C6DD0] transition">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                        </a>
+                                    @else
+                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                        </span>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Right: showing info & items select -->
+                        <div class="flex flex-col sm:flex-row items-center gap-4 text-sm text-slate-500">
+                            <div>
+                                Showing <span class="font-semibold text-slate-700">{{ $finals->firstItem() ?? 0 }}</span>
+                                to <span class="font-semibold text-slate-700">{{ $finals->lastItem() ?? 0 }}</span>
+                                of <span class="font-semibold text-slate-700">{{ $finals->total() }}</span> results
+                            </div>
+                            
+                            <div class="flex items-center gap-2">
+                                <span>Tampilkan</span>
+                                <div class="relative">
+                                    <select onchange="document.getElementById('per-page-input').value = this.value; document.getElementById('filter-form').submit();"
+                                        class="appearance-none pl-3 pr-8 py-1 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-8">
+                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                        <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25</option>
+                                        <option value="50" {{ request('per_page', 10) == 50 ? 'selected' : '' }}>50</option>
+                                        <option value="100" {{ request('per_page', 10) == 100 ? 'selected' : '' }}>100</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                        <svg class="h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <span>data</span>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
 
         </div>
