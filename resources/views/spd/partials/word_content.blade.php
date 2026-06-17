@@ -661,7 +661,7 @@ if (file_exists($path)) {
                         <td colspan="3"
                             style="padding: 0px 0px 0px 10px; margin: 0px; text-align: left; vertical-align: top; mso-padding-alt: 0pt 0pt 0pt 10pt; text-indent: 0px;">
                             {{ $pptk['jabatan'] ?? 'Kepala Sub Bagian Umum' }},<br>Selaku Pejabat Pelaksana Teknis
-                            Kegiatan<br>Sekretariat<br><br><br><br><span
+                            Kegiatan<br>{{ $pptk['bidang'] ?? 'Sekretariat' }}<br><br><br><br><span
                                 style="white-space: nowrap; font-size: 9pt; letter-spacing: -0.5px;">({{ $pptk['nama'] }})</span><br>NIP.
                             {{ $pptk['nip'] }}
                         </td>

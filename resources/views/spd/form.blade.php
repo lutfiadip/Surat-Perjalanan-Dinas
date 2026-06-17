@@ -107,7 +107,7 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             font-weight: 500;
             color: var(--text-color);
         }
@@ -546,34 +546,31 @@
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
                     <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4">8. Pengesahan Surat</h3>
                     
-                    <div class="form-group" style="margin-bottom: 1.5rem;">
-                        <label>Pilih PPTK</label>
-                        <div style="position: relative;">
-                            <select name="pptk_id" class="form-control" required
-                                style="width: 100%; padding: 0.75rem; padding-right: 2.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem; appearance: none; background-color: transparent; position: relative; z-index: 10;"
-                                onfocus="this.nextElementSibling.style.transform='translateY(-50%) rotate(180deg)'" 
-                                onblur="this.nextElementSibling.style.transform='translateY(-50%) rotate(0deg)'"
-                                onchange="this.nextElementSibling.style.transform='translateY(-50%) rotate(0deg)'; this.blur();">
-                                <option value="" disabled {{ !isset($draft) || empty($draft->pptk_id) ? 'selected' : '' }}>-- Pilih PPTK --</option>
-                                @foreach($pptks as $pptkSigner)
-                                    <option value="{{ $pptkSigner->id }}" 
-                                        data-nama="{{ $pptkSigner->nama }}"
-                                        data-nip="{{ $pptkSigner->nip }}"
-                                        data-jabatan="{{ $pptkSigner->jabatan }}"
-                                        {{ (isset($draft) && $draft->pptk_id == $pptkSigner->id) ? 'selected' : '' }}>
-                                        {{ $pptkSigner->jabatan }} - {{ $pptkSigner->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="#888" stroke="none" 
-                                style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); transition: transform 0.2s ease; pointer-events: none; z-index: 1;">
-                                <polygon points="4,8 20,8 12,17"></polygon>
-                            </svg>
+                    <!-- Pejabat Pelaksana Teknis Kegiatan (PPTK) Manual Inputs -->
+                    <div style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); margin: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">Pejabat Pelaksana Teknis Kegiatan (PPTK)</h4>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Nama PPTK</label>
+                            <input type="text" name="pptk_nama" placeholder="Nama lengkap & gelar" value="{{ old('pptk_nama', $pptk['nama'] ?? '') }}" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>NIP PPTK</label>
+                            <input type="text" name="pptk_nip" placeholder="NIP PPTK" value="{{ old('pptk_nip', $pptk['nip'] ?? '') }}" required>
+                        </div>
+                        <div class="grid">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Jabatan PPTK</label>
+                                <input type="text" name="pptk_jabatan" placeholder="Contoh: Kepala Sub Bagian Umum" value="{{ old('pptk_jabatan', $pptk['jabatan'] ?? '') }}" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Bidang PPTK</label>
+                                <input type="text" name="pptk_bidang" placeholder="Contoh: Sekretariat" value="{{ old('pptk_bidang', $pptk['bidang'] ?? 'Sekretariat') }}" required>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Penandatangan Surat (SPT)</label>
+                    <div class="form-group" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); margin: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">Penandatangan Surat (SPT)</h4>
                         <div style="position: relative;">
                             <select name="penandatangan" class="form-control" required
                                 style="width: 100%; padding: 0.75rem; padding-right: 2.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem; appearance: none; background-color: transparent; position: relative; z-index: 10;"
@@ -733,13 +730,12 @@
                 jenis: selectedSigner.data('jenis') || ''
             };
 
-            // Get PPTK Data from Selected Option
-            const pptkSelect = $('[name="pptk_id"]');
-            const selectedPptk = pptkSelect.find('option:selected');
+            // Get PPTK Data from Manual Inputs
             const pptk = {
-                nama: selectedPptk.data('nama') || '.......................',
-                nip: selectedPptk.data('nip') || '.......................',
-                jabatan: selectedPptk.data('jabatan') || 'Kepala Sub Bagian Umum',
+                nama: $('[name="pptk_nama"]').val() || '.......................',
+                nip: $('[name="pptk_nip"]').val() || '.......................',
+                jabatan: $('[name="pptk_jabatan"]').val() || 'Kepala Sub Bagian Umum',
+                bidang: $('[name="pptk_bidang"]').val() || 'Sekretariat',
             };
             
             // Allow Title Case logic if needed, but for now use raw name from DB
@@ -909,6 +905,7 @@
             $('#preview-visum-pptk-nama').text(pptk.nama);
             $('#preview-visum-pptk-nip').text(pptk.nip);
             $('#preview-visum-pptk-jabatan').text(pptk.jabatan);
+            $('#preview-visum-pptk-bidang').text(pptk.bidang);
 
 
             // Update Pegawai Lists (Both Page 1 & 2)

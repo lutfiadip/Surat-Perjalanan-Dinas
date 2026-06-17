@@ -378,119 +378,155 @@
             <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
                 <!-- Filter Form (GET) - Embedded inside card -->
                 <form action="{{ route('spd.draft') }}" method="GET" id="filter-form"
-                    class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row gap-4 items-stretch md:items-end justify-between">
+                    class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between relative">
                     <input type="hidden" name="per_page" id="per-page-input" value="{{ request('per_page', 10) }}">
-                    <div class="w-full md:w-1/4 flex flex-col gap-1.5">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cari Dokumen</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </div>
-                            <input type="text" name="search" value="{{ request('search') }}"
-                                placeholder="Cari nomor surat, maksud, dll..."
-                                class="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg text-sm bg-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] h-[38px]">
+                    
+                    <!-- Search Input (Left) -->
+                    <div class="w-full md:w-80 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
                         </div>
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            placeholder="Cari nomor surat, maksud, dll..."
+                            class="block w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm bg-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] h-[38px]">
                     </div>
 
-                    <div class="w-full md:w-3/4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-end justify-end">
-                        <div class="w-full sm:w-44 flex flex-col gap-1.5">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Bulan</label>
-                            <div class="relative group">
-                                <select name="bulan"
-                                    class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px]">
-                                    <option value="">Semua Bulan</option>
+                    <!-- Sort & Filter Actions (Right) -->
+                    <div class="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-end w-full md:w-auto mt-2 md:mt-0">
+                        <!-- Urutkan Dropdown -->
+                        <div class="relative w-full sm:w-48 group">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9M3 12h5m0 0v1.5a2.5 2.5 0 005 0V12m0 0h1a1 1 0 011 1v6.718a.5.5 0 01-.8.4l-2.4-1.8a.5.5 0 00-.6 0l-2.4 1.8a.5.5 0 01-.8-.4V13a1 1 0 011-1h1" />
+                                </svg>
+                            </div>
+                            <select name="sort_by" onchange="this.form.submit()"
+                                class="block w-full appearance-none pl-9 pr-8 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-700">
+                                <option value="latest" {{ request('sort_by') == 'latest' || !request('sort_by') ? 'selected' : '' }}>Terbaru</option>
+                                <option value="tanggal_surat_desc" {{ request('sort_by') == 'tanggal_surat_desc' ? 'selected' : '' }}>Tanggal Surat (Terbaru)</option>
+                                <option value="tanggal_surat_asc" {{ request('sort_by') == 'tanggal_surat_asc' ? 'selected' : '' }}>Tanggal Surat (Terlama)</option>
+                                <option value="tgl_berangkat_desc" {{ request('sort_by') == 'tgl_berangkat_desc' ? 'selected' : '' }}>Tgl Berangkat (Terbaru)</option>
+                                <option value="tgl_berangkat_asc" {{ request('sort_by') == 'tgl_berangkat_asc' ? 'selected' : '' }}>Tgl Berangkat (Terdekat)</option>
+                                <option value="maksud_asc" {{ request('sort_by') == 'maksud_asc' ? 'selected' : '' }}>Maksud/Tujuan (A-Z)</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
+                                <svg class="h-4 w-4 text-slate-400 group-hover:text-slate-600 transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Filter Popover Trigger -->
+                        <div class="relative w-full sm:w-auto" id="filter-popover-container">
+                            <button type="button" onclick="toggleFilterPopover()"
+                                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium transition h-[38px] cursor-pointer select-none bg-white text-slate-700 hover:bg-slate-50 {{ (request('bulan') || request('tahun')) ? 'bg-blue-50/80 text-blue-700 border-blue-300 hover:bg-blue-100/80' : '' }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                </svg>
+                                <span>Filter</span>
+                                @if(request('bulan') || request('tahun'))
                                     @php
-                                        $months = [
-                                            '01' => 'Januari',
-                                            '02' => 'Februari',
-                                            '03' => 'Maret',
-                                            '04' => 'April',
-                                            '05' => 'Mei',
-                                            '06' => 'Juni',
-                                            '07' => 'Juli',
-                                            '08' => 'Agustus',
-                                            '09' => 'September',
-                                            '10' => 'Oktober',
-                                            '11' => 'November',
-                                            '12' => 'Desember'
-                                        ];
+                                        $activeCount = 0;
+                                        if(request('bulan')) $activeCount++;
+                                        if(request('tahun')) $activeCount++;
                                     @endphp
-                                    @foreach($months as $num => $name)
-                                        <option value="{{ $num }}" {{ request('bulan') == $num ? 'selected' : '' }}>{{ $name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                    <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 group-focus-within:rotate-180"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="w-full sm:w-36 flex flex-col gap-1.5">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tahun</label>
-                            <div class="relative group">
-                                <select name="tahun"
-                                    class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px]">
-                                    <option value="">Semua Tahun</option>
-                                    @foreach($years as $y)
-                                        <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>{{ $y }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                    <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 group-focus-within:rotate-180"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="w-full sm:w-52 flex flex-col gap-1.5">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Urutkan</label>
-                            <div class="relative group">
-                                <select name="sort_by"
-                                    class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px]">
-                                    <option value="latest" {{ request('sort_by') == 'latest' || !request('sort_by') ? 'selected' : '' }}>Terbaru</option>
-                                    <option value="tanggal_surat_desc" {{ request('sort_by') == 'tanggal_surat_desc' ? 'selected' : '' }}>Tanggal Surat (Terbaru)</option>
-                                    <option value="tanggal_surat_asc" {{ request('sort_by') == 'tanggal_surat_asc' ? 'selected' : '' }}>Tanggal Surat (Terlama)</option>
-                                    <option value="tgl_berangkat_desc" {{ request('sort_by') == 'tgl_berangkat_desc' ? 'selected' : '' }}>Tgl Berangkat (Terbaru)</option>
-                                    <option value="tgl_berangkat_asc" {{ request('sort_by') == 'tgl_berangkat_asc' ? 'selected' : '' }}>Tgl Berangkat (Terdekat)</option>
-                                    <option value="maksud_asc" {{ request('sort_by') == 'maksud_asc' ? 'selected' : '' }}>Maksud/Tujuan (A-Z)</option>
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                    <svg class="h-4 w-4 text-slate-500 transition-transform duration-200 group-focus-within:rotate-180"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="w-full sm:w-auto flex gap-2 justify-end">
-                            <button type="submit"
-                                class="px-4 py-2 bg-[#1C6DD0] hover:bg-[#1653a1] text-white text-sm font-medium rounded-lg transition shadow-sm hover:shadow h-[38px] flex items-center justify-center">
-                                Filter
+                                    <span class="inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-semibold leading-none text-white bg-[#1C6DD0] rounded-full">
+                                        {{ $activeCount }}
+                                    </span>
+                                @endif
                             </button>
-                            @if(request('search') || request('bulan') || request('tahun') || (request('sort_by') && request('sort_by') !== 'latest'))
-                                <a href="{{ route('spd.draft') }}"
-                                    class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition border border-slate-200 h-[38px] flex items-center justify-center">
-                                    Reset
-                                </a>
-                            @endif
+
+                            <!-- Popover Card -->
+                            <div id="filter-popover"
+                                class="hidden absolute right-0 mt-2 w-72 origin-top-right rounded-xl bg-white p-4 shadow-xl border border-slate-200 z-[100] focus:outline-none transition-all duration-200 ease-out transform opacity-0 scale-95">
+                                <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                                    <span class="font-bold text-slate-900 text-sm">Filter Dokumen</span>
+                                    @if(request('bulan') || request('tahun'))
+                                        <a href="{{ route('spd.draft', ['search' => request('search'), 'sort_by' => request('sort_by')]) }}"
+                                            class="text-xs text-[#1C6DD0] hover:text-[#1653a1] font-semibold">
+                                            Reset Filter
+                                        </a>
+                                    @endif
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-xs font-semibold text-slate-500">Bulan</label>
+                                        <div class="relative group">
+                                            <select name="bulan"
+                                                class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-800">
+                                                <option value="">Semua Bulan</option>
+                                                @php
+                                                    $months = [
+                                                        '01' => 'Januari',
+                                                        '02' => 'Februari',
+                                                        '03' => 'Maret',
+                                                        '04' => 'April',
+                                                        '05' => 'Mei',
+                                                        '06' => 'Juni',
+                                                        '07' => 'Juli',
+                                                        '08' => 'Agustus',
+                                                        '09' => 'September',
+                                                        '10' => 'Oktober',
+                                                        '11' => 'November',
+                                                        '12' => 'Desember'
+                                                    ];
+                                                @endphp
+                                                @foreach($months as $num => $name)
+                                                    <option value="{{ $num }}" {{ request('bulan') == $num ? 'selected' : '' }}>{{ $name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                                <svg class="h-4 w-4 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-xs font-semibold text-slate-500">Tahun</label>
+                                        <div class="relative group">
+                                            <select name="tahun"
+                                                class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-800">
+                                                <option value="">Semua Tahun</option>
+                                                @foreach($years as $y)
+                                                    <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                                <svg class="h-4 w-4 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-2 mt-6 pt-3 border-t border-slate-100 justify-end">
+                                    <button type="button" onclick="toggleFilterPopover()"
+                                        class="px-3 py-2 text-slate-500 hover:text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium transition cursor-pointer">
+                                        Batal
+                                    </button>
+                                    <button type="submit"
+                                        class="px-4 py-2 bg-[#1C6DD0] hover:bg-[#1653a1] text-white text-xs font-semibold rounded-lg transition shadow-sm cursor-pointer">
+                                        Terapkan
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Reset Button (If active filters exist) -->
+                        @if(request('search') || request('bulan') || request('tahun') || (request('sort_by') && request('sort_by') !== 'latest'))
+                            <a href="{{ route('spd.draft') }}"
+                                class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition border border-slate-200 h-[38px] flex items-center justify-center">
+                                Reset
+                            </a>
+                        @endif
                     </div>
                 </form>
 
@@ -861,6 +897,24 @@
 
         {{-- Script for handling checkboxes and Selection Mode --}}
         <script>
+            // Toggle Filter Popover
+            function toggleFilterPopover() {
+                const popover = document.getElementById('filter-popover');
+                if (popover.classList.contains('hidden')) {
+                    popover.classList.remove('hidden');
+                    // Force reflow
+                    popover.offsetHeight;
+                    popover.classList.remove('opacity-0', 'scale-95');
+                    popover.classList.add('opacity-100', 'scale-100');
+                } else {
+                    popover.classList.remove('opacity-100', 'scale-100');
+                    popover.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => {
+                        popover.classList.add('hidden');
+                    }, 200);
+                }
+            }
+
             function toggleSelectMenu(type) {
                 const dropdown = document.getElementById(type + '-select-dropdown');
                 if (dropdown.classList.contains('hidden')) {
@@ -872,10 +926,22 @@
                 }
             }
 
-            // Close dropdowns when clicking outside
+            // Close dropdowns and popover when clicking outside
             document.addEventListener('click', function (e) {
+                // Handle select menus
                 if (!e.target.closest('[id$="-select-trigger-menu"]')) {
                     document.querySelectorAll('[id$="-select-dropdown"]').forEach(el => el.classList.add('hidden'));
+                }
+
+                // Handle filter popover
+                const popover = document.getElementById('filter-popover');
+                const container = document.getElementById('filter-popover-container');
+                if (popover && container && !container.contains(e.target) && !popover.classList.contains('hidden')) {
+                    popover.classList.remove('opacity-100', 'scale-100');
+                    popover.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => {
+                        popover.classList.add('hidden');
+                    }, 200);
                 }
             });
 

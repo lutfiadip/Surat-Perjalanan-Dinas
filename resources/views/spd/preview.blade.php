@@ -400,7 +400,7 @@
                             <td colspan="3" style="padding-top: 10px; vertical-align: top; padding-left: 10px;">
                                 <div><span id="preview-visum-pptk-jabatan">{{ $pptk['jabatan'] ?? 'Kepala Sub Bagian Umum' }}</span>,</div>
                                 <div>Selaku Pejabat Pelaksana Teknis Kegiatan</div>
-                                <div>Sekretariat</div>
+                                <div><span id="preview-visum-pptk-bidang">{{ $pptk['bidang'] ?? 'Sekretariat' }}</span></div>
                                 <br><br><br>
                                 <div>(<span id="preview-visum-pptk-nama">{{ $pptk['nama'] ?? '.......................' }}</span>)</div>
                                 <div>NIP. <span id="preview-visum-pptk-nip">{{ $pptk['nip'] ?? '.......................' }}</span></div>

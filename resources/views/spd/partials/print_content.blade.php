@@ -438,7 +438,7 @@
                         <td colspan="3" style="padding-left: 10px; vertical-align: top;">
                             <div>{{ $pptk['jabatan'] ?? 'Kepala Sub Bagian Umum' }},</div>
                             <div>Selaku Pejabat Pelaksana Teknis Kegiatan</div>
-                            <div>Sekretariat</div>
+                            <div>{{ $pptk['bidang'] ?? 'Sekretariat' }}</div>
                             <br><br><br>
                             <div>({{ $pptk['nama'] }})</div>
                             <div>NIP. {{ $pptk['nip'] }}</div>
