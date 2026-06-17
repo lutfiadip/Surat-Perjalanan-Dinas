@@ -26,13 +26,15 @@ class AdminPenandatanganController extends Controller
         }
 
         $penandatangan = $query->withCount('spds')->orderBy('nama')->paginate($perPage)->withQueryString();
-        return view('admin.penandatangan.index', compact('penandatangan'));
+        $hasActiveKepala = Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->exists();
+        return view('admin.penandatangan.index', compact('penandatangan', 'hasActiveKepala'));
     }
 
     public function create()
     {
+        $hasActiveKepala = Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->exists();
         $hasActivePptk = false;
-        return view('admin.penandatangan.form', compact('hasActivePptk'));
+        return view('admin.penandatangan.form', compact('hasActivePptk', 'hasActiveKepala'));
     }
 
     public function store(Request $request)
@@ -46,18 +48,29 @@ class AdminPenandatanganController extends Controller
             'variant_ttd' => 'in:normal,plt,plh',
         ]);
 
-        // PPTK restrictions removed
+        $warning = '';
+        if ($request->input('jenis') === 'kepala') {
+            $activeKepalaCount = Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->count();
+            if ($activeKepalaCount > 0) {
+                Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->update(['status_aktif' => 0]);
+                $warning = ' Kepala Badan aktif sebelumnya otomatis dinonaktifkan.';
+            }
+        }
 
         Penandatangan::create($request->all() + ['status_aktif' => 1]);
 
-        return redirect()->route('admin.penandatangan.index')->with('success', 'Data Penandatangan berhasil ditambahkan.');
+        return redirect()->route('admin.penandatangan.index')->with('success', 'Data Penandatangan berhasil ditambahkan.' . $warning);
     }
 
     public function edit($id)
     {
         $penandatangan = Penandatangan::findOrFail($id);
+        $hasActiveKepala = Penandatangan::where('jenis', 'kepala')
+            ->where('status_aktif', 1)
+            ->where('id', '!=', $id)
+            ->exists();
         $hasActivePptk = false;
-        return view('admin.penandatangan.form', compact('penandatangan', 'hasActivePptk'));
+        return view('admin.penandatangan.form', compact('penandatangan', 'hasActivePptk', 'hasActiveKepala'));
     }
 
     public function update(Request $request, $id)
@@ -71,25 +84,46 @@ class AdminPenandatanganController extends Controller
             'variant_ttd' => 'in:normal,plt,plh',
         ]);
 
-        // PPTK restrictions removed
-
         $penandatangan = Penandatangan::findOrFail($id);
+        $warning = '';
+
+        if ($request->input('jenis') === 'kepala' && $penandatangan->status_aktif) {
+            $activeKepalaCount = Penandatangan::where('jenis', 'kepala')
+                ->where('status_aktif', 1)
+                ->where('id', '!=', $id)
+                ->count();
+            if ($activeKepalaCount > 0) {
+                Penandatangan::where('jenis', 'kepala')
+                    ->where('status_aktif', 1)
+                    ->where('id', '!=', $id)
+                    ->update(['status_aktif' => 0]);
+                $warning = ' Kepala Badan aktif lainnya otomatis dinonaktifkan.';
+            }
+        }
+
         $penandatangan->update($request->all());
 
-        return redirect()->route('admin.penandatangan.index')->with('success', 'Data Penandatangan berhasil diperbarui.');
+        return redirect()->route('admin.penandatangan.index')->with('success', 'Data Penandatangan berhasil diperbarui.' . $warning);
     }
 
     public function toggleStatus($id)
     {
         $penandatangan = Penandatangan::findOrFail($id);
+        $warning = '';
 
-        // PPTK restrictions removed
+        if (!$penandatangan->status_aktif && $penandatangan->jenis === 'kepala') {
+            $activeKepalaCount = Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->count();
+            if ($activeKepalaCount > 0) {
+                Penandatangan::where('jenis', 'kepala')->where('status_aktif', 1)->update(['status_aktif' => 0]);
+                $warning = ' Kepala Badan aktif lainnya otomatis dinonaktifkan.';
+            }
+        }
 
         $penandatangan->status_aktif = !$penandatangan->status_aktif;
         $penandatangan->save();
 
         $message = $penandatangan->status_aktif ? 'diaktifkan' : 'dinonaktifkan';
-        return redirect()->back()->with('success', "Penandatangan berhasil $message.");
+        return redirect()->back()->with('success', "Penandatangan berhasil $message." . $warning);
     }
 
     public function destroy($id)

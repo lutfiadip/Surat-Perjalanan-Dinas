@@ -93,7 +93,7 @@
             @endif
 
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                <form
+                <form id="penandatangan-form"
                     action="{{ isset($penandatangan) ? route('admin.penandatangan.update', $penandatangan->id) : route('admin.penandatangan.store') }}"
                     method="POST" class="p-8">
                     @csrf
@@ -253,6 +253,19 @@
 
                 jenisSelect.addEventListener('change', toggleWarning);
                 toggleWarning(); // Run initially in case of edit or validation errors
+            }
+
+            const form = document.getElementById('penandatangan-form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const hasActiveKepala = @json($hasActiveKepala ?? false);
+                    if (jenisSelect && jenisSelect.value === 'kepala' && hasActiveKepala) {
+                        const confirmMsg = "Saat ini sudah ada Kepala Badan yang aktif. Jika Anda menyimpan data ini, Kepala Badan yang aktif saat ini akan dinonaktifkan secara otomatis.\n\nApakah Anda setuju dan ingin melanjutkan?";
+                        if (!confirm(confirmMsg)) {
+                            e.preventDefault();
+                        }
+                    }
+                });
             }
         });
     </script>

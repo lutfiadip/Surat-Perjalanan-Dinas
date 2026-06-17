@@ -327,9 +327,15 @@
                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
                                         </a>
+                                        @php
+                                            $confirmText = "Apakah Anda yakin ingin mengubah status data ini?";
+                                            if ($hasActiveKepala && $item->jenis === 'kepala' && !$item->status_aktif) {
+                                                $confirmText = "Saat ini sudah ada Kepala Badan yang aktif. Jika Anda mengaktifkan data ini, Kepala Badan yang aktif saat ini akan dinonaktifkan secara otomatis. Apakah Anda setuju?";
+                                            }
+                                        @endphp
                                         <form action="{{ route('admin.penandatangan.toggle_status', $item->id) }}"
                                             method="POST" class="inline-block"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin mengubah status data ini?')">
+                                            onsubmit="return confirm('{{ $confirmText }}')">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit"
