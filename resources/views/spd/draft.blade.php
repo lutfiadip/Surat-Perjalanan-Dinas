@@ -405,7 +405,7 @@
                                 </svg>
                             </div>
                             <select name="sort_by" onchange="this.form.submit()"
-                                class="block w-full appearance-none pl-9 pr-8 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-700">
+                                class="block w-full appearance-none pl-9 pr-8 py-0 leading-[36px] border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-700">
                                 <option value="latest" {{ request('sort_by') == 'latest' || !request('sort_by') ? 'selected' : '' }}>Terbaru</option>
                                 <option value="tanggal_surat_desc" {{ request('sort_by') == 'tanggal_surat_desc' ? 'selected' : '' }}>Tanggal Surat (Terbaru)</option>
                                 <option value="tanggal_surat_asc" {{ request('sort_by') == 'tanggal_surat_asc' ? 'selected' : '' }}>Tanggal Surat (Terlama)</option>
@@ -458,7 +458,7 @@
                                         <label class="text-xs font-semibold text-slate-500">Bulan</label>
                                         <div class="relative group">
                                             <select name="bulan"
-                                                class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-800">
+                                                class="block w-full appearance-none pl-3 pr-10 py-0 leading-[36px] border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-800">
                                                 <option value="">Semua Bulan</option>
                                                 @php
                                                     $months = [
@@ -492,7 +492,7 @@
                                         <label class="text-xs font-semibold text-slate-500">Tahun</label>
                                         <div class="relative group">
                                             <select name="tahun"
-                                                class="block w-full appearance-none pl-3 pr-10 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-800">
+                                                class="block w-full appearance-none pl-3 pr-10 py-0 leading-[36px] border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-800">
                                                 <option value="">Semua Tahun</option>
                                                 @foreach($years as $y)
                                                     <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>{{ $y }}</option>
