@@ -274,7 +274,7 @@
                                     <input type="checkbox" onclick="toggleAllCheckboxes(this, 'draft')"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                 </th>
-                                <th class="p-4 font-semibold text-slate-700 w-24 text-center relative z-20 group">
+                                <th class="p-4 font-semibold text-slate-700 w-16 text-left pl-10 relative z-20 group">
                                     <div id="draft-select-trigger-menu"
                                         class="absolute left-2 top-1/2 -translate-y-1/2 transition-opacity duration-200">
                                         <button type="button" onclick="toggleSelectMenu('draft')"
@@ -315,7 +315,7 @@
                                                 class="draft-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                         </div>
                                     </td>
-                                    <td class="p-4 text-center text-slate-500">{{ $loop->iteration }}</td>
+                                    <td class="p-4 text-left pl-10 text-slate-500">{{ $loop->iteration }}</td>
                                     <td class="p-4 text-slate-900 text-left">
                                         {{ $draft->maksud ?? '(Belum diisi)' }}
                                     </td>
@@ -375,10 +375,10 @@
                 <p class="text-slate-500 text-sm">Dokumen resmi yang siap dicetak atau diekspor.</p>
             </div>
 
-            <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
+            <div class="bg-white rounded-xl shadow border border-slate-200">
                 <!-- Filter Form (GET) - Embedded inside card -->
                 <form action="{{ route('spd.draft') }}" method="GET" id="filter-form"
-                    class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between relative">
+                    class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between relative rounded-t-xl">
                     <input type="hidden" name="per_page" id="per-page-input" value="{{ request('per_page', 10) }}">
                     
                     <!-- Search Input (Left) -->
@@ -399,13 +399,13 @@
                     <div class="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-end w-full md:w-auto mt-2 md:mt-0">
                         <!-- Urutkan Dropdown -->
                         <div class="relative w-full sm:w-48 group">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9M3 12h5m0 0v1.5a2.5 2.5 0 005 0V12m0 0h1a1 1 0 011 1v6.718a.5.5 0 01-.8.4l-2.4-1.8a.5.5 0 00-.6 0l-2.4 1.8a.5.5 0 01-.8-.4V13a1 1 0 011-1h1" />
                                 </svg>
                             </div>
                             <select name="sort_by" onchange="this.form.submit()"
-                                class="block w-full appearance-none pl-9 pr-8 py-0 leading-[36px] border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-700">
+                                class="block w-full appearance-none pl-8 pr-8 py-0 leading-[36px] border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#1C6DD0] focus:border-[#1C6DD0] cursor-pointer h-[38px] text-slate-700">
                                 <option value="latest" {{ request('sort_by') == 'latest' || !request('sort_by') ? 'selected' : '' }}>Terbaru</option>
                                 <option value="tanggal_surat_desc" {{ request('sort_by') == 'tanggal_surat_desc' ? 'selected' : '' }}>Tanggal Surat (Terbaru)</option>
                                 <option value="tanggal_surat_asc" {{ request('sort_by') == 'tanggal_surat_asc' ? 'selected' : '' }}>Tanggal Surat (Terlama)</option>
@@ -606,7 +606,7 @@
                                     <input type="checkbox" onclick="toggleAllCheckboxes(this, 'final')"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                 </th>
-                                <th class="p-4 font-semibold text-slate-700 w-24 text-center relative z-20 group">
+                                <th class="p-4 font-semibold text-slate-700 w-16 text-left pl-10 relative z-20 group">
                                     <div id="final-select-trigger-menu"
                                         class="absolute left-2 top-1/2 -translate-y-1/2 transition-opacity duration-200">
                                         <button type="button" onclick="toggleSelectMenu('final')"
@@ -630,6 +630,7 @@
                                     </div>
                                     <span>No</span>
                                 </th>
+                                <th class="p-4 font-semibold text-slate-700 w-24 text-left">Dibuat</th>
                                 <th class="p-4 font-semibold text-slate-700 w-32 text-left">Nomor Surat</th>
                                 <th class="p-4 font-semibold text-slate-700 text-left">Maksud / Tujuan</th>
                                 @if(session('role') === 'admin')
@@ -648,7 +649,15 @@
                                                 class="final-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5 cursor-pointer">
                                         </div>
                                     </td>
-                                    <td class="p-4 text-center text-slate-500">{{ $loop->iteration }}</td>
+                                    <td class="p-4 text-left pl-10 text-slate-500">{{ $loop->iteration }}</td>
+                                    <td class="p-4 text-slate-600 text-left text-xs leading-tight">
+                                         @if($final->created_at)
+                                             <div>{{ \Carbon\Carbon::parse($final->created_at)->format('d/m/y') }}</div>
+                                             <div class="text-slate-400 mt-0.5">{{ \Carbon\Carbon::parse($final->created_at)->format('H.i') }}</div>
+                                         @else
+                                             -
+                                         @endif
+                                    </td>
                                     <td class="p-4 text-slate-900 font-medium text-left">
                                         {{ $final->nomor_surat ?? '-' }}
                                     </td>
@@ -717,7 +726,7 @@
                                 <!-- Expandable Detail Row -->
                                 <tr id="detail-{{ $final->id }}"
                                     class="hidden bg-slate-50/50 border-t border-b border-slate-200">
-                                    <td colspan="{{ session('role') === 'admin' ? 7 : 6 }}" class="p-4">
+                                    <td colspan="{{ session('role') === 'admin' ? 8 : 7 }}" class="p-4">
                                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
                                             <!-- Pegawai Ditugaskan -->
                                             <div class="flex flex-col space-y-2">
@@ -771,8 +780,6 @@
                                                         <span>{{ $final->tgl_kembali ? \Carbon\Carbon::parse($final->tgl_kembali)->locale('id')->isoFormat('D MMMM Y') : '-' }}</span>
                                                         <span class="text-slate-500">Lama (Hari):</span>
                                                         <span>{{ $final->lama_perjalanan ?? '-' }}</span>
-                                                        <span class="text-slate-500">Dibuat:</span>
-                                                        <span>{{ $final->created_at ? \Carbon\Carbon::parse($final->created_at)->format('d/m/y, H.i') : '-' }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -781,7 +788,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="{{ session('role') === 'admin' ? 6 : 5 }}"
+                                    <td colspan="{{ session('role') === 'admin' ? 7 : 6 }}"
                                         class="p-8 text-center text-slate-500 py-12">
                                         <div class="flex flex-row items-center justify-center gap-4">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300"
@@ -808,7 +815,7 @@
 
                 <!-- Pagination Footer -->
                 @if ($finals->total() > 0)
-                    <div class="flex flex-col md:flex-row gap-4 items-center justify-between p-4 border-t border-slate-200 bg-slate-50/20">
+                    <div class="flex flex-col md:flex-row gap-4 items-center justify-between p-4 border-t border-slate-200 bg-slate-50/20 rounded-b-xl">
                         <!-- Left: Pagination page links -->
                         <div>
                             @if ($finals->hasPages())
