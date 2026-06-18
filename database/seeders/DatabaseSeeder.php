@@ -15,11 +15,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Seed default Admin User
+        User::create([
+            'name' => 'Administrator',
+            'username' => 'admin',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'role' => 'admin',
+            'status' => 'aktif',
+        ]);
 
-        User::factory()->create([
+        // Seed default Regular User
+        User::create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'username' => 'user',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'role' => 'user',
+            'status' => 'aktif',
+        ]);
+
+        // Seed Signatories / PPTK
+        $this->call([
+            PenandatanganSeeder::class,
         ]);
     }
 }

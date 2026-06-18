@@ -636,7 +636,7 @@
                                     <th class="p-4 font-semibold text-slate-700 w-40 text-left">Oleh</th>
                                 @endif
                                 <th class="p-4 font-semibold text-slate-700 w-40 text-left">Tanggal Surat</th>
-                                <th class="p-4 font-semibold text-slate-700 text-center w-56">Aksi</th>
+                                <th class="p-4 font-semibold text-slate-700 text-center w-32">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -675,34 +675,42 @@
                                                     <polyline points="6 9 12 15 18 9"></polyline>
                                                 </svg>
                                             </button>
-                                            <a href="{{ route('spd.print.final', ['id' => $final->id]) }}" target="_blank"
-                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 font-medium text-sm transition border border-slate-300">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round">
-                                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                                    <path
-                                                        d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
-                                                    </path>
-                                                    <rect x="6" y="14" width="12" height="8"></rect>
-                                                </svg>
-                                                Cetak
-                                            </a>
-                                            <a href="{{ route('spd.export_word.final', ['id' => $final->id]) }}"
-                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-medium text-sm transition border border-blue-200">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round">
-                                                    <path
-                                                        d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z">
-                                                    </path>
-                                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                                    <path d="M16 13H8"></path>
-                                                    <path d="M16 17H8"></path>
-                                                    <path d="M10 9H8"></path>
-                                                </svg>
-                                                Word
-                                            </a>
+                                            <div class="relative inline-block text-left" id="action-dropdown-{{ $final->id }}">
+                                                <button type="button" onclick="toggleActionDropdown('{{ $final->id }}')"
+                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-medium text-sm transition cursor-pointer select-none">
+                                                    <span>Unduh</span>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400">
+                                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                                    </svg>
+                                                </button>
+                                                <div id="dropdown-menu-{{ $final->id }}"
+                                                    class="hidden absolute right-0 mt-1.5 w-36 origin-top-right rounded-xl bg-white p-1 shadow-lg border border-slate-100 z-[40] focus:outline-none">
+                                                    <a href="{{ route('spd.print.final', ['id' => $final->id]) }}" target="_blank"
+                                                        class="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg transition text-left">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round" class="text-slate-400">
+                                                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                                                            <rect x="6" y="14" width="12" height="8"></rect>
+                                                        </svg>
+                                                        Cetak PDF
+                                                    </a>
+                                                    <a href="{{ route('spd.export_word.final', ['id' => $final->id]) }}"
+                                                        class="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg transition text-left">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round" class="text-slate-400">
+                                                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                                            <path d="M16 13H8"></path>
+                                                            <path d="M16 17H8"></path>
+                                                            <path d="M10 9H8"></path>
+                                                        </svg>
+                                                        Ekspor Word
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -926,11 +934,34 @@
                 }
             }
 
+            function toggleActionDropdown(id) {
+                const menu = document.getElementById('dropdown-menu-' + id);
+                const isHidden = menu.classList.contains('hidden');
+                
+                // Close all other action dropdowns
+                document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => {
+                    if (el.id !== 'dropdown-menu-' + id) {
+                        el.classList.add('hidden');
+                    }
+                });
+                
+                if (isHidden) {
+                    menu.classList.remove('hidden');
+                } else {
+                    menu.classList.add('hidden');
+                }
+            }
+
             // Close dropdowns and popover when clicking outside
             document.addEventListener('click', function (e) {
                 // Handle select menus
                 if (!e.target.closest('[id$="-select-trigger-menu"]')) {
                     document.querySelectorAll('[id$="-select-dropdown"]').forEach(el => el.classList.add('hidden'));
+                }
+
+                // Handle action dropdowns
+                if (!e.target.closest('[id^="action-dropdown-"]')) {
+                    document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => el.classList.add('hidden'));
                 }
 
                 // Handle filter popover
