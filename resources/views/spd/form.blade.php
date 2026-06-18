@@ -618,7 +618,7 @@
                         <a href="{{ route('spd.export_word.final', ['id' => $draft->id]) }}" class="btn" style="text-decoration: none; text-align: center;">Export Word</a>
                     @else
                         {{-- Draft Mode: Save Actions --}}
-                        <button type="submit" name="action" value="draft" class="btn btn-draft">Simpan Draft</button>
+                        <button type="submit" name="action" value="draft" class="btn btn-draft" formnovalidate>Simpan Draft</button>
                         <button type="submit" name="action" value="final" class="btn" onclick="return confirm('Apakah Anda yakin ingin memfinalisasi dokumen ini? Dokumen yang sudah final tidak dapat diedit lagi.')">Simpan Final</button>
                     @endif
                 </div>
