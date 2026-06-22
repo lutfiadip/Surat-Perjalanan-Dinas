@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PegawaiBkdSpd;
 use App\Models\Penandatangan;
 use App\Models\Spd;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SpdController extends Controller
@@ -299,6 +300,10 @@ class SpdController extends Controller
             $finalsQuery->whereYear('tanggal_surat', $request->input('tahun'));
         }
 
+        if ($request->filled('created_by')) {
+            $finalsQuery->where('created_by', $request->input('created_by'));
+        }
+
         $drafts = $draftsQuery->get();
         
         $perPage = $request->input('per_page', 10);
@@ -306,8 +311,9 @@ class SpdController extends Controller
         $finals = $finalsQuery->paginate($perPage)->withQueryString();
 
         $years = range(date('Y') + 1, 2024);
+        $users = User::orderBy('name')->get();
 
-        return view('spd.draft', compact('drafts', 'finals', 'years'));
+        return view('spd.draft', compact('drafts', 'finals', 'years', 'users'));
     }
 
     public function print(Request $request)
