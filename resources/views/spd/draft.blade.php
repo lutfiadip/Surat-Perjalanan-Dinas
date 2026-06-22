@@ -380,6 +380,7 @@
                 <form action="{{ route('spd.draft') }}" method="GET" id="filter-form"
                     class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between relative rounded-t-xl">
                     <input type="hidden" name="per_page" id="per-page-input" value="{{ request('per_page', 10) }}">
+                    <input type="hidden" name="created_by" id="created-by-input" value="{{ request('created_by') }}">
                     
                     <!-- Search Input (Left) -->
                     <div class="w-full md:w-80 relative">
@@ -521,7 +522,7 @@
                         </div>
 
                         <!-- Reset Button (If active filters exist) -->
-                        @if(request('search') || request('bulan') || request('tahun') || (request('sort_by') && request('sort_by') !== 'latest'))
+                        @if(request('search') || request('bulan') || request('tahun') || request('created_by') || (request('sort_by') && request('sort_by') !== 'latest'))
                             <a href="{{ route('spd.draft') }}"
                                 class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition border border-slate-200 h-[38px] flex items-center justify-center">
                                 Reset
@@ -634,7 +635,50 @@
                                 <th class="p-4 font-semibold text-slate-700 w-32 text-left">Nomor Surat</th>
                                 <th class="p-4 font-semibold text-slate-700 text-left">Maksud / Tujuan</th>
                                 @if(session('role') === 'admin')
-                                    <th class="p-4 font-semibold text-slate-700 w-40 text-left">Oleh</th>
+                                    <th class="p-4 font-semibold text-slate-700 w-48 text-left relative" id="oleh-filter-container">
+                                        <div class="flex items-center gap-1.5 cursor-pointer select-none group inline-flex" onclick="toggleOlehDropdown(event)">
+                                            @php
+                                                $selectedCreatorName = null;
+                                                if (request('created_by')) {
+                                                    $selectedCreator = $users->firstWhere('id', request('created_by'));
+                                                    if ($selectedCreator) {
+                                                        $selectedCreatorName = $selectedCreator->name;
+                                                    }
+                                                }
+                                            @endphp
+                                            <span class="{{ request('created_by') ? 'text-blue-600 font-bold' : '' }}">
+                                                Oleh {!! $selectedCreatorName ? '<span class="text-xs font-normal">(' . \Illuminate\Support\Str::limit($selectedCreatorName, 10) . ')</span>' : '' !!}
+                                            </span>
+                                            <svg id="oleh-dropdown-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="h-4 w-4 text-slate-400 group-hover:text-slate-600 transition-transform duration-200 {{ request('created_by') ? 'text-blue-600' : '' }}">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                        </div>
+                                        
+                                        <!-- Dropdown Menu -->
+                                        <div id="oleh-dropdown" class="hidden absolute left-4 mt-2 w-52 rounded-xl bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 transition-all duration-200 ease-out transform opacity-0 scale-95" style="display: none;">
+                                            <div class="px-3 py-1.5 border-b border-slate-100 mb-1">
+                                                <span class="text-xs font-semibold text-slate-500">Filter Pembuat</span>
+                                            </div>
+                                            <a href="#" onclick="filterByCreator(event, '')" class="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition {{ !request('created_by') ? 'bg-blue-50/50 text-blue-700 font-semibold' : '' }}">
+                                                <span>Semua Pembuat</span>
+                                                @if(!request('created_by'))
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-blue-600">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                                    </svg>
+                                                @endif
+                                            </a>
+                                            @foreach($users as $u)
+                                                <a href="#" onclick="filterByCreator(event, '{{ $u->id }}')" class="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition {{ request('created_by') == $u->id ? 'bg-blue-50/50 text-blue-700 font-semibold' : '' }}">
+                                                    <span class="truncate max-w-[150px]">{{ $u->name }}</span>
+                                                    @if(request('created_by') == $u->id)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-blue-600">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                                        </svg>
+                                                    @endif
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </th>
                                 @endif
                                 <th class="p-4 font-semibold text-slate-700 w-40 text-left">Tanggal Surat</th>
                                 <th class="p-4 font-semibold text-slate-700 text-center w-32">Aksi</th>
@@ -959,6 +1003,50 @@
                 }
             }
 
+            // Toggle Oleh Dropdown
+            function toggleOlehDropdown(event) {
+                event.stopPropagation();
+                const dropdown = document.getElementById('oleh-dropdown');
+                const chevron = document.getElementById('oleh-dropdown-chevron');
+                
+                // Close other dropdowns first
+                document.querySelectorAll('[id$="-select-dropdown"]').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('[id^="dropdown-menu-"]').forEach(el => el.classList.add('hidden'));
+                
+                const popover = document.getElementById('filter-popover');
+                if (popover && !popover.classList.contains('hidden')) {
+                    popover.classList.add('hidden');
+                }
+
+                if (dropdown.classList.contains('hidden')) {
+                    dropdown.classList.remove('hidden');
+                    dropdown.style.display = 'block';
+                    if (chevron) chevron.classList.add('rotate-180');
+                    setTimeout(() => {
+                        dropdown.classList.remove('opacity-0', 'scale-95');
+                        dropdown.classList.add('opacity-100', 'scale-100');
+                    }, 10);
+                } else {
+                    dropdown.classList.remove('opacity-100', 'scale-100');
+                    dropdown.classList.add('opacity-0', 'scale-95');
+                    if (chevron) chevron.classList.remove('rotate-180');
+                    setTimeout(() => {
+                        dropdown.classList.add('hidden');
+                        dropdown.style.display = 'none';
+                    }, 200);
+                }
+            }
+
+            // Filter final table by creator
+            function filterByCreator(event, creatorId) {
+                event.preventDefault();
+                const input = document.getElementById('created-by-input');
+                if (input) {
+                    input.value = creatorId;
+                    document.getElementById('filter-form').submit();
+                }
+            }
+
             // Close dropdowns and popover when clicking outside
             document.addEventListener('click', function (e) {
                 // Handle select menus
@@ -979,6 +1067,20 @@
                     popover.classList.add('opacity-0', 'scale-95');
                     setTimeout(() => {
                         popover.classList.add('hidden');
+                    }, 200);
+                }
+
+                // Handle Oleh Dropdown
+                const olehDropdown = document.getElementById('oleh-dropdown');
+                const olehContainer = document.getElementById('oleh-filter-container');
+                const olehChevron = document.getElementById('oleh-dropdown-chevron');
+                if (olehDropdown && olehContainer && !olehContainer.contains(e.target) && !olehDropdown.classList.contains('hidden')) {
+                    olehDropdown.classList.remove('opacity-100', 'scale-100');
+                    olehDropdown.classList.add('opacity-0', 'scale-95');
+                    if (olehChevron) olehChevron.classList.remove('rotate-180');
+                    setTimeout(() => {
+                        olehDropdown.classList.add('hidden');
+                        olehDropdown.style.display = 'none';
                     }, 200);
                 }
             });
