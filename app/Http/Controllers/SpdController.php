@@ -135,7 +135,7 @@ class SpdController extends Controller
         $data['created_by'] = $userId;
         $data['penandatangan_id'] = $request->input('penandatangan');
         $data['pptk_id'] = null; // Manual input, set relation id to null
-        
+
         // Save manual PPTK inputs to snapshot (for both draft & final)
         $pptkData = [
             'nama' => $request->input('pptk_nama'),
@@ -245,7 +245,7 @@ class SpdController extends Controller
 
         // DRAFTS
         $draftsQuery = Spd::where('status', 'draft')->orderBy('id', 'desc')->with('creator');
-        
+
         // FINALS (Arsip)
         $finalsQuery = Spd::where('status', 'final')->with(['creator', 'pegawais']);
 
@@ -283,12 +283,12 @@ class SpdController extends Controller
             $search = $request->input('search');
             $finalsQuery->where(function ($q) use ($search) {
                 $q->where('nomor_surat', 'like', "%{$search}%")
-                  ->orWhere('maksud', 'like', "%{$search}%")
-                  ->orWhere('tempat', 'like', "%{$search}%")
-                  ->orWhereHas('pegawais', function ($qPeg) use ($search) {
-                      $qPeg->where('nama', 'like', "%{$search}%")
-                           ->orWhere('nip', 'like', "%{$search}%");
-                  });
+                    ->orWhere('maksud', 'like', "%{$search}%")
+                    ->orWhere('tempat', 'like', "%{$search}%")
+                    ->orWhereHas('pegawais', function ($qPeg) use ($search) {
+                        $qPeg->where('nama', 'like', "%{$search}%")
+                            ->orWhere('nip', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -305,9 +305,9 @@ class SpdController extends Controller
         }
 
         $drafts = $draftsQuery->get();
-        
+
         $perPage = $request->input('per_page', 10);
-        $perPage = in_array($perPage, [10, 25, 50, 100]) ? (int)$perPage : 10;
+        $perPage = in_array($perPage, [10, 25, 50, 100]) ? (int) $perPage : 10;
         $finals = $finalsQuery->paginate($perPage)->withQueryString();
 
         $years = range(date('Y') + 1, 2024);
