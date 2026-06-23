@@ -549,22 +549,50 @@
                     <!-- Pejabat Pelaksana Teknis Kegiatan (PPTK) Manual Inputs -->
                     <div style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
                         <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); margin: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">Pejabat Pelaksana Teknis Kegiatan (PPTK)</h4>
+                        
+                        <div class="form-group" style="margin-bottom: 0; position: relative;">
+                            <label>Pilih PPTK (Master Data)</label>
+                            <div style="position: relative;">
+                                <select name="pptk_id" id="pptk_select" class="form-control"
+                                    style="width: 100%; padding: 0.75rem; padding-right: 2.5rem; border: 1px solid var(--border-color); border-radius: 0.375rem; appearance: none; background-color: transparent; position: relative; z-index: 10;"
+                                    onfocus="this.nextElementSibling.style.transform='translateY(-50%) rotate(180deg)'" 
+                                    onblur="this.nextElementSibling.style.transform='translateY(-50%) rotate(0deg)'"
+                                    onchange="this.nextElementSibling.style.transform='translateY(-50%) rotate(0deg)'; this.blur();">
+                                    <option value="">-- Input Manual / Lainnya --</option>
+                                    @foreach($pptks as $p)
+                                        <option value="{{ $p->id }}"
+                                            data-nama="{{ $p->nama }}"
+                                            data-nip="{{ $p->nip }}"
+                                            data-jabatan="{{ $p->jabatan }}"
+                                            data-bidang="Sekretariat"
+                                            {{ (isset($selectedPptkId) && $selectedPptkId == $p->id) ? 'selected' : '' }}>
+                                            {{ $p->nama }} ({{ $p->nip }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="#888" stroke="none" 
+                                    style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); transition: transform 0.2s ease; pointer-events: none; z-index: 1;">
+                                    <polygon points="4,8 20,8 12,17"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>Nama PPTK</label>
-                            <input type="text" name="pptk_nama" placeholder="Nama lengkap & gelar" value="{{ old('pptk_nama', $pptk['nama'] ?? '') }}" required>
+                            <input type="text" name="pptk_nama" id="pptk_nama" placeholder="Nama lengkap & gelar" value="{{ old('pptk_nama', $pptk['nama'] ?? '') }}" required>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>NIP PPTK</label>
-                            <input type="text" name="pptk_nip" placeholder="NIP PPTK" value="{{ old('pptk_nip', $pptk['nip'] ?? '') }}" required>
+                            <input type="text" name="pptk_nip" id="pptk_nip" placeholder="NIP PPTK" value="{{ old('pptk_nip', $pptk['nip'] ?? '') }}" required>
                         </div>
                         <div class="grid">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label>Jabatan PPTK</label>
-                                <input type="text" name="pptk_jabatan" placeholder="Contoh: Kepala Sub Bagian Umum" value="{{ old('pptk_jabatan', $pptk['jabatan'] ?? '') }}" required>
+                                <input type="text" name="pptk_jabatan" id="pptk_jabatan" placeholder="Contoh: Kepala Sub Bagian Umum" value="{{ old('pptk_jabatan', $pptk['jabatan'] ?? '') }}" required>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label>Bidang PPTK</label>
-                                <input type="text" name="pptk_bidang" placeholder="Contoh: Sekretariat" value="{{ old('pptk_bidang', $pptk['bidang'] ?? 'Sekretariat') }}" required>
+                                <input type="text" name="pptk_bidang" id="pptk_bidang" placeholder="Contoh: Sekretariat" value="{{ old('pptk_bidang', $pptk['bidang'] ?? 'Sekretariat') }}" required>
                             </div>
                         </div>
                     </div>
@@ -680,6 +708,39 @@
                 $('#btn-clear-pegawai-utama').hide();
             }
 
+            // Handle PPTK Selection Change
+            function handlePptkSelect(selectEl, isOnChange = false) {
+                const selected = $(selectEl).find('option:selected');
+                const id = $(selectEl).val();
+
+                if (id) {
+                    $('#pptk_nama').val(selected.data('nama')).prop('readonly', true).css('background-color', 'var(--border-color)');
+                    $('#pptk_nip').val(selected.data('nip')).prop('readonly', true).css('background-color', 'var(--border-color)');
+                    $('#pptk_jabatan').val(selected.data('jabatan')).prop('readonly', true).css('background-color', 'var(--border-color)');
+                    $('#pptk_bidang').val(selected.data('bidang')).prop('readonly', true).css('background-color', 'var(--border-color)');
+                } else {
+                    $('#pptk_nama').prop('readonly', false).css('background-color', '');
+                    $('#pptk_nip').prop('readonly', false).css('background-color', '');
+                    $('#pptk_jabatan').prop('readonly', false).css('background-color', '');
+                    $('#pptk_bidang').prop('readonly', false).css('background-color', '');
+
+                    if (isOnChange) {
+                        $('#pptk_nama').val('');
+                        $('#pptk_nip').val('');
+                        $('#pptk_jabatan').val('');
+                        $('#pptk_bidang').val('');
+                    }
+                }
+            }
+
+            $('#pptk_select').on('change', function () {
+                handlePptkSelect(this, true);
+                updatePreview();
+            });
+
+            // Trigger check on load
+            handlePptkSelect('#pptk_select', false);
+
             // Populate Pengikut
             if (Array.isArray(existingPengikuts) && existingPengikuts.length > 0) {
                 existingPengikuts.forEach(function(p) {
@@ -734,8 +795,8 @@
             const pptk = {
                 nama: $('[name="pptk_nama"]').val() || '.......................',
                 nip: $('[name="pptk_nip"]').val() || '.......................',
-                jabatan: $('[name="pptk_jabatan"]').val() || 'Kepala Sub Bagian Umum',
-                bidang: $('[name="pptk_bidang"]').val() || 'Sekretariat',
+                jabatan: $('[name="pptk_jabatan"]').val() || '.......................',
+                bidang: $('[name="pptk_bidang"]').val() || '.......................',
             };
             
             // Allow Title Case logic if needed, but for now use raw name from DB

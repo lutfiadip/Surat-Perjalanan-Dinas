@@ -49,25 +49,27 @@ class SpdController extends Controller
             'bidang' => '',
         ];
 
-        if ($draft && $draft->pptk_snapshot) {
-            $snapshot = json_decode($draft->pptk_snapshot, true);
-            if ($snapshot) {
-                $pptk['nama'] = $snapshot['nama'] ?? '';
-                $pptk['nip'] = $snapshot['nip'] ?? '';
-                $pptk['jabatan'] = $snapshot['jabatan'] ?? '';
-                $pptk['bidang'] = $snapshot['bidang'] ?? 'Sekretariat';
-            }
-        } else {
-            $pptkModel = ($draft && $draft->pptk) ? $draft->pptk : Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
-            if ($pptkModel) {
-                $pptk['nama'] = $pptkModel->nama;
-                $pptk['nip'] = $pptkModel->nip;
-                $pptk['jabatan'] = $pptkModel->jabatan;
+        $selectedPptkId = null;
+        if ($draft) {
+            if ($draft->pptk_snapshot) {
+                $snapshot = json_decode($draft->pptk_snapshot, true);
+                if ($snapshot) {
+                    $pptk['nama'] = $snapshot['nama'] ?? '';
+                    $pptk['nip'] = $snapshot['nip'] ?? '';
+                    $pptk['jabatan'] = $snapshot['jabatan'] ?? '';
+                    $pptk['bidang'] = $snapshot['bidang'] ?? 'Sekretariat';
+                }
+                $selectedPptkId = $draft->pptk_id;
+            } elseif ($draft->pptk) {
+                $pptk['nama'] = $draft->pptk->nama;
+                $pptk['nip'] = $draft->pptk->nip;
+                $pptk['jabatan'] = $draft->pptk->jabatan;
                 $pptk['bidang'] = 'Sekretariat';
+                $selectedPptkId = $draft->pptk_id;
             }
         }
 
-        return view('spd.form', compact('pegawais', 'signatories', 'pptks', 'draft', 'pegawaiUtama', 'pengikuts', 'pptk'));
+        return view('spd.form', compact('pegawais', 'signatories', 'pptks', 'draft', 'pegawaiUtama', 'pengikuts', 'pptk', 'selectedPptkId'));
     }
 
     public function edit($id)
@@ -103,26 +105,28 @@ class SpdController extends Controller
             'bidang' => '',
         ];
 
-        if ($draft && $draft->pptk_snapshot) {
-            $snapshot = json_decode($draft->pptk_snapshot, true);
-            if ($snapshot) {
-                $pptk['nama'] = $snapshot['nama'] ?? '';
-                $pptk['nip'] = $snapshot['nip'] ?? '';
-                $pptk['jabatan'] = $snapshot['jabatan'] ?? '';
-                $pptk['bidang'] = $snapshot['bidang'] ?? 'Sekretariat';
-            }
-        } else {
-            $pptkModel = ($draft && $draft->pptk) ? $draft->pptk : Penandatangan::where('jenis', 'pptk')->where('status_aktif', 1)->first();
-            if ($pptkModel) {
-                $pptk['nama'] = $pptkModel->nama;
-                $pptk['nip'] = $pptkModel->nip;
-                $pptk['jabatan'] = $pptkModel->jabatan;
+        $selectedPptkId = null;
+        if ($draft) {
+            if ($draft->pptk_snapshot) {
+                $snapshot = json_decode($draft->pptk_snapshot, true);
+                if ($snapshot) {
+                    $pptk['nama'] = $snapshot['nama'] ?? '';
+                    $pptk['nip'] = $snapshot['nip'] ?? '';
+                    $pptk['jabatan'] = $snapshot['jabatan'] ?? '';
+                    $pptk['bidang'] = $snapshot['bidang'] ?? 'Sekretariat';
+                }
+                $selectedPptkId = $draft->pptk_id;
+            } elseif ($draft->pptk) {
+                $pptk['nama'] = $draft->pptk->nama;
+                $pptk['nip'] = $draft->pptk->nip;
+                $pptk['jabatan'] = $draft->pptk->jabatan;
                 $pptk['bidang'] = 'Sekretariat';
+                $selectedPptkId = $draft->pptk_id;
             }
         }
 
         // 5. Return view yang sama (form.blade.php sudah support edit mode)
-        return view('spd.form', compact('pegawais', 'signatories', 'pptks', 'draft', 'pegawaiUtama', 'pengikuts', 'pptk'));
+        return view('spd.form', compact('pegawais', 'signatories', 'pptks', 'draft', 'pegawaiUtama', 'pengikuts', 'pptk', 'selectedPptkId'));
     }
 
     public function store(Request $request)
@@ -134,7 +138,7 @@ class SpdController extends Controller
         $data = $request->except('_token', 'pegawai_ids', 'pegawai_utama', 'pengikut', 'action', 'penandatangan', 'pptk_id', 'pptk_nama', 'pptk_nip', 'pptk_jabatan', 'pptk_bidang');
         $data['created_by'] = $userId;
         $data['penandatangan_id'] = $request->input('penandatangan');
-        $data['pptk_id'] = null; // Manual input, set relation id to null
+        $data['pptk_id'] = $request->input('pptk_id') ?: null;
 
         // Save manual PPTK inputs to snapshot (for both draft & final)
         $pptkData = [
