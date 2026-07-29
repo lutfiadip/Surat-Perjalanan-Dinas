@@ -10,6 +10,62 @@ use Illuminate\Http\Request;
 
 class SpdController extends Controller
 {
+    public function checkAvailability(Request $request)
+    {
+        $tglBerangkat = $request->input('tgl_berangkat');
+        $tglKembali = $request->input('tgl_kembali');
+        $pegawaiIds = $request->input('pegawai_ids');
+        $excludeSpdId = $request->input('exclude_spd_id');
+
+        if (!$tglBerangkat || !$tglKembali || !is_array($pegawaiIds) || empty($pegawaiIds)) {
+            return response()->json(['has_conflict' => false]);
+        }
+
+        // Clean and unique IDs
+        $pegawaiIds = array_filter(array_unique($pegawaiIds));
+
+        // Find overlapping finalized SPDs
+        $overlappingSpds = Spd::where('status', 'final')
+            ->where(function ($query) use ($tglBerangkat, $tglKembali) {
+                $query->where('tgl_berangkat', '<=', $tglKembali)
+                      ->where('tgl_kembali', '>=', $tglBerangkat);
+            });
+
+        if ($excludeSpdId) {
+            $overlappingSpds->where('id', '!=', $excludeSpdId);
+        }
+
+        $overlappingSpds = $overlappingSpds->whereHas('pegawais', function ($query) use ($pegawaiIds) {
+            $query->whereIn('pegawai_id', $pegawaiIds);
+        })->with(['pegawais' => function ($query) use ($pegawaiIds) {
+            $query->whereIn('pegawai_id', $pegawaiIds);
+        }])->get();
+
+        $conflicts = [];
+        foreach ($overlappingSpds as $spd) {
+            foreach ($spd->pegawais as $pegawai) {
+                $conflicts[] = [
+                    'pegawai_id' => $pegawai->id,
+                    'pegawai_nama' => $pegawai->nama,
+                    'nomor_surat_tugas' => $spd->nomor_surat_tugas,
+                    'nomor_surat' => $spd->nomor_surat,
+                    'maksud' => $spd->maksud,
+                    'tgl_berangkat' => $spd->tgl_berangkat,
+                    'tgl_kembali' => $spd->tgl_kembali,
+                ];
+            }
+        }
+
+        if (count($conflicts) > 0) {
+            return response()->json([
+                'has_conflict' => true,
+                'conflicts' => $conflicts
+            ]);
+        }
+
+        return response()->json(['has_conflict' => false]);
+    }
+
     public function create(Request $request)
     {
         // Fetch active Pegawai only
@@ -166,6 +222,49 @@ class SpdController extends Controller
                 'pptk_jabatan' => 'required',
                 'pptk_bidang' => 'required',
             ]);
+
+            // Check for schedule conflicts
+            $tglBerangkat = $request->input('tgl_berangkat');
+            $tglKembali = $request->input('tgl_kembali');
+            $pegawaiUtama = $request->input('pegawai_utama');
+            $pengikutIds = $request->input('pengikut', []);
+            $excludeSpdId = $request->input('id');
+
+            $pegawaiIds = array_filter(array_unique(array_merge([$pegawaiUtama], $pengikutIds)));
+
+            if ($tglBerangkat && $tglKembali && !empty($pegawaiIds)) {
+                $overlappingSpds = Spd::where('status', 'final')
+                    ->where(function ($query) use ($tglBerangkat, $tglKembali) {
+                        $query->where('tgl_berangkat', '<=', $tglKembali)
+                              ->where('tgl_kembali', '>=', $tglBerangkat);
+                    });
+
+                if ($excludeSpdId) {
+                    $overlappingSpds->where('id', '!=', $excludeSpdId);
+                }
+
+                $overlappingSpds = $overlappingSpds->whereHas('pegawais', function ($query) use ($pegawaiIds) {
+                    $query->whereIn('pegawai_id', $pegawaiIds);
+                })->with(['pegawais' => function ($query) use ($pegawaiIds) {
+                    $query->whereIn('pegawai_id', $pegawaiIds);
+                }])->get();
+
+                if ($overlappingSpds->isNotEmpty()) {
+                    $conflictDetails = [];
+                    foreach ($overlappingSpds as $spd) {
+                        foreach ($spd->pegawais as $pegawai) {
+                             $conflictDetails[] = "- Pegawai " . $pegawai->nama . " sedang melakukan perjalanan dinas pada " . 
+                                \Carbon\Carbon::parse($spd->tgl_berangkat)->locale('id')->isoFormat('D MMMM Y') . " s/d " .
+                                \Carbon\Carbon::parse($spd->tgl_kembali)->locale('id')->isoFormat('D MMMM Y') . " (" . $spd->maksud . ")";
+                        }
+                    }
+                    
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors(['pegawai_conflict' => 'Terdapat bentrok jadwal perjalanan dinas pegawai:<br>' . implode('<br>', $conflictDetails)]);
+                }
+            }
+
             $data['status'] = 'final';
 
             // Generate Internal Number if not exists

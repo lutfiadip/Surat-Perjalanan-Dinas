@@ -11,6 +11,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        // 1. Tambahkan baris pengecualian ini untuk SQLite
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         DB::statement("ALTER TABLE penandatangan MODIFY COLUMN jenis ENUM('kepala', 'pptk', 'bendahara', 'sekretaris', 'kasubbag', 'kabid') NOT NULL DEFAULT 'kepala'");
     }
 
@@ -19,6 +24,11 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        // 2. Tambahkan baris pengecualian ini juga
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         DB::statement("ALTER TABLE penandatangan MODIFY COLUMN jenis ENUM('kepala', 'pptk', 'bendahara', 'sekretaris', 'kasubbag') NOT NULL DEFAULT 'kepala'");
     }
 };

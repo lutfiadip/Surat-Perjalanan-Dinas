@@ -12,9 +12,9 @@
                 <h3 style="font-size: 12pt; margin: 0; font-weight: normal;">PEMERINTAH KABUPATEN KARANGANYAR
                 </h3>
                 <h2 style="font-size: 16pt; margin: 0; font-weight: bold;">BADAN KEUANGAN DAERAH</h2>
-                <p style="font-size: 9pt; margin: 2px 0;">Jalan KH.Wachid Hasyim Nomor .2 Karanganyar, Provinsi
+                <p style="font-size: 9pt; margin: 2px 0;">Jalan KH.Wachid Hasyim Nomor. 2 Karanganyar, Provinsi
                     Jawa Tengah</p>
-                <p style="font-size: 9pt; margin: 2px 0;">Kode Pos 57713 Telp.(0271) 495066 , 495138 Fax. (0271)
+                <p style="font-size: 9pt; margin: 2px 0;">Kode Pos 57713 Telp. (0271) 495066, 495138 Fax. (0271)
                     6491366</p>
                 <p style="font-size: 9pt; margin: 2px 0;">Laman : www.bkd.karanganyar.go.id Pos-el :
                     bkd@karanganyarkab.go.id</p>
@@ -96,7 +96,6 @@
                 </div>
             </div>
 
-            <!-- SIGNATURE -->
             <!-- SIGNATURE -->
             <div id="preview-signature-container"
                 style="float: right; width: 310px; margin-top: 15px; text-align: left;">
@@ -398,12 +397,19 @@
                         <tr>
                             <td></td>
                             <td colspan="3" style="padding-top: 10px; vertical-align: top; padding-left: 10px;">
-                                <div><span id="preview-visum-pptk-jabatan">{{ $pptk['jabatan'] ?? 'Kepala Sub Bagian Umum' }}</span>,</div>
+                                <div><span
+                                        id="preview-visum-pptk-jabatan">{{ $pptk['jabatan'] ?? 'Kepala Sub Bagian Umum' }}</span>,
+                                </div>
                                 <div>Selaku Pejabat Pelaksana Teknis Kegiatan</div>
-                                <div><span id="preview-visum-pptk-bidang">{{ $pptk['bidang'] ?? 'Sekretariat' }}</span></div>
+                                <div><span id="preview-visum-pptk-bidang">{{ $pptk['bidang'] ?? 'Sekretariat' }}</span>
+                                </div>
                                 <br><br><br>
-                                <div>(<span id="preview-visum-pptk-nama">{{ $pptk['nama'] ?? '.......................' }}</span>)</div>
-                                <div>NIP. <span id="preview-visum-pptk-nip">{{ $pptk['nip'] ?? '.......................' }}</span></div>
+                                <div>(<span
+                                        id="preview-visum-pptk-nama">{{ $pptk['nama'] ?? '.......................' }}</span>)
+                                </div>
+                                <div>NIP. <span
+                                        id="preview-visum-pptk-nip">{{ $pptk['nip'] ?? '.......................' }}</span>
+                                </div>
                             </td>
                         </tr>
                     </table>

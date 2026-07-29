@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         if (Schema::hasColumn('users', 'email')) {
             Schema::table('users', function (Blueprint $table) {
+                $table->dropUnique(['email']);
                 $table->dropColumn('email');
             });
         }

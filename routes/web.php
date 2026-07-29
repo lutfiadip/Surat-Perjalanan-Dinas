@@ -5,6 +5,10 @@ use App\Http\Controllers\SpdController;
 
 use App\Http\Controllers\LoginController;
 
+Route::get('/test-view', function () {
+    return view('spd.form', ['signatories' => [], 'pptks' => [], 'pengikuts' => []]);
+});
+
 Route::get('/', function () {
     $user = null;
     if (Illuminate\Support\Facades\Session::has('user_id')) {
@@ -21,6 +25,7 @@ Route::middleware(['simple.auth'])->group(function () {
     Route::get('/spd', [SpdController::class, 'draft'])->name('spd.index'); // Changed default to draft
     Route::get('/spd/create', [SpdController::class, 'create'])->name('spd.create'); // Alias
     Route::post('/spd/store', [SpdController::class, 'store'])->name('spd.store');
+    Route::post('/spd/check-availability', [SpdController::class, 'checkAvailability'])->name('spd.check_availability');
     Route::get('/spd/draft', [SpdController::class, 'draft'])->name('spd.draft');
     Route::get('/spd/edit/{id}', [SpdController::class, 'edit'])->name('spd.edit');
     Route::get('/spd/print/{id}', [SpdController::class, 'printFinal'])->name('spd.print.final');

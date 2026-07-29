@@ -1,14 +1,39 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Input SPD</title>
-    <!-- jQuery & Select2 -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- GLOBAL ERROR HANDLER -->
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            alert("JS Error di baris " + lineno + ":\n" + message);
+        };
+    </script>
+    <!-- Injected JS -->
+    <style>
+        {!! file_get_contents(public_path('css/select2.min.css')) !!}
+    </style>
+    <script>
+        // NativePHP/Electron injects `module` which breaks jQuery/Select2 UMD wrappers.
+        // We hide them temporarily so they attach to `window`.
+        var _module = window.module;
+        var _exports = window.exports;
+        window.module = undefined;
+        window.exports = undefined;
+    </script>
+    <script>
+        {!! file_get_contents(public_path('js/jquery.min.js')) !!}
+    </script>
+    <script>
+        {!! file_get_contents(public_path('js/select2.min.js')) !!}
+    </script>
+    <script>
+        window.module = _module;
+        window.exports = _exports;
+    </script>
+
+    @vite(['resources/css/app.css'])
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -207,6 +232,7 @@
             filter: blur(60px);
             z-index: -1;
             opacity: 0.6;
+            pointer-events: none;
         }
 
         .blob-blue {
@@ -382,6 +408,28 @@
                 @csrf
                 <input type="hidden" name="id" value="{{ $draft->id ?? '' }}">
                 <input type="hidden" name="status" value="draft">
+
+                <!-- Backend Conflict Warning Display -->
+                @if($errors->has('pegawai_conflict'))
+                    <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-sm" role="alert">
+                        <div class="flex items-start gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5 flex-shrink-0 text-red-600" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <div>
+                                <span class="text-sm font-bold text-red-800">Peringatan Bentrok Jadwal (Backend):</span>
+                                <div class="text-sm mt-1">{!! $errors->first('pegawai_conflict') !!}</div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Dynamic AJAX Warning Container -->
+                <div id="conflict-warning-container" style="display: none;"></div>
 
                 <!-- SECTION 1: INFORMASI SURAT -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
@@ -665,7 +713,7 @@
         const pptks = @json($pptks ?? []);
         const existingPengikuts = @json($pengikuts ?? []);
 
-        $(document).ready(function () {
+        function initSpdForm() {
             // Toggle Preview Handler
             $('#btn-toggle-preview').on('click', function () {
                 const container = $('.container');
@@ -697,6 +745,7 @@
                         $('#btn-clear-pegawai-utama').hide();
                     }
                 }
+                checkScheduleConflict();
             });
 
             // Initial visibility for Tambah Pengikut
@@ -750,13 +799,54 @@
 
             // Initial Preview Update
             updatePreview();
+            updateDay();
 
             // Bind Input Events
             $('input, textarea, select').on('input change', function () {
                 updatePreview();
             });
-        });
 
+            // Bind conflict checks on date / duration changes
+            $('#tgl_berangkat, #lama_perjalanan').on('input change', function() {
+                checkScheduleConflict();
+            });
+
+            // Track last clicked submit button
+            let lastClickedSubmitButton = null;
+            $('button[type="submit"]').on('click', function() {
+                lastClickedSubmitButton = this;
+            });
+
+            // Intercept form submission to block & warn if bentrok
+            $('#spdForm').on('submit', function (e) {
+                const action = lastClickedSubmitButton ? $(lastClickedSubmitButton).val() : $(document.activeElement).val();
+                
+                if (action === 'final' && hasActiveConflict) {
+                    e.preventDefault();
+                    
+                    // Show a toast for each conflicting employee
+                    if (Array.isArray(currentConflicts) && currentConflicts.length > 0) {
+                        currentConflicts.forEach(c => {
+                            const start = formatDateIndo(c.tgl_berangkat);
+                            const end = formatDateIndo(c.tgl_kembali);
+                            showToast(`Pegawai <strong>${c.pegawai_nama}</strong> sedang melakukan perjalanan dinas pada ${start} s/d ${end}.`, "error");
+                        });
+                    } else {
+                        showToast("Tidak dapat menyimpan final karena terdapat bentrok jadwal pegawai.", "error");
+                    }
+                    
+                    // Scroll to warning container
+                    $('html, body').animate({
+                        scrollTop: $("#conflict-warning-container").offset().top - 100
+                    }, 500);
+                    
+                    return false;
+                }
+            });
+
+            // Initial check on page load (specifically when editing draft)
+            checkScheduleConflict();
+        }
         function updatePreview() {
             // --- DATA GATHERING ---
             const nomor = $('[name="nomor_surat"]').val();
@@ -1149,6 +1239,7 @@
             removeBtn.on('click', function () {
                 $(this).closest('.pegawai-row').remove();
                 updatePreview();
+                checkScheduleConflict();
             });
 
             newRow.append(removeBtn);
@@ -1162,6 +1253,7 @@
                 width: '100%'
             }).on('change', function () {
                 updatePreview();
+                checkScheduleConflict();
             });
         }
 
@@ -1193,6 +1285,7 @@
 
             returnDateInput.value = `${rYear}-${rMonth}-${rDay}`;
             updatePreview();
+            checkScheduleConflict();
         }
 
         function updateDay() {
@@ -1229,10 +1322,212 @@
             return res;
         }
 
-        // Initialize Day on Load
-        window.addEventListener('DOMContentLoaded', (event) => {
-            updateDay();
-        });
+        let conflictCheckTimeout = null;
+        var hasActiveConflict = false;
+        var currentConflicts = [];
+
+        function showToast(message, type = 'error') {
+            let container = $('#toast-container');
+            if (container.length === 0) {
+                container = $('<div id="toast-container" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; align-items: center;"></div>');
+                $('body').append(container);
+            }
+
+            const toastId = 'toast-' + Date.now();
+            const bgColor = type === 'error' ? '#fef2f2' : '#f0fdf4';
+            const borderColor = type === 'error' ? '#fecaca' : '#bbf7d0';
+            const textColor = type === 'error' ? '#991b1b' : '#166534';
+            const title = type === 'error' ? 'Jadwal Bentrok!' : 'Sukses';
+            const icon = type === 'error'
+                ? `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+
+            const toastHtml = `
+                <div id="${toastId}" style="
+                    pointer-events: auto;
+                    background-color: ${bgColor};
+                    border: 1px solid ${borderColor};
+                    color: ${textColor};
+                    padding: 1rem;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                    display: flex;
+                    align-items: start;
+                    gap: 12px;
+                    min-width: 320px;
+                    max-width: 450px;
+                    opacity: 0;
+                    transform: translateY(-30px);
+                    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+                ">
+                    ${icon}
+                    <div style="flex: 1; font-family: 'Instrument Sans', sans-serif;">
+                        <div style="font-weight: 700; font-size: 0.9rem; margin-bottom: 2px;">${title}</div>
+                        <div style="font-size: 0.8rem; line-height: 1.4; font-weight: 500;">${message}</div>
+                    </div>
+                    <button type="button" onclick="$('#${toastId}').css({ 'transform': 'translateY(-30px)', 'opacity': 0 }).delay(350).queue(function() { $(this).remove(); })" style="
+                        background: none;
+                        border: none;
+                        cursor: pointer;
+                        padding: 0;
+                        color: inherit;
+                        font-weight: bold;
+                        font-size: 1.25rem;
+                        line-height: 1;
+                        flex-shrink: 0;
+                        margin-left: 5px;
+                        opacity: 0.6;
+                    ">&times;</button>
+                </div>
+            `;
+
+            container.append(toastHtml);
+
+            // Animate in
+            setTimeout(() => {
+                $(`#${toastId}`).css({
+                    'transform': 'translateY(0)',
+                    'opacity': 1
+                });
+            }, 50);
+
+            // Auto-dismiss after 7 seconds
+            setTimeout(() => {
+                const el = $(`#${toastId}`);
+                if (el.length > 0) {
+                    el.css({
+                        'transform': 'translateY(-30px)',
+                        'opacity': 0
+                    });
+                    setTimeout(() => { el.remove(); }, 350);
+                }
+            }, 7000);
+        }
+
+        function checkScheduleConflict() {
+            clearTimeout(conflictCheckTimeout);
+            conflictCheckTimeout = setTimeout(() => {
+                const tglBerangkat = $('#tgl_berangkat').val();
+                const tglKembali = $('#tgl_kembali').val();
+                const pegawaiUtama = $('select[name="pegawai_utama"]').val();
+                const excludeSpdId = $('input[name="id"]').val() || '';
+
+                // Get all pengikut values
+                const pengikutIds = [];
+                $('select[name="pengikut[]"]').each(function() {
+                    const val = $(this).val();
+                    if (val) {
+                        pengikutIds.push(val);
+                    }
+                });
+
+                // Combine all pegawai ids
+                const pegawaiIds = [];
+                if (pegawaiUtama) {
+                    pegawaiIds.push(pegawaiUtama);
+                }
+                pengikutIds.forEach(id => {
+                    if (!pegawaiIds.includes(id)) {
+                        pegawaiIds.push(id);
+                    }
+                });
+
+                // Hide warning and reset style initially
+                $('#conflict-warning-container').hide().empty();
+                $('button[type="submit"][value="final"]').css({
+                    'opacity': '',
+                    'cursor': ''
+                });
+
+                // Only check if we have dates and at least one employee
+                if (!tglBerangkat || !tglKembali || pegawaiIds.length === 0) {
+                    hasActiveConflict = false;
+                    currentConflicts = [];
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ route('spd.check_availability') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        tgl_berangkat: tglBerangkat,
+                        tgl_kembali: tglKembali,
+                        pegawai_ids: pegawaiIds,
+                        exclude_spd_id: excludeSpdId
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.has_conflict && response.conflicts.length > 0) {
+                            // Detect changes in conflict lists
+                            const newIds = response.conflicts.map(c => c.pegawai_id).sort().join(',');
+                            const oldIds = currentConflicts.map(c => c.pegawai_id).sort().join(',');
+
+                            currentConflicts = response.conflicts;
+                            hasActiveConflict = true;
+
+                            if (newIds !== oldIds) {
+                                // Show a toast for each conflicting employee
+                                currentConflicts.forEach(c => {
+                                    const start = formatDateIndo(c.tgl_berangkat);
+                                    const end = formatDateIndo(c.tgl_kembali);
+                                    showToast(`Pegawai <strong>${c.pegawai_nama}</strong> sedang melakukan perjalanan dinas pada ${start} s/d ${end}.`, 'error');
+                                });
+                            }
+
+                            // Style only the "Simpan Final" button visually (keep enabled to capture click)
+                            $('button[type="submit"][value="final"]').css({
+                                'opacity': '0.6',
+                                'cursor': 'not-allowed'
+                            });
+
+                            // Build warning list
+                            let listHtml = '<ul style="margin: 5px 0 0 20px; list-style-type: disc; font-size: 0.875rem; color: #b91c1c;">';
+                            response.conflicts.forEach(c => {
+                                const start = formatDateIndo(c.tgl_berangkat);
+                                const end = formatDateIndo(c.tgl_kembali);
+                                listHtml += `<li style="margin-bottom: 4px;">Pegawai <strong>${c.pegawai_nama}</strong> sedang melakukan perjalanan dinas pada <strong>${start} s/d ${end}</strong> (${c.maksud || '-'})</li>`;
+                            });
+                            listHtml += '</ul>';
+
+                            // Display alert
+                            const alertHtml = `
+                                <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-sm" role="alert">
+                                    <div class="flex items-start gap-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5 flex-shrink-0 text-red-600" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                        </svg>
+                                        <div style="flex: 1;">
+                                            <span class="text-sm font-bold text-red-800">Peringatan Bentrok Jadwal Pegawai:</span>
+                                            <div class="mt-1">${listHtml}</div>
+                                            <span class="text-xs text-red-600 font-semibold block mt-2">* Catatan: Anda tidak dapat memfinalisasi SPD ini karena terdapat jadwal bentrok. Namun, Anda masih dapat menyimpannya sebagai Draf terlebih dahulu.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            $('#conflict-warning-container').html(alertHtml).show();
+                        } else {
+                            hasActiveConflict = false;
+                            currentConflicts = [];
+                            $('button[type="submit"][value="final"]').css({
+                                'opacity': '',
+                                'cursor': ''
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Gagal memeriksa jadwal pegawai: ", error);
+                    }
+                });
+            }, 300);
+        }
+
+        // Initialize Form
+        initSpdForm();
     </script>
 </body>
 

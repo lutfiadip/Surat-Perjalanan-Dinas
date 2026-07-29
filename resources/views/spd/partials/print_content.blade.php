@@ -6,8 +6,8 @@
         <div class="kop-text">
             <h3>PEMERINTAH KABUPATEN KARANGANYAR</h3>
             <h2>BADAN KEUANGAN DAERAH</h2>
-            <p>Jalan KH.Wachid Hasyim Nomor .2 Karanganyar, Provinsi Jawa Tengah</p>
-            <p>Kode Pos 57713 Telp.(0271) 495066 , 495138 Fax. (0271) 6491366</p>
+            <p>Jalan KH.Wachid Hasyim Nomor. 2 Karanganyar, Provinsi Jawa Tengah</p>
+            <p>Kode Pos 57713 Telp.(0271) 495066, 495138 Fax.(0271) 6491366</p>
             <p>Laman : www.bkd.karanganyar.go.id Pos-el : bkd@karanganyarkab.go.id</p>
         </div>
     </div>

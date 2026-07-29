@@ -25,9 +25,9 @@ if (file_exists($path)) {
             <td style="text-align: center; vertical-align: middle;">
                 <h3 style="font-size: 12pt; font-weight: normal; margin: 0;">PEMERINTAH KABUPATEN KARANGANYAR</h3>
                 <h2 style="font-size: 16pt; font-weight: bold; margin: 0;">BADAN KEUANGAN DAERAH</h2>
-                <p style="font-size: 9pt; margin: 1px 0;">Jalan KH.Wachid Hasyim Nomor .2 Karanganyar, Provinsi Jawa
+                <p style="font-size: 9pt; margin: 1px 0;">Jalan KH.Wachid Hasyim Nomor. 2 Karanganyar, Provinsi Jawa
                     Tengah</p>
-                <p style="font-size: 9pt; margin: 1px 0;">Kode Pos 57713 Telp.(0271) 495066 , 495138 Fax. (0271)
+                <p style="font-size: 9pt; margin: 1px 0;">Kode Pos 57713 Telp.(0271) 495066, 495138 Fax.(0271)
                     6491366</p>
                 <p style="font-size: 9pt; margin: 1px 0;">Laman : www.bkd.karanganyar.go.id Pos-el :
                     bkd@karanganyarkab.go.id</p>
