@@ -688,12 +688,12 @@
                 </div>
 
                 <div style="display: flex; gap: 1rem;">
-                    @if(isset($draft) && $draft->status == 'final')
-                        {{-- Final Mode: Print & Export Only --}}
+                    @if(isset($draft) && $draft->status == 'final' && \Carbon\Carbon::parse($draft->tgl_berangkat)->startOfDay()->lt(\Carbon\Carbon::today()))
+                        {{-- Final Mode & Passed: Print & Export Only --}}
                         <a href="{{ route('spd.print.final', ['id' => $draft->id]) }}" target="_blank" class="btn" style="text-decoration: none; text-align: center;">Cetak Surat</a>
                         <a href="{{ route('spd.export_word.final', ['id' => $draft->id]) }}" class="btn" style="text-decoration: none; text-align: center;">Export Word</a>
                     @else
-                        {{-- Draft Mode: Save Actions --}}
+                        {{-- Draft Mode OR Final & Not Passed: Save Actions --}}
                         <button type="submit" name="action" value="draft" class="btn btn-draft" formnovalidate>Simpan Draft</button>
                         <button type="submit" name="action" value="final" class="btn">Simpan Final</button>
                     @endif

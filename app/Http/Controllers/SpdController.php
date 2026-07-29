@@ -151,6 +151,15 @@ class SpdController extends Controller
 
         $draft = $query->firstOrFail();
 
+        // Check if finalized and passed the date limit
+        if ($draft->status === 'final') {
+            $today = \Carbon\Carbon::today();
+            $tglBerangkat = \Carbon\Carbon::parse($draft->tgl_berangkat)->startOfDay();
+            if ($tglBerangkat->lt($today)) {
+                return redirect()->route('spd.draft')->with('error', 'Dokumen final ini sudah melewati batas waktu dan tidak dapat diedit.');
+            }
+        }
+
         // 4. Pisahkan Pegawai Utama & Pengikut
         $pegawaiUtama = $draft->pegawais->where('pivot.peran', 'utama')->first();
         $pengikuts = $draft->pegawais->where('pivot.peran', 'pengikut')->values();
@@ -313,10 +322,13 @@ class SpdController extends Controller
                 abort(404, 'Draft not found or unauthorized.');
             }
 
-            // If already final, prevent changes (Security check)
+            // If already final, check if it's passed the date limit
             if ($spd->status === 'final') {
-                // Or redirect with error
-                return redirect()->route('spd.draft')->with('error', 'Dokumen sudah final dan tidak dapat diedit.');
+                $today = \Carbon\Carbon::today();
+                $tglBerangkat = \Carbon\Carbon::parse($spd->tgl_berangkat)->startOfDay();
+                if ($tglBerangkat->lt($today)) {
+                    return redirect()->route('spd.draft')->with('error', 'Dokumen sudah final dan telah melewati batas waktu sehingga tidak dapat diedit.');
+                }
             }
 
             // Perform Update

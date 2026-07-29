@@ -783,6 +783,17 @@
                                                     </a>
                                                 </div>
                                             </div>
+                                            @if(!$final->is_cancelled && \Carbon\Carbon::parse($final->tgl_berangkat)->startOfDay()->gte(\Carbon\Carbon::today()))
+                                                <a href="{{ route('spd.edit', ['id' => $final->id]) }}"
+                                                    onclick="return confirm('Apakah Anda yakin ingin mengedit dokumen SPD final ini?')"
+                                                    class="inline-flex items-center justify-center w-8 h-8 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-600 hover:text-amber-700 rounded-lg transition"
+                                                    title="Edit SPD">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M12 20h9"></path>
+                                                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                                    </svg>
+                                                </a>
+                                            @endif
                                             @if(!$final->is_cancelled)
                                                 <button type="button" onclick="openCancelModal('{{ $final->id }}', '{{ addslashes($pegawaiUtamaNama) }}', '{{ addslashes($final->tempat ?? '') }}', '{{ addslashes($final->maksud ?? '') }}')"
                                                     class="inline-flex items-center justify-center w-8 h-8 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 hover:text-red-700 rounded-lg transition cursor-pointer"
