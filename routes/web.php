@@ -32,6 +32,9 @@ Route::middleware(['simple.auth'])->group(function () {
     Route::get('/spd/export-word/{id}', [SpdController::class, 'exportWordFinal'])->name('spd.export_word.final');
     Route::delete('/spd/delete/{id}', [SpdController::class, 'destroy'])->name('spd.destroy');
     Route::post('/spd/delete-batch', [SpdController::class, 'bulkDestroy'])->name('spd.bulk_destroy');
+    Route::post('/spd/cancel/{id}', [SpdController::class, 'cancel'])->name('spd.cancel');
+    Route::post('/spd/reactivate/{id}', [SpdController::class, 'reactivate'])->name('spd.reactivate');
+    Route::get('/spd/check-reactivate-conflict/{id}', [SpdController::class, 'checkReactivateConflict'])->name('spd.check_reactivate_conflict');
     Route::post('/spd/print', [SpdController::class, 'print'])->name('spd.print');
     Route::post('/spd/export-word', [SpdController::class, 'exportWord'])->name('spd.export_word');
     Route::post('/spd/print-bulk', [SpdController::class, 'bulkPrint'])->name('spd.bulk_print');

@@ -24,8 +24,9 @@ class SpdController extends Controller
         // Clean and unique IDs
         $pegawaiIds = array_filter(array_unique($pegawaiIds));
 
-        // Find overlapping finalized SPDs
+        // Find overlapping finalized SPDs (exclude cancelled ones)
         $overlappingSpds = Spd::where('status', 'final')
+            ->where('is_cancelled', false)
             ->where(function ($query) use ($tglBerangkat, $tglKembali) {
                 $query->where('tgl_berangkat', '<=', $tglKembali)
                       ->where('tgl_kembali', '>=', $tglBerangkat);
@@ -50,6 +51,7 @@ class SpdController extends Controller
                     'nomor_surat_tugas' => $spd->nomor_surat_tugas,
                     'nomor_surat' => $spd->nomor_surat,
                     'maksud' => $spd->maksud,
+                    'tempat' => $spd->tempat,
                     'tgl_berangkat' => $spd->tgl_berangkat,
                     'tgl_kembali' => $spd->tgl_kembali,
                 ];
@@ -232,8 +234,12 @@ class SpdController extends Controller
 
             $pegawaiIds = array_filter(array_unique(array_merge([$pegawaiUtama], $pengikutIds)));
 
+            // Peringatan bentrok jadwal dilewati/dibypass (bisa tetap difinalisasi)
+            // Logika pengecekan bentrok sekarang sepenuhnya ditangani via konfirmasi front-end
+            /*
             if ($tglBerangkat && $tglKembali && !empty($pegawaiIds)) {
                 $overlappingSpds = Spd::where('status', 'final')
+                    ->where('is_cancelled', false)
                     ->where(function ($query) use ($tglBerangkat, $tglKembali) {
                         $query->where('tgl_berangkat', '<=', $tglKembali)
                               ->where('tgl_kembali', '>=', $tglBerangkat);
@@ -264,6 +270,7 @@ class SpdController extends Controller
                         ->withErrors(['pegawai_conflict' => 'Terdapat bentrok jadwal perjalanan dinas pegawai:<br>' . implode('<br>', $conflictDetails)]);
                 }
             }
+            */
 
             $data['status'] = 'final';
 
@@ -825,6 +832,138 @@ class SpdController extends Controller
         }
 
         return redirect()->route('spd.draft')->with('success', "$count dokumen berhasil dihapus.");
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $request->validate([
+            'keterangan_batal' => 'required|string',
+        ]);
+
+        $userId = session('user_id');
+
+        // STRICT: Admin can cancel any, User only own
+        $query = Spd::where('id', $id);
+        if (session('role') !== 'admin') {
+            $query->where('created_by', $userId);
+        }
+        $spd = $query->firstOrFail();
+
+        // Prevent canceling if already cancelled
+        if ($spd->is_cancelled) {
+            return redirect()->back()->with('error', 'SPD ini sudah dibatalkan sebelumnya.');
+        }
+
+        // Set status is_cancelled to true and save explanation
+        $spd->update([
+            'is_cancelled' => true,
+            'keterangan_batal' => $request->input('keterangan_batal')
+        ]);
+
+        return redirect()->route('spd.draft')->with('success', 'SPD berhasil dibatalkan.');
+    }
+
+    public function reactivate(Request $request, $id)
+    {
+        $userId = session('user_id');
+
+        // STRICT: Admin can reactivate any, User only own
+        $query = Spd::where('id', $id)->with('pegawais');
+        if (session('role') !== 'admin') {
+            $query->where('created_by', $userId);
+        }
+        $spd = $query->firstOrFail();
+
+        // Prevent if not cancelled
+        if (!$spd->is_cancelled) {
+            return redirect()->back()->with('error', 'SPD ini tidak sedang dibatalkan.');
+        }
+
+        // Check for schedule conflicts after reactivation
+        $tglBerangkat = $spd->tgl_berangkat;
+        $tglKembali = $spd->tgl_kembali;
+        $pegawaiIds = $spd->pegawais->pluck('id')->toArray();
+        $excludeSpdId = $spd->id;
+
+        $conflicts = [];
+        if ($tglBerangkat && $tglKembali && !empty($pegawaiIds)) {
+            $overlappingSpds = Spd::where('status', 'final')
+                ->where('is_cancelled', false)
+                ->where('id', '!=', $excludeSpdId)
+                ->where(function ($query) use ($tglBerangkat, $tglKembali) {
+                    $query->where('tgl_berangkat', '<=', $tglKembali)
+                          ->where('tgl_kembali', '>=', $tglBerangkat);
+                })
+                ->whereHas('pegawais', function ($query) use ($pegawaiIds) {
+                    $query->whereIn('pegawai_id', $pegawaiIds);
+                })
+                ->with(['pegawais' => function ($query) use ($pegawaiIds) {
+                    $query->whereIn('pegawai_id', $pegawaiIds);
+                }])
+                ->get();
+
+            foreach ($overlappingSpds as $overlap) {
+                foreach ($overlap->pegawais as $pegawai) {
+                    $start = \Carbon\Carbon::parse($overlap->tgl_berangkat)->locale('id')->isoFormat('D MMMM Y');
+                    $end = \Carbon\Carbon::parse($overlap->tgl_kembali)->locale('id')->isoFormat('D MMMM Y');
+                    $conflicts[] = "- Pegawai <strong>{$pegawai->nama}</strong> bentrok jadwal dinas (tujuan: {$overlap->tempat}, tgl: {$start} s/d {$end}, maksud: " . ($overlap->maksud ?: '-') . ")";
+                }
+            }
+        }
+
+        // Set status is_cancelled to false and clear explanation
+        $spd->update([
+            'is_cancelled' => false,
+            'keterangan_batal' => null
+        ]);
+
+        if (count($conflicts) > 0) {
+            $warningMsg = "SPD berhasil diaktifkan kembali. <strong>Catatan bentrok jadwal pegawai setelah diaktifkan</strong>:<br>" . implode('<br>', $conflicts);
+            return redirect()->route('spd.draft')->with('success', $warningMsg);
+        }
+
+        return redirect()->route('spd.draft')->with('success', 'SPD berhasil diaktifkan kembali.');
+    }
+
+    public function checkReactivateConflict($id)
+    {
+        $spd = Spd::with('pegawais')->findOrFail($id);
+        
+        $tglBerangkat = $spd->tgl_berangkat;
+        $tglKembali = $spd->tgl_kembali;
+        $pegawaiIds = $spd->pegawais->pluck('id')->toArray();
+        $excludeSpdId = $spd->id;
+
+        $conflicts = [];
+        if ($tglBerangkat && $tglKembali && !empty($pegawaiIds)) {
+            $overlappingSpds = Spd::where('status', 'final')
+                ->where('is_cancelled', false)
+                ->where('id', '!=', $excludeSpdId)
+                ->where(function ($query) use ($tglBerangkat, $tglKembali) {
+                    $query->where('tgl_berangkat', '<=', $tglKembali)
+                          ->where('tgl_kembali', '>=', $tglBerangkat);
+                })
+                ->whereHas('pegawais', function ($query) use ($pegawaiIds) {
+                    $query->whereIn('pegawai_id', $pegawaiIds);
+                })
+                ->with(['pegawais' => function ($query) use ($pegawaiIds) {
+                    $query->whereIn('pegawai_id', $pegawaiIds);
+                }])
+                ->get();
+
+            foreach ($overlappingSpds as $overlap) {
+                foreach ($overlap->pegawais as $pegawai) {
+                    $start = \Carbon\Carbon::parse($overlap->tgl_berangkat)->locale('id')->isoFormat('D MMMM Y');
+                    $end = \Carbon\Carbon::parse($overlap->tgl_kembali)->locale('id')->isoFormat('D MMMM Y');
+                    $conflicts[] = "- Pegawai {$pegawai->nama} bentrok dengan perjalanan dinas ke {$overlap->tempat} (tgl: {$start} s/d {$end})";
+                }
+            }
+        }
+
+        return response()->json([
+            'has_conflict' => count($conflicts) > 0,
+            'conflicts' => $conflicts
+        ]);
     }
 
     public function bulkPrint(Request $request)

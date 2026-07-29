@@ -695,7 +695,7 @@
                     @else
                         {{-- Draft Mode: Save Actions --}}
                         <button type="submit" name="action" value="draft" class="btn btn-draft" formnovalidate>Simpan Draft</button>
-                        <button type="submit" name="action" value="final" class="btn" onclick="return confirm('Apakah Anda yakin ingin memfinalisasi dokumen ini? Dokumen yang sudah final tidak dapat diedit lagi.')">Simpan Final</button>
+                        <button type="submit" name="action" value="final" class="btn">Simpan Final</button>
                     @endif
                 </div>
             </form>
@@ -817,30 +817,29 @@
                 lastClickedSubmitButton = this;
             });
 
-            // Intercept form submission to block & warn if bentrok
+            // Intercept form submission to warn if bentrok, but still allow finalization with confirmation
             $('#spdForm').on('submit', function (e) {
                 const action = lastClickedSubmitButton ? $(lastClickedSubmitButton).val() : $(document.activeElement).val();
                 
-                if (action === 'final' && hasActiveConflict) {
-                    e.preventDefault();
+                if (action === 'final') {
+                    let confirmMessage = 'Apakah Anda yakin ingin memfinalisasi dokumen ini? Dokumen yang sudah final tidak dapat diedit lagi.';
                     
-                    // Show a toast for each conflicting employee
-                    if (Array.isArray(currentConflicts) && currentConflicts.length > 0) {
-                        currentConflicts.forEach(c => {
-                            const start = formatDateIndo(c.tgl_berangkat);
-                            const end = formatDateIndo(c.tgl_kembali);
-                            showToast(`Pegawai <strong>${c.pegawai_nama}</strong> sedang melakukan perjalanan dinas pada ${start} s/d ${end}.`, "error");
-                        });
-                    } else {
-                        showToast("Tidak dapat menyimpan final karena terdapat bentrok jadwal pegawai.", "error");
+                    if (hasActiveConflict) {
+                        confirmMessage = 'Peringatan: Terdapat jadwal bentrok untuk pegawai yang dipilih. Apakah Anda yakin ingin tetap memfinalisasi dokumen ini?';
                     }
                     
-                    // Scroll to warning container
-                    $('html, body').animate({
-                        scrollTop: $("#conflict-warning-container").offset().top - 100
-                    }, 500);
-                    
-                    return false;
+                    if (!confirm(confirmMessage)) {
+                        e.preventDefault();
+                        
+                        if (hasActiveConflict) {
+                            // Scroll to warning container
+                            $('html, body').animate({
+                                scrollTop: $("#conflict-warning-container").offset().top - 100
+                            }, 500);
+                        }
+                        
+                        return false;
+                    }
                 }
             });
 
@@ -1432,12 +1431,8 @@
                     }
                 });
 
-                // Hide warning and reset style initially
+                // Hide warning initially
                 $('#conflict-warning-container').hide().empty();
-                $('button[type="submit"][value="final"]').css({
-                    'opacity': '',
-                    'cursor': ''
-                });
 
                 // Only check if we have dates and at least one employee
                 if (!tglBerangkat || !tglKembali || pegawaiIds.length === 0) {
@@ -1471,22 +1466,18 @@
                                 currentConflicts.forEach(c => {
                                     const start = formatDateIndo(c.tgl_berangkat);
                                     const end = formatDateIndo(c.tgl_kembali);
-                                    showToast(`Pegawai <strong>${c.pegawai_nama}</strong> sedang melakukan perjalanan dinas pada ${start} s/d ${end}.`, 'error');
+                                    showToast(`Pegawai <strong>${c.pegawai_nama}</strong> sedang melakukan perjalanan dinas ke <strong>${c.tempat || '-'}</strong> pada ${start} s/d ${end}.`, 'error');
                                 });
                             }
 
-                            // Style only the "Simpan Final" button visually (keep enabled to capture click)
-                            $('button[type="submit"][value="final"]').css({
-                                'opacity': '0.6',
-                                'cursor': 'not-allowed'
-                            });
+
 
                             // Build warning list
                             let listHtml = '<ul style="margin: 5px 0 0 20px; list-style-type: disc; font-size: 0.875rem; color: #b91c1c;">';
                             response.conflicts.forEach(c => {
                                 const start = formatDateIndo(c.tgl_berangkat);
                                 const end = formatDateIndo(c.tgl_kembali);
-                                listHtml += `<li style="margin-bottom: 4px;">Pegawai <strong>${c.pegawai_nama}</strong> sedang melakukan perjalanan dinas pada <strong>${start} s/d ${end}</strong> (${c.maksud || '-'})</li>`;
+                                listHtml += `<li style="margin-bottom: 4px;">Pegawai <strong>${c.pegawai_nama}</strong> sedang melakukan perjalanan dinas ke <strong>${c.tempat || '-'}</strong> pada <strong>${start} s/d ${end}</strong> (${c.maksud || '-'})</li>`;
                             });
                             listHtml += '</ul>';
 
@@ -1504,7 +1495,7 @@
                                         <div style="flex: 1;">
                                             <span class="text-sm font-bold text-red-800">Peringatan Bentrok Jadwal Pegawai:</span>
                                             <div class="mt-1">${listHtml}</div>
-                                            <span class="text-xs text-red-600 font-semibold block mt-2">* Catatan: Anda tidak dapat memfinalisasi SPD ini karena terdapat jadwal bentrok. Namun, Anda masih dapat menyimpannya sebagai Draf terlebih dahulu.</span>
+                                            <span class="text-xs text-red-600 font-semibold block mt-2">* Catatan: Anda tetap dapat memfinalisasi SPD ini meskipun terdapat jadwal bentrok.</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1513,10 +1504,6 @@
                         } else {
                             hasActiveConflict = false;
                             currentConflicts = [];
-                            $('button[type="submit"][value="final"]').css({
-                                'opacity': '',
-                                'cursor': ''
-                            });
                         }
                     },
                     error: function(xhr, status, error) {

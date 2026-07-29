@@ -168,7 +168,7 @@
             <h1 class="text-3xl font-bold text-slate-900">Manajemen Surat Perjalanan Dinas</h1>
         </div>
 
-        <div class="max-w-5xl">
+        <div class="w-full">
             {{-- Notification Container --}}
             <div
                 class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] w-full max-w-lg px-4 pointer-events-none">
@@ -180,7 +180,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>{{ session('success') }}</span>
+                        <span>{!! session('success') !!}</span>
                     </div>
                 @endif
 
@@ -681,11 +681,16 @@
                                     </th>
                                 @endif
                                 <th class="p-4 font-semibold text-slate-700 w-40 text-left">Tanggal Surat</th>
-                                <th class="p-4 font-semibold text-slate-700 text-center w-32">Aksi</th>
+                                <th class="p-4 font-semibold text-slate-700 text-left max-w-xs">Keterangan</th>
+                                <th class="p-4 font-semibold text-slate-700 text-center w-36">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse($finals as $final)
+                                @php
+                                    $pegawaiUtama = $final->pegawais->where('pivot.peran', 'utama')->first();
+                                    $pegawaiUtamaNama = $pegawaiUtama ? $pegawaiUtama->nama : '-';
+                                @endphp
                                 <tr class="hover:bg-slate-50 transition border-b border-slate-100/50">
                                     <td class="p-4 text-center final-select-column hidden transition-all duration-300">
                                         <div class="flex justify-center items-center h-full">
@@ -715,6 +720,20 @@
                                     @endif
                                     <td class="p-4 text-slate-600 text-left">
                                         {{ $final->tanggal_surat ? \Carbon\Carbon::parse($final->tanggal_surat)->locale('id')->isoFormat('D MMMM Y') : '-' }}
+                                    </td>
+                                    <td class="p-4 text-left text-xs text-slate-600 max-w-xs">
+                                        @if($final->is_cancelled)
+                                            <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+                                                <span style="display: inline-flex; align-items: center; padding: 2px 6px; border-radius: 9999px; font-size: 10px; font-weight: 700; background-color: #fee2e2; color: #dc2626; border: 1px solid #fecaca; line-height: 1;">
+                                                    Dibatalkan
+                                                </span>
+                                                <span class="truncate w-full text-slate-500" title="{{ $final->keterangan_batal }}">
+                                                    {{ $final->keterangan_batal ?: '(Tanpa keterangan)' }}
+                                                </span>
+                                            </div>
+                                        @else
+                                            <span class="text-slate-400">-</span>
+                                        @endif
                                     </td>
                                     <td class="p-4 text-center">
                                         <div class="flex justify-center gap-2 items-center">
@@ -764,13 +783,31 @@
                                                     </a>
                                                 </div>
                                             </div>
+                                            @if(!$final->is_cancelled)
+                                                <button type="button" onclick="openCancelModal('{{ $final->id }}', '{{ addslashes($pegawaiUtamaNama) }}', '{{ addslashes($final->tempat ?? '') }}', '{{ addslashes($final->maksud ?? '') }}')"
+                                                    class="inline-flex items-center justify-center w-8 h-8 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 hover:text-red-700 rounded-lg transition cursor-pointer"
+                                                    title="Batalkan SPD">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="10"></circle>
+                                                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                                    </svg>
+                                                </button>
+                                            @else
+                                                <button type="button" onclick="confirmReactivate('{{ $final->id }}', '{{ addslashes($final->nomor_surat ?? '') }}')"
+                                                    class="inline-flex items-center justify-center w-8 h-8 bg-green-50 hover:bg-green-100 border border-green-200 text-green-600 hover:text-green-700 rounded-lg transition cursor-pointer"
+                                                    title="Aktifkan Kembali SPD">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                                                    </svg>
+                                                </button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
                                 <!-- Expandable Detail Row -->
                                 <tr id="detail-{{ $final->id }}"
                                     class="hidden bg-slate-50/50 border-t border-b border-slate-200">
-                                    <td colspan="{{ session('role') === 'admin' ? 8 : 7 }}" class="p-4">
+                                    <td colspan="{{ session('role') === 'admin' ? 9 : 8 }}" class="p-4">
                                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
                                             <!-- Pegawai Ditugaskan -->
                                             <div class="flex flex-col space-y-2">
@@ -832,7 +869,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="{{ session('role') === 'admin' ? 7 : 6 }}"
+                                    <td colspan="{{ session('role') === 'admin' ? 8 : 7 }}"
                                         class="p-8 text-center text-slate-500 py-12">
                                         <div class="flex flex-row items-center justify-center gap-4">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300"
@@ -1226,7 +1263,124 @@
                     btn.classList.add('bg-slate-100', 'text-slate-500');
                 }
             }
+
+            function openCancelModal(id, pegawaiNama, tempat, maksud) {
+                                const modal = document.getElementById('cancelModal');
+                                const form = document.getElementById('cancelForm');
+                                const detailSpan = document.getElementById('cancelSpdDetail');
+                                const keteranganTextarea = document.getElementById('keterangan_batal');
+                                
+                                let detailText = pegawaiNama || '-';
+                                if (tempat) detailText += ` ke ${tempat}`;
+                                if (maksud) detailText += ` (${maksud})`;
+                                
+                                detailSpan.textContent = detailText;
+                                keteranganTextarea.value = '';
+                                form.action = "{{ url('/spd/cancel') }}/" + id;
+                                
+                                modal.style.display = 'block';
+                                document.body.style.overflow = 'hidden';
+                            }
+
+            function closeCancelModal() {
+                                const modal = document.getElementById('cancelModal');
+                                modal.style.display = 'none';
+                                document.body.style.overflow = '';
+                            }
+
+                            function confirmReactivate(id, nomorSurat) {
+                                // First, check if there are conflicts via native fetch API
+                                fetch("{{ url('/spd/check-reactivate-conflict') }}/" + id)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        let confirmMessage = 'Apakah Anda yakin ingin mengaktifkan kembali SPD dengan Nomor Surat ' + (nomorSurat || '-') + '?';
+                                        
+                                        if (data.has_conflict && data.conflicts.length > 0) {
+                                            confirmMessage = 'Peringatan: Terdapat bentrok jadwal pegawai jika SPD ini diaktifkan kembali:\n\n' + 
+                                                             data.conflicts.join('\n') + 
+                                                             '\n\nApakah Anda tetap ingin mengaktifkan kembali SPD ini?';
+                                        }
+                                        
+                                        if (confirm(confirmMessage)) {
+                                            submitReactivateForm(id);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error("Gagal memeriksa konflik pengaktifan kembali: ", error);
+                                        // Fallback to standard confirmation if fetch fails
+                                        if (confirm('Apakah Anda yakin ingin mengaktifkan kembali SPD dengan Nomor Surat ' + (nomorSurat || '-') + '?')) {
+                                            submitReactivateForm(id);
+                                        }
+                                    });
+                            }
+
+                            function submitReactivateForm(id) {
+                                const form = document.createElement('form');
+                                form.method = 'POST';
+                                form.action = "{{ url('/spd/reactivate') }}/" + id;
+                                
+                                const csrf = document.createElement('input');
+                                csrf.type = 'hidden';
+                                csrf.name = '_token';
+                                csrf.value = "{{ csrf_token() }}";
+                                
+                                form.appendChild(csrf);
+                                document.body.appendChild(form);
+                                form.submit();
+                            }
         </script>
+
+        <!-- Cancel Modal -->
+        <div id="cancelModal" style="display: none; position: fixed; inset: 0; z-index: 9999; overflow-y: auto; background-color: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <!-- Backdrop -->
+            <div style="position: absolute; inset: 0;" onclick="closeCancelModal()"></div>
+            
+            <!-- Modal Content Wrapper (Centered Flex Box) -->
+            <div style="display: flex; min-height: 100vh; align-items: center; justify-content: center; padding: 16px; position: relative; pointer-events: none;">
+                
+                <!-- Modal Dialog Box -->
+                <div style="background-color: #ffffff; border-radius: 16px; max-width: 500px; width: 100%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); overflow: hidden; border: 1px solid #e2e8f0; pointer-events: auto;">
+                    <form id="cancelForm" method="POST" action="">
+                        @csrf
+                        <div style="padding: 24px;">
+                            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: center; height: 40px; width: 40px; border-radius: 9999px; background-color: #fee2e2; color: #dc2626;">
+                                    <!-- Warning Icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 24px; height: 24px;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                </div>
+                                <div style="flex-grow: 1; text-align: left;">
+                                    <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #0f172a;" id="modal-title">
+                                        Batalkan Surat Perjalanan Dinas
+                                    </h3>
+                                    <p style="margin: 0 0 16px 0; font-size: 14px; color: #475569; line-height: 1.5;">
+                                        Apakah Anda yakin ingin membatalkan SPD untuk <strong id="cancelSpdDetail" style="color: #0f172a;"></strong>?
+                                    </p>
+                                    
+                                    <div style="margin-top: 16px;">
+                                        <label for="keterangan_batal" style="display: block; font-size: 14px; font-weight: 500; color: #334155; margin-bottom: 6px;">Alasan/Keterangan Pembatalan <span style="color: #ef4444;">*</span></label>
+                                        <textarea id="keterangan_batal" name="keterangan_batal" rows="3" required
+                                            style="width: 100%; border-radius: 8px; border: 1px solid #cbd5e1; padding: 8px 12px; font-size: 14px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); outline: none; box-sizing: border-box;"
+                                            placeholder="Masukkan alasan atau keterangan pembatalan SPD ini..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="background-color: #f8fafc; padding: 16px 24px; display: flex; flex-direction: row-reverse; gap: 12px; border-top: 1px solid #f1f5f9;">
+                            <button type="submit"
+                                style="display: inline-flex; justify-content: center; align-items: center; border-radius: 8px; border: none; padding: 8px 16px; background-color: #dc2626; color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;">
+                                Batalkan SPD
+                            </button>
+                            <button type="button" onclick="closeCancelModal()"
+                                style="display: inline-flex; justify-content: center; align-items: center; border-radius: 8px; border: 1px solid #cbd5e1; padding: 8px 16px; background-color: #ffffff; color: #334155; font-size: 14px; font-weight: 500; cursor: pointer; transition: background-color 0.2s;">
+                                Kembali
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <footer class="mt-auto py-6 text-center text-sm text-slate-500 relative z-50">
             &copy; 2026 Badan Keuangan Daerah. All rights reserved.
