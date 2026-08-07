@@ -373,6 +373,11 @@
         .btn-danger:hover {
             background-color: #dc2626 !important; /* Red 600 */
         }
+
+        /* Hide selected employees in the dropdown list */
+        .pegawai-dropdown .select2-results__option[aria-disabled=true] {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -712,6 +717,43 @@
         const signatories = @json($signatories);
         const pptks = @json($pptks ?? []);
         const existingPengikuts = @json($pengikuts ?? []);
+        let isUpdatingPegawaiOptions = false;
+
+        function updatePegawaiOptions() {
+            if (isUpdatingPegawaiOptions) return;
+            isUpdatingPegawaiOptions = true;
+
+            const selectedValues = [];
+            $('.select2-pegawai').each(function() {
+                const val = $(this).val();
+                if (val) {
+                    selectedValues.push(val);
+                }
+            });
+
+            $('.select2-pegawai').each(function() {
+                const select = $(this);
+                const currentVal = select.val();
+                let changed = false;
+
+                select.find('option').each(function() {
+                    const optVal = $(this).val();
+                    if (optVal) {
+                        const shouldDisable = selectedValues.includes(optVal) && optVal !== currentVal;
+                        if ($(this).prop('disabled') !== shouldDisable) {
+                            $(this).prop('disabled', shouldDisable);
+                            changed = true;
+                        }
+                    }
+                });
+
+                if (changed) {
+                    select.trigger('change');
+                }
+            });
+
+            isUpdatingPegawaiOptions = false;
+        }
 
         function initSpdForm() {
             // Toggle Preview Handler
@@ -733,8 +775,10 @@
             // Initialize Select2 on existing selects
             $('.select2-pegawai').select2({
                 placeholder: "-- Pilih Pegawai Utama --",
-                width: '100%'
+                width: '100%',
+                dropdownCssClass: 'pegawai-dropdown'
             }).on('change', function () {
+                if (isUpdatingPegawaiOptions) return;
                 updatePreview();
                 if ($(this).attr('name') === 'pegawai_utama') {
                     if ($(this).val()) {
@@ -746,6 +790,7 @@
                     }
                 }
                 checkScheduleConflict();
+                updatePegawaiOptions();
             });
 
             // Initial visibility for Tambah Pengikut
@@ -800,14 +845,17 @@
             // Initial Preview Update
             updatePreview();
             updateDay();
+            updatePegawaiOptions();
 
             // Bind Input Events
             $('input, textarea, select').on('input change', function () {
+                if (isUpdatingPegawaiOptions) return;
                 updatePreview();
             });
 
             // Bind conflict checks on date / duration changes
             $('#tgl_berangkat, #lama_perjalanan').on('input change', function() {
+                if (isUpdatingPegawaiOptions) return;
                 checkScheduleConflict();
             });
 
@@ -1198,6 +1246,7 @@
             tempSelect.removeAttr('data-select2-id tabindex aria-hidden');
             tempSelect.find('option').removeAttr('data-select2-id');
             tempSelect.find('option').removeAttr('selected'); // Fix: Remove pre-selected attribute from clone
+            tempSelect.find('option').removeAttr('disabled').prop('disabled', false); // Ensure clone starts with enabled options
             tempSelect.val(''); // clear value
 
             // 3. Create the new Row container
@@ -1239,6 +1288,7 @@
                 $(this).closest('.pegawai-row').remove();
                 updatePreview();
                 checkScheduleConflict();
+                updatePegawaiOptions();
             });
 
             newRow.append(removeBtn);
@@ -1249,11 +1299,16 @@
             // 7. Initialize Select2 on the NEW element
             newSelect.select2({
                 placeholder: "-- Pilih Pengikut --",
-                width: '100%'
+                width: '100%',
+                dropdownCssClass: 'pegawai-dropdown'
             }).on('change', function () {
+                if (isUpdatingPegawaiOptions) return;
                 updatePreview();
                 checkScheduleConflict();
+                updatePegawaiOptions();
             });
+
+            updatePegawaiOptions();
         }
 
         function calculateReturnDate() {
